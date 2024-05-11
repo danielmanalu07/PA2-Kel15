@@ -84,19 +84,19 @@ func CreateProduct(c *fiber.Ctx) error {
 		})
 	}
 
-	categoryId, err := strconv.Atoi(c.FormValue("category_id"))
-	if err != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"status":  "failed",
-			"message": err.Error(),
-		})
-	}
-
 	image, err := c.FormFile("image")
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"status":  "failed",
 			"message": "Image is required",
+		})
+	}
+
+	CatId, err := strconv.Atoi(c.FormValue("category_id"))
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"status":  "failed",
+			"message": "CatId is required",
 		})
 	}
 
@@ -109,22 +109,21 @@ func CreateProduct(c *fiber.Ctx) error {
 		})
 	}
 
-	category, err := getCategoryByID(categoryId)
+	category, err := getCategoryByID(CatId)
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"status":  "failed",
 			"message": err.Error(),
 		})
 	}
-
-	category.Id = uint(categoryId)
+	category.Id = uint(CatId)
 
 	product := models.Product{
 		Name:        input.Name,
 		Description: input.Description,
 		Price:       input.Price,
 		Image:       filename,
-		CategoryID:  uint(categoryId),
+		CategoryID:  uint(CatId),
 	}
 
 	result := database.DB.Create(&product)

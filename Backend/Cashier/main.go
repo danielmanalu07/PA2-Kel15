@@ -2,6 +2,7 @@ package main
 
 import (
 	database "cashier/Database"
+	routes "cashier/Routes"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -18,10 +19,10 @@ func main() {
 		AllowOrigins:     "https://gofiber.io",
 	}))
 
-	err := app.Listen(":8003")
+	routes.SetUp(app)
 
+	err := app.Listen(":8004")
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
-
 }

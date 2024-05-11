@@ -103,3 +103,7 @@ func LogouAdmin(c *fiber.Ctx) error {
 		"message": "Logout Successfully",
 	})
 }
+
+func CreateCashier(c *fiber.Ctx) error {
+	return nil
+}

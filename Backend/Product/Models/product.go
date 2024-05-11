@@ -19,7 +19,6 @@ type RequestProductCreate struct {
 	Name        string `json:"name" gorm:"type:varchar(50);index:idx_nm,unique" validate:"required"`
 	Description string `json:"description" gorm:"type:text" validate:"required"`
 	Price       string `json:"price" gorm:"type:varchar(50)" validate:"required"`
-	CategoryID  uint   `json:"category_id" gorm:"index"`
 }
 
 type RequestProductUpdate struct {
