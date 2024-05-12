@@ -44,6 +44,25 @@ func getCategoryByID(categoryID int) (*cat.Category, error) {
 	return &category, nil
 }
 
+func GetCatId(categoryID int) (*models.Category, error) {
+	resp, err := http.Get(fmt.Sprintf("http://127.0.0.1:8002/category/%d", categoryID))
+	if err != nil {
+		return nil, fmt.Errorf("failed to make HTTP request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("HTTP request failed with status code: %d", resp.StatusCode)
+	}
+
+	var cat models.Category
+	if err := json.NewDecoder(resp.Body).Decode(&cat); err != nil {
+		return nil, fmt.Errorf("failed to decode JSON response: %v", err)
+	}
+
+	return &cat, nil
+}
+
 func GetAllProduct(c *fiber.Ctx) error {
 	var product []models.Product
 
@@ -109,7 +128,7 @@ func CreateProduct(c *fiber.Ctx) error {
 		})
 	}
 
-	category, err := getCategoryByID(CatId)
+	category, err := GetCatId(CatId)
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"status":  "failed",

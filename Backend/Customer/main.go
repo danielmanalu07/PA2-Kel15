@@ -1,17 +1,16 @@
 package main
 
 import (
+	database "Service/Customer/Database"
+	routes "Service/Customer/Routes"
 	"log"
-	database "service/table/Database"
-	routes "service/table/Routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
-	database.Connection()
-
+	database.Connect()
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
@@ -19,10 +18,11 @@ func main() {
 		AllowOrigins:     "https://gofiber.io",
 	}))
 
-	routes.Routing(app)
+	routes.SetUp(app)
 
-	err := app.Listen(":8005")
+	err := app.Listen(":8006")
+
 	if err != nil {
-		log.Fatalf("Failde to listen: %v", err)
+		log.Fatalf("Failed to listen: %v", err)
 	}
 }

@@ -1,5 +1,5 @@
 go mod init service/table
-go get github.com/gofiber/fiber/v2
-go get -u gorm.io/gorm
-go get gorm.io/driver/mysql
-go get github.com/go-playground/validator/v10
+github.com/gofiber/fiber/v2
+-u gorm.io/gorm
+gorm.io/driver/mysql
+github.com/go-playground/validator/v10
