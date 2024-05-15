@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
-import 'package:user/Controllers/AuthController.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:user/Controllers/Authcontroller.dart';
 import 'package:user/Screens/Dashboard.dart';
+import 'package:user/Screens/Register.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final AuthController _authController = AuthController();
 
   @override
@@ -45,10 +46,18 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () {
-                _handleLogin();
-              },
+              onPressed: _handleLogin,
               child: Text('Login'),
+            ),
+            SizedBox(height: 20.0),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegisterScreen()),
+                );
+              },
+              child: Text('Register'),
             ),
           ],
         ),
@@ -63,13 +72,14 @@ class _LoginScreenState extends State<LoginScreen> {
     String? token = await _authController.login(username, password);
 
     if (token != null) {
-      Get.to(() => Dashboard());
+      Get.off(() => Dashboard());
     } else {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text("Login Failed"),
+            
             content: Text("Invalid username or password. Please try again."),
             actions: <Widget>[
               TextButton(
@@ -83,12 +93,5 @@ class _LoginScreenState extends State<LoginScreen> {
         },
       );
     }
-  }
-
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 }
