@@ -13,4 +13,5 @@ func SetUp(app *fiber.App) {
 	endpoint.Use(middlewares.Middleware())
 	endpoint.Get("/profile", controllers.GetProfile)
 	endpoint.Post("/logout", controllers.LogouAdmin)
+	endpoint.Put("/approve/:id", controllers.DataOrder)
 }

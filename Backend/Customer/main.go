@@ -20,7 +20,7 @@ func main() {
 
 	routes.SetUp(app)
 
-	err := app.Listen(":8006")
+	err := app.Listen("192.168.30.215:8006")
 
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)

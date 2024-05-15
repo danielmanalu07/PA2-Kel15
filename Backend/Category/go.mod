@@ -1,4 +1,4 @@
-module category
+module Service/Category
 
 go 1.21.5
 

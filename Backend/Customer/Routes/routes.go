@@ -14,7 +14,7 @@ func SetUp(App *fiber.App) {
 	customer.Static("/image", controllers.PathImageCustomer)
 	customer.Put("/forgot_password", controllers.ForgotPassword)
 	customer.Use(middlewares.CheckLogin())
-	customer.Get("/profile", controllers.GetProfile)
+	customer.Get("/profile/:id", controllers.GetProfile)
 	customer.Put("/updateProfile", controllers.UpdateProfile)
 	customer.Put("/edit_password", controllers.EditPassword)
 	customer.Post("/logout", controllers.CustomerLogout)

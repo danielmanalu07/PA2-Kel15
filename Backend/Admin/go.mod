@@ -12,6 +12,8 @@ require (
 )
 
 require (
+	Service/Customer v0.0.0-00010101000000-000000000000 // indirect
+	Service/Product v0.0.0-00010101000000-000000000000 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
@@ -32,4 +34,11 @@ require (
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
+	service/order v0.0.0-00010101000000-000000000000 // indirect
 )
+
+replace service/order => ../Order
+
+replace Service/Product => ../Product
+
+replace Service/Customer => ../Customer

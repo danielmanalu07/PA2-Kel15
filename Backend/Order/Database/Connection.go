@@ -1,8 +1,8 @@
 package database
 
 import (
-	models "Service/Product/Models"
 	"fmt"
+	entity "service/order/Models/Entity"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -11,17 +11,16 @@ import (
 var DB *gorm.DB
 
 func Connect() {
-	const con = "root@tcp(localhost)/service_product?charset=utf8mb4&parseTime=True&loc=Local"
-	dsn := con
+	const connect = "root@tcp(localhost)/service_order?charset=utf8&parseTime=True&loc=Local"
+	dsn := connect
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-
 	if err != nil {
 		panic("Couldn't connect to database")
 	}
 
 	DB = db
 
-	fmt.Println("Successfully Connect to database")
+	fmt.Println("Successfully Connect to Database")
 
-	DB.AutoMigrate(&models.Product{})
+	DB.AutoMigrate(&entity.Order{})
 }

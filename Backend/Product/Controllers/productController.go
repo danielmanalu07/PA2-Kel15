@@ -1,17 +1,17 @@
 package controllers
 
 import (
+	database "Service/Product/Database"
+	models "Service/Product/Models"
+	"Service/Product/utils"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
-	database "product/Database"
-	models "product/Models"
-	"product/utils"
 	"strconv"
 
-	cat "category/Models"
+	cat "Service/Category/Models"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -274,6 +274,13 @@ func DeleteProduct(c *fiber.Ctx) error {
 			"status":  "failed",
 			"message": "Can't Delete Product",
 		})
+	}
+
+	if product.Image != "" {
+		imagePath := filepath.Join(PathImageProduct, product.Image)
+		if err := os.Remove(imagePath); err != nil {
+			fmt.Printf("Failde to delete image File : %v\n", err)
+		}
 	}
 
 	return c.Status(200).JSON(fiber.Map{

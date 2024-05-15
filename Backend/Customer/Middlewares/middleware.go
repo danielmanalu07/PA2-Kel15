@@ -42,14 +42,6 @@ func CheckLogin() fiber.Handler {
 			})
 		}
 
-		// Refresh token in cookie
-		c.Cookie(&fiber.Cookie{
-			Name:     "jwt",
-			Value:    tokenString,
-			Expires:  time.Now().Add(time.Hour * 1),
-			HTTPOnly: true,
-		})
-
 		var customer entity.Customer
 		if err := database.DB.Where("id = ?", claims.Issuer).First(&customer).Error; err != nil {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
@@ -58,6 +50,7 @@ func CheckLogin() fiber.Handler {
 		}
 
 		c.Locals("customer", customer)
+
 		return c.Next()
 	}
 }

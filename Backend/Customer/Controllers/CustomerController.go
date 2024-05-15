@@ -156,7 +156,16 @@ func LoginCustomer(c *fiber.Ctx) error {
 }
 
 func GetProfile(c *fiber.Ctx) error {
+	id := c.Params("id")
 	customer := c.Locals("customer").(entity.Customer)
+
+	err := database.DB.First(&customer, "id = ?", id).Error
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"status":  "Failed",
+			"message": err.Error(),
+		})
+	}
 
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",

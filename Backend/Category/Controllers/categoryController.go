@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	database "category/Database"
-	models "category/Models"
+	database "Service/Category/Database"
+	models "Service/Category/Models"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"

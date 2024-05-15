@@ -1,7 +1,7 @@
 package database
 
 import (
-	models "category/Models"
+	models "Service/Category/Models"
 	"fmt"
 
 	"gorm.io/driver/mysql"
