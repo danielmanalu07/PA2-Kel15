@@ -1,6 +1,6 @@
 module Service/Product
 
-go 1.21.5
+go 1.20
 
 require (
 	Service/Category v0.0.0-00010101000000-000000000000
