@@ -12,7 +12,7 @@ import (
 )
 
 type AdminService interface {
-	AdminLogin(ctx *fiber.Ctx, input dto.RequestAdminLogin) (*response.AdminResponse, error)
+	AdminLogin(ctx *fiber.Ctx, input dto.RequestAdminLogin) (*response.AdminResponse, string, error)
 	GetProfile(ctx *fiber.Ctx) (*response.AdminResponse, error)
 	LogoutAdmin(ctx *fiber.Ctx) (*fiber.Cookie, error)
 }
@@ -25,10 +25,10 @@ func NewAdminService(ar repository.AdminRepository) AdminService {
 	return &adminService{adminRepository: ar}
 }
 
-func (a *adminService) AdminLogin(ctx *fiber.Ctx, input dto.RequestAdminLogin) (*response.AdminResponse, error) {
+func (a *adminService) AdminLogin(ctx *fiber.Ctx, input dto.RequestAdminLogin) (*response.AdminResponse, string, error) {
 	admin, err := a.adminRepository.AdminLogin(ctx, input)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	claims := jwt.StandardClaims{
@@ -39,7 +39,7 @@ func (a *adminService) AdminLogin(ctx *fiber.Ctx, input dto.RequestAdminLogin) (
 
 	tokens, err := utils.GenerateToken(&claims)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	cookie := fiber.Cookie{
@@ -56,7 +56,7 @@ func (a *adminService) AdminLogin(ctx *fiber.Ctx, input dto.RequestAdminLogin) (
 		Password: admin.Password,
 	}
 
-	return adminResponse, nil
+	return adminResponse, tokens, nil
 }
 
 func (a *adminService) GetProfile(ctx *fiber.Ctx) (*response.AdminResponse, error) {

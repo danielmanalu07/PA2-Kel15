@@ -31,12 +31,16 @@ func (c *AdminController) AdminLogin(ctx *fiber.Ctx) error {
 		})
 	}
 
-	admin, err := c.adminService.AdminLogin(ctx, input)
+	admin, token, err := c.adminService.AdminLogin(ctx, input)
 	if err != nil {
 		return utils.MessageJSON(ctx, fiber.StatusUnauthorized, "Failed", err.Error())
 	}
 
-	return ctx.JSON(admin)
+	return ctx.JSON(fiber.Map{
+		"status":  "message",
+		"message": admin,
+		"token":   token,
+	})
 }
 
 func (c *AdminController) GetProfile(ctx *fiber.Ctx) error {

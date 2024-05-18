@@ -43,3 +43,15 @@ func RouteTable(App *fiber.App, tableController *controllers.TableController) {
 	table.Put("/edit/:id", tableController.TableUpdate)
 	table.Delete("/delete/:id", tableController.TableDelete)
 }
+
+func RouteCustomer(App *fiber.App, customerController *controllers.CustomerController) {
+	customer := App.Group("/customer")
+	customer.Post("/register", customerController.CustomerRegister)
+	customer.Post("/login", customerController.CustomerLogin)
+	customer.Put("/forgot-password", customerController.CustomerForgotPassword)
+	customer.Use(middleware.CheckCustomer())
+	customer.Get("/profile", customerController.GetProfile)
+	customer.Post("/logout", customerController.CustomerLogout)
+	customer.Put("/update-profile", customerController.CustomerUpdateProfile)
+	customer.Put("/edit-password", customerController.CustomerEditPassword)
+}

@@ -82,6 +82,7 @@ func (p *productService) ProductUpdate(ctx *fiber.Ctx, id uint, input dto.Reques
 	}
 
 	respon := &response.ProductResponse{
+		Id:          updateProduct.Id,
 		Name:        updateProduct.Name,
 		Description: updateProduct.Description,
 		Price:       updateProduct.Price,
@@ -99,6 +100,7 @@ func (p *productService) ProductGetById(id uint) (*response.ProductResponse, err
 	}
 
 	product := &response.ProductResponse{
+		Id:          prod.Id,
 		Name:        prod.Name,
 		Description: prod.Description,
 		Price:       prod.Price,
@@ -118,6 +120,7 @@ func (p *productService) ProductGetAll() ([]response.ProductResponse, error) {
 	var respon []response.ProductResponse
 	for _, products := range product {
 		respon = append(respon, response.ProductResponse{
+			Id:          products.Id,
 			Name:        products.Name,
 			Description: products.Description,
 			Price:       products.Price,
@@ -162,6 +165,7 @@ func (p *productService) ProductCreate(ctx *fiber.Ctx, input dto.RequestProductC
 	}
 
 	respon := &response.ProductResponse{
+		Id:          createProduct.Id,
 		Name:        createProduct.Name,
 		Description: createProduct.Description,
 		Price:       createProduct.Price,

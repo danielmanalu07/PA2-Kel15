@@ -45,6 +45,7 @@ func (c *categoryService) CategoryUpdate(ctx *fiber.Ctx, id uint, input dto.Requ
 	}
 
 	respon := &response.CategoryResponse{
+		Id:          updateCat.Id,
 		Name:        updateCat.Name,
 		Description: updateCat.Description,
 	}
@@ -59,6 +60,7 @@ func (c *categoryService) CategoryGetById(id uint) (*response.CategoryResponse, 
 	}
 
 	cat := &response.CategoryResponse{
+		Id:          category.Id,
 		Name:        category.Name,
 		Description: category.Description,
 	}
@@ -75,6 +77,7 @@ func (c *categoryService) CategoryGetAll() ([]response.CategoryResponse, error) 
 	var respon []response.CategoryResponse
 	for _, category := range categories {
 		respon = append(respon, response.CategoryResponse{
+			Id:          category.Id,
 			Name:        category.Name,
 			Description: category.Description,
 		})
@@ -95,6 +98,7 @@ func (c *categoryService) CategoryCreate(input dto.RequestCategoryCreate) (*resp
 	}
 
 	respon := &response.CategoryResponse{
+		Id:          categoryCreate.Id,
 		Name:        categoryCreate.Name,
 		Description: categoryCreate.Description,
 	}

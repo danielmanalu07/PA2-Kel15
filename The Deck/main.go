@@ -26,11 +26,13 @@ func main() {
 	categoryController := settings.SetUpServiceCategory()
 	productController := settings.SetUpServiceProduct()
 	tableController := settings.SetUpServiceTable()
+	customerController := settings.SetUpServiceCustomer()
 
 	routes.RouteAdmin(app, adminController)
 	routes.RouteCategory(app, categoryController)
 	routes.RouteProduct(app, productController)
 	routes.RouteTable(app, tableController)
+	routes.RouteCustomer(app, customerController)
 
 	err := app.Listen(":8080")
 
