@@ -43,6 +43,8 @@
                 <div class="alert alert-danger">{{ $message }}</div>
             @enderror
             <button type="button" class="btn btn-primary" onclick="confirmUpdate(event)">Update</button>
+            <a href="/admin/catgory" class="btn btn-secondary">Back to List</a>
+
         </form>
     </div>
 @endsection

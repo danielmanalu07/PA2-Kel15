@@ -53,15 +53,15 @@
                             <td>{{ $item['name'] }}</td>
                             <td>{{ $item['description'] }}</td>
                             <td>{{ $item['price'] }}</td>
-                            <td><img src="http://127.0.0.1:8003/product/image/{{ $item['image'] }}" alt="Product Image"
+                            <td><img src="http://127.0.0.1:8080/product/image/{{ $item['image'] }}" alt="Product Image"
                                     style="width: 30%; height: auto;">
                             </td>
                             <td>
-                                <form id="" action="" method="POST">
+                                <form id="delete-form-{{ $item['id'] }}" action="/admin/product/{{ $item['id'] }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <a href="" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></a>
-                                    <a href="/edit" class="btn btn-warning btn-sm mr-3 ml-3"><i
+                                    <a href="/admin/product/{{ $item['id'] }}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></a>
+                                    <a href="/admin/product/{{ $item['id'] }}/edit" class="btn btn-warning btn-sm mr-3 ml-3"><i
                                             class="fas fa-edit"></i></a>
                                     <button type="button" class="btn btn-danger btn-sm delete" name=""
                                         id="" onclick=""><i class="fas fa-trash"></i></button>

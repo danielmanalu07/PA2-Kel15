@@ -145,9 +145,6 @@ class CategoryController extends Controller
         if ($categoryData->successful()) {
             $responseArray = $categoryData->json();
 
-            // Debugging
-            // dd($responseArray);
-
             if (isset($responseArray['status']) && $responseArray['status'] === 'success' && isset($responseArray['message'])) {
                 $category = $responseArray['message'];
 
