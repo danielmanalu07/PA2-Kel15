@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
-    private $apiUrl = 'http://127.0.0.1:8002';
+    private $apiUrl = 'http://127.0.0.1:8080';
     private $admin = 'http://127.0.0.1:8080/admin';
 
     /**
@@ -31,10 +32,8 @@ class CategoryController extends Controller
             $category = $CategoryResp->json();
 
             return view('admin.category.index', compact('data', 'category'));
-
-            // return response()->json($category);
-
         } catch (\Throwable $th) {
+            Log::error('Error while fetching category data:', ['exception' => $th]);
             throw $th;
         }
     }
@@ -85,7 +84,6 @@ class CategoryController extends Controller
             } else {
                 return redirect()->back()->with('error_message', 'Failed to create category. Please try again later.');
             }
-
         } catch (\Throwable $th) {
             return redirect()->back()->with('error_message', 'Failed to create category. Please try again later.');
         }
@@ -107,45 +105,65 @@ class CategoryController extends Controller
 
             $categoryData = Http::get("{$this->apiUrl}/category/" . $id);
 
-            $category = $categoryData->json();
-
             if ($categoryData->successful()) {
-                return view('admin.category.show', compact('category', 'data'));
+                $responseArray = $categoryData->json();
+
+                // Check if the response has the expected structure
+                if (isset($responseArray['status']) && $responseArray['status'] === 'success' && isset($responseArray['message'])) {
+                    $category = $responseArray['message'];
+
+                    return view('admin.category.show', compact('category', 'data'));
+                } else {
+                    return redirect()->back()->with('error_message', 'Unexpected response structure. Please try again later.');
+                }
             } else {
                 return redirect()->back()->with('error_message', 'Failed to find category. Please try again later.');
             }
-
         } catch (\Throwable $th) {
             return redirect()->back()->with('error_message', 'Failed to find category. Please try again later.');
         }
     }
+
+
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        try {
-            $token = session('jwt');
+    public function edit($id)
+{
+    try {
+        $token = session('jwt');
 
-            $response = Http::withHeaders([
-                'Cookie' => "jwt={$token}",
-            ])->get("{$this->admin}/profile");
+        $response = Http::withHeaders([
+            'Cookie' => "jwt={$token}",
+        ])->get("{$this->admin}/profile");
 
-            $data = $response->json();
+        $data = $response->json();
 
-            $categoryData = Http::get("{$this->apiUrl}/category/" . $id);
+        $categoryData = Http::get("{$this->apiUrl}/category/" . $id);
 
-            $category = $categoryData->json();
+        if ($categoryData->successful()) {
+            $responseArray = $categoryData->json();
 
-            if ($categoryData->successful()) {
+            // Debugging
+            // dd($responseArray);
+
+            if (isset($responseArray['status']) && $responseArray['status'] === 'success' && isset($responseArray['message'])) {
+                $category = $responseArray['message'];
+
                 return view('admin.category.update', compact('category', 'data'));
+            } else {
+                return redirect()->back()->with('error_message', 'Unexpected response structure. Please try again later.');
             }
-        } catch (\Throwable $th) {
-            //throw $th;
+        } else {
             return redirect()->back()->with('error_message', 'Failed to find category. Please try again later.');
         }
+    } catch (\Throwable $th) {
+        return redirect()->back()->with('error_message', 'Failed to find category. Please try again later.');
     }
+}
+
+    
 
     /**
      * Update the specified resource in storage.
@@ -185,7 +203,6 @@ class CategoryController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             return redirect()->back()->with('error_message', 'Failed to update category. Please try again later.');
-
         }
     }
 

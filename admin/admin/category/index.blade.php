@@ -1,9 +1,7 @@
 @extends('admin.layout.welcome')
-
 @section('title')
     List Category
 @endsection
-
 @push('js')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -33,8 +31,8 @@
             });
         });
     </script>
+    <script></script>
 @endpush
-
 @section('content')
     <div class="container">
         <div class="row mb-3">
@@ -59,16 +57,14 @@
                 </button>
             </div>
         @endif
-
         @if (Session::has('error_message'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error: </strong> {{ Session::get('error_message') }}
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <strong>Message: </strong> {{ Session::get('error_message') }}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
         @endif
-
         <table border="2" class="table table-striped" id="table">
             <thead>
                 <tr>
@@ -80,28 +76,33 @@
             </thead>
             <tbody>
                 @if (isset($category['message']) && is_array($category['message']) && count($category['message']) > 0)
-                    @foreach ($category['message'] as $key => $item)
-                        @if(isset($item['id']) && isset($item['name']) && isset($item['description']))
-                            <tr>
-                                <th>{{ $key + 1 }}</th>
-                                <td>{{ $item['name'] }}</td>
-                                <td>{{ $item['description'] }}</td>
-                                <td>
-                                    <form id="delete-form-{{ $item['id'] }}" action="/admin/category/{{ $item['id'] }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <a href="/admin/category/{{ $item['id'] }}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></a>
-                                        <a href="/admin/category/{{ $item['id'] }}/edit" class="btn btn-warning btn-sm mr-3 ml-3"><i class="fas fa-edit"></i></a>
-                                        <button type="button" class="btn btn-danger btn-sm delete" onclick="confirmDelete(event, '{{ $item['id'] }}')"><i class="fas fa-trash"></i></button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @else
-                            <tr>
-                                <td colspan="4">Invalid data</td>
-                            </tr>
-                        @endif
-                    @endforeach
+                    @forelse ($category['message'] as $key => $item)
+                        <tr>
+                            <th>{{ $key + 1 }}</th>
+                            <td>{{ $item['name'] }}</td>
+                            <td>{{ $item['description'] }}</td>
+                            <td>
+                                <form id="delete-form-{{ $item['id'] }}" action="/admin/category/{{ $item['id'] }}"
+                                    method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <a href="/admin/category/{{ $item['id'] }}" class="btn btn-primary btn-sm"><i
+                                            class="fas fa-eye"></i></a>
+                                    <a href="/admin/category/{{ $item['id'] }}/edit"
+                                        class="btn btn-warning btn-sm mr-3 ml-3"><i class="fas fa-edit"></i></a>
+                                    <button type="button" class="btn btn-danger btn-sm delete" name=""
+                                        id="" onclick="confirmDelete(event, '{{ $item['id'] }}')"><i
+                                            class="fas fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4">No
+                                data available
+                            </td>
+                        </tr>
+                    @endforelse
                 @else
                     <tr>
                         <td colspan="4">No data available</td>

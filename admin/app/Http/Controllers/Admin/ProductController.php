@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    private $product = 'http://127.0.0.1:8003';
-    private $category = 'http://127.0.0.1:8002';
+    private $product = 'http://127.0.0.1:8080';
+    private $category = 'http://127.0.0.1:8080';
     private $admin = 'http://127.0.0.1:8080/admin';
     /**
      * Display a listing of the resource.
@@ -78,7 +78,7 @@ class ProductController extends Controller
         try {
 
             $productResponse = Http::attach('image', $request->file('image')->get(), $request->file('image')->getClientOriginalName())
-                ->post("http://127.0.0.1:8003/product/create", [
+                ->post("{$this->product}/product/create", [
                     'name' => $request->name,
                     'description' => $request->description,
                     'price' => $request->price,

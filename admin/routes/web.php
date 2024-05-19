@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -11,24 +14,33 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "web" middleware group. Make something great!
 |
- */
+*/
 
 Route::get('/', function () {
     return redirect('/admin/login');
 });
 
-Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function () {
-    Route::match(['get', 'post'], 'login', 'AdminController@Login');
+Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->group(function () {
+    // Admin Login Route
+    Route::match(['get', 'post'], 'login', [AdminController::class, 'adminLogin']);
+
     Route::middleware('auth.admin')->group(function () {
-        //Auth
-        Route::get('/dashboard', 'AdminController@Dashboard');
-        Route::get('/logout', 'AdminController@Logout')->name('logout.submit');
-        Route::get('/profile', 'AdminController@Profile')->name('profile.admin');
+        // Admin Profile Route
+        Route::get('/profile', [AdminController::class, 'getProfile'])->name('profile.admin');
 
-        //Manage Category
-        Route::resource('category', 'CategoryController');
+        // Admin Logout Route
+        Route::post('/logout', [AdminController::class, 'logoutAdmin'])->name('logout.submit');
 
-        //Manage Products
-        Route::resource('product', 'ProductController');
+        // Admin Dashboard Route
+        Route::get('/dashboard', 'AdminController@Dashboard')->name('dashboard');
+
+        // Manage Category
+        Route::resource('category', CategoryController::class);
+
+        // Manage Products
+        Route::resource('product', ProductController::class);
+
+        //Manage Table
+        Route::resource('table', 'TableController');
     });
 });
