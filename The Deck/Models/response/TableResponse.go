@@ -1,6 +1,7 @@
 package response
 
 type TableResponse struct {
-	Number   int `json:"number"  validate:"required"`
-	Capacity int `json:"capacity"  validate:"required"`
+	Id       uint `json:"id"`
+	Number   int  `json:"number"  validate:"required"`
+	Capacity int  `json:"capacity"  validate:"required"`
 }

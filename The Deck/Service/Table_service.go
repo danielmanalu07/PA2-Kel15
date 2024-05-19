@@ -45,6 +45,7 @@ func (t *tableService) TableUpdate(ctx *fiber.Ctx, id uint, input dto.RequestTab
 	}
 
 	respon := &response.TableResponse{
+		Id:       updateTbl.Id,
 		Number:   updateTbl.Number,
 		Capacity: updateTbl.Capacity,
 	}
@@ -59,6 +60,7 @@ func (t *tableService) TableGetById(id uint) (*response.TableResponse, error) {
 	}
 
 	tbl := &response.TableResponse{
+		Id:       table.Id,
 		Number:   table.Number,
 		Capacity: table.Capacity,
 	}
@@ -75,6 +77,7 @@ func (t *tableService) TableGetAll() ([]response.TableResponse, error) {
 	var respon []response.TableResponse
 	for _, table := range tables {
 		respon = append(respon, response.TableResponse{
+			Id:       table.Id,
 			Number:   table.Number,
 			Capacity: table.Capacity,
 		})
@@ -94,6 +97,7 @@ func (t *tableService) TableCreate(input dto.RequestTableCreate) (*response.Tabl
 	}
 
 	respon := &response.TableResponse{
+		Id:       tableCreate.Id,
 		Number:   tableCreate.Number,
 		Capacity: tableCreate.Capacity,
 	}
