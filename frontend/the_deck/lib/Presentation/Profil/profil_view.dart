@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:the_deck/Core/Routes/routes_name.dart';
 import 'package:the_deck/Core/app_colors.dart';
 import 'package:the_deck/Core/assets_constantes.dart';
@@ -244,14 +245,33 @@ class ProfilView extends StatelessWidget {
                 ],
               ),
               const Gap(16),
-              DefaultButton(
-                  btnContent: "Sign Out",
-                btnIcon: Icons.login_outlined,
-                contentColor: Pallete.pureError,
-                iconColor: Pallete.pureError,
-                bgColor: Colors.white,
-                borderColor: Pallete.neutral40,
-              )
+              // DefaultButton(
+              //     btnContent: "Sign Out",
+              //   btnIcon: Icons.login_outlined,
+              //   contentColor: Pallete.pureError,
+              //   iconColor: Pallete.pureError,
+              //   bgColor: Colors.white,
+              //   borderColor: Pallete.neutral40,
+              // )
+              Align(
+                alignment: Alignment.center,
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => Navigator.pushReplacementNamed(
+                              context, RoutesName.login),
+                        text: 'Sing Out',
+                        style: TextStyles.bodyMediumSemiBold.copyWith(
+                          color: Pallete.orangePrimary,
+                          fontSize: getFontSize(14),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),

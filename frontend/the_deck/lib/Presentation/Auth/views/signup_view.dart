@@ -175,7 +175,6 @@ class _SignUpViewState extends State<SignUpView> {
                 ),
               ),
               const Gap(24),
-              
               const Gap(24),
               DefaultButton(
                 btnContent: "Register",
@@ -189,7 +188,7 @@ class _SignUpViewState extends State<SignUpView> {
                       TextSpan(
                         recognizer: TapGestureRecognizer()
                           ..onTap = () => Navigator.pushReplacementNamed(
-                            context, RoutesName.login),
+                              context, RoutesName.login),
                         text: 'Sign In',
                         style: TextStyles.bodyMediumSemiBold.copyWith(
                           color: Pallete.orangePrimary,
