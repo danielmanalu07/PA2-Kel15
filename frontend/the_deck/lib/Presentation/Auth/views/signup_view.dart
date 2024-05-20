@@ -175,54 +175,7 @@ class _SignUpViewState extends State<SignUpView> {
                 ),
               ),
               const Gap(24),
-              Row(
-                children: [
-                  Checkbox(
-                    fillColor: const MaterialStatePropertyAll(Pallete.orangePrimary),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(getSize(4)),
-                    ),
-                    value: true,
-                    onChanged: (value) {},
-                  ),
-                  Expanded(
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "I Agree with ",
-                            style: TextStyles.bodyMediumMedium.copyWith(
-                              color: Pallete.neutral100,
-                              fontSize: getFontSize(FontSizes.medium),
-                            ),
-                          ),
-                          TextSpan(
-                            text: 'Terms of Service',
-                            style: TextStyles.bodyMediumSemiBold.copyWith(
-                              color: Pallete.orangePrimary,
-                              fontSize: getFontSize(FontSizes.medium),
-                            ),
-                          ),
-                          TextSpan(
-                            text: ' and ',
-                            style: TextStyles.bodyMediumMedium.copyWith(
-                              color: Pallete.neutral100,
-                              fontSize: getFontSize(FontSizes.medium),
-                            ),
-                          ),
-                          TextSpan(
-                            text: 'Privacy Policy',
-                            style: TextStyles.bodyMediumSemiBold.copyWith(
-                              color: Pallete.orangePrimary,
-                              fontSize: getFontSize(FontSizes.medium),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              
               const Gap(24),
               DefaultButton(
                 btnContent: "Register",
