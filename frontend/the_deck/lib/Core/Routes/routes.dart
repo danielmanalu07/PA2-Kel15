@@ -17,28 +17,33 @@ import 'package:the_deck/Presentation/Profil/personal_data_view.dart';
 import 'package:the_deck/Presentation/Profil/settings_view.dart';
 import 'package:flutter/material.dart';
 
-class Routes{
-  static Route<dynamic> onGenerateRoute(RouteSettings routeSettings)
-  {
-    switch(routeSettings.name)
-    {case RoutesName.login:
+class Routes {
+  static Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
+    switch (routeSettings.name) {
+      case RoutesName.login:
         return MaterialPageRoute(builder: (context) => const LoginView());
       case RoutesName.onBoarding:
-        return MaterialPageRoute(builder: (context) => const OnBoardingScreen(),);
+        return MaterialPageRoute(
+          builder: (context) => const OnBoardingScreen(),
+        );
       case RoutesName.signUp:
         return MaterialPageRoute(builder: (context) => const SignUpView());
       case RoutesName.forgetPassword:
-        return MaterialPageRoute(builder: (context) => const ForgetPasswordView());
+        return MaterialPageRoute(
+            builder: (context) => const ForgetPasswordView());
       case RoutesName.otpVerification:
-        return MaterialPageRoute(builder: (context) => const OTPVerificationView());
+        return MaterialPageRoute(
+            builder: (context) => const OTPVerificationView());
       case RoutesName.resetPassword:
-        return MaterialPageRoute(builder: (context) => const ResetPasswordView());
+        return MaterialPageRoute(
+            builder: (context) => const ResetPasswordView());
       case RoutesName.main:
         return MaterialPageRoute(builder: (context) => const MainView());
       case RoutesName.notification:
-        return MaterialPageRoute(builder: (context) => const NotificationView());
-      case RoutesName.aboutMenu:
-          return MaterialPageRoute(builder: (context) => const AboutMenuView());
+        return MaterialPageRoute(
+            builder: (context) => const NotificationView());
+      // case RoutesName.aboutMenu:
+      //   return MaterialPageRoute(builder: (context) => const AboutMenuView());
       case RoutesName.payment:
         return MaterialPageRoute(builder: (context) => const PaymentView());
       case RoutesName.discussion:
@@ -48,15 +53,18 @@ class Routes{
       case RoutesName.search:
         return MaterialPageRoute(builder: (context) => const SearchView());
       case RoutesName.personnalData:
-        return MaterialPageRoute(builder: (context) => const PersonalDataView());
+        return MaterialPageRoute(
+            builder: (context) => const PersonalDataView());
       case RoutesName.settings:
         return MaterialPageRoute(builder: (context) => const SettingsView());
       case RoutesName.extraCard:
         return MaterialPageRoute(builder: (context) => const ExtraCardView());
       default:
-        return MaterialPageRoute(builder: (context) => const Scaffold(
-          body: Text("No routes found"),
-        ),);
+        return MaterialPageRoute(
+          builder: (context) => const Scaffold(
+            body: Text("No routes found"),
+          ),
+        );
     }
   }
 }

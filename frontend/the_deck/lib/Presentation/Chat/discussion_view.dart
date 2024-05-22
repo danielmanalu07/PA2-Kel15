@@ -60,17 +60,19 @@ class DiscussionView extends StatelessWidget {
                       ),
                       Text(
                         "Chat List",
-                        style: TextStyles.bodyLargeSemiBold
-                            .copyWith(color: Pallete.neutral100, fontSize: getFontSize(FontSizes.large)),
+                        style: TextStyles.bodyLargeSemiBold.copyWith(
+                            color: Pallete.neutral100,
+                            fontSize: getFontSize(FontSizes.large)),
                       ),
                       InkWell(
-                        onTap: () => Navigator.pushNamed(context, RoutesName.call),
+                        onTap: () =>
+                            Navigator.pushNamed(context, RoutesName.call),
                         child: Container(
                           height: getHeight(36),
                           width: getHeight(36),
                           decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: Pallete.neutral30, width: 1),
+                              border: Border.all(
+                                  color: Pallete.neutral30, width: 1),
                               shape: BoxShape.circle),
                           child: Padding(
                             padding: EdgeInsets.only(left: getWidth(8)),
@@ -98,36 +100,38 @@ class DiscussionView extends StatelessWidget {
               ],
             ),
           ),
-
         ],
       ),
       bottomSheet: Container(
-        padding: EdgeInsets.symmetric(horizontal: getWidth(24)).copyWith(
-            bottom: getHeight(32)
-        ),
+        padding: EdgeInsets.symmetric(horizontal: getWidth(24))
+            .copyWith(bottom: getHeight(32)),
         height: getHeight(100),
         width: double.infinity,
-
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(child: DefaultField(
-              controller: searchController,
-              hintText: "Type something...",
-              prefixIcon: Icons.emoji_emotions_outlined,
-              suffixIcon: Icons.insert_link,
-            ),),
+            Expanded(
+              child: DefaultField(
+                hintText: "Type something...",
+                prefixIcon: Icons.emoji_emotions_outlined,
+                suffixIcon: Icons.insert_link,
+              ),
+            ),
             const Gap(8),
             Container(
-              width: getSize(52),
-              height:  getSize(52),
-              padding: EdgeInsets.all(getSize(16)),
-              decoration: ShapeDecoration(
-                color: Pallete.orangePrimary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(getSize(8))),
-              ),
-              child: Icon(Icons.send,size: getSize(20),color: Pallete.whiteError,)
-            )
+                width: getSize(52),
+                height: getSize(52),
+                padding: EdgeInsets.all(getSize(16)),
+                decoration: ShapeDecoration(
+                  color: Pallete.orangePrimary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(getSize(8))),
+                ),
+                child: Icon(
+                  Icons.send,
+                  size: getSize(20),
+                  color: Pallete.whiteError,
+                ))
           ],
         ),
       ),

@@ -27,17 +27,16 @@ class ResetPasswordView extends StatelessWidget {
             const Gap(16),
             Text(
               "Reset Password",
-              style: TextStyles.headingH4SemiBold
-                  .copyWith(color: Pallete.neutral100, fontSize: getFontSize(32)),
+              style: TextStyles.headingH4SemiBold.copyWith(
+                  color: Pallete.neutral100, fontSize: getFontSize(32)),
             ),
             Text(
               "Your new password must be different from the previously used password",
-              style: TextStyles.bodyMediumMedium
-                  .copyWith(color: const Color(0xFF878787), fontSize: getFontSize(14)),
+              style: TextStyles.bodyMediumMedium.copyWith(
+                  color: const Color(0xFF878787), fontSize: getFontSize(14)),
             ),
             const Gap(32),
             DefaultField(
-              controller: newPasswordController,
               hintText: "New Password",
               labelText: "New Password",
               isPasswordField: true,
@@ -45,12 +44,11 @@ class ResetPasswordView extends StatelessWidget {
             const Gap(8),
             Text(
               "Must be at least 8 character",
-              style: TextStyles.bodyMediumMedium
-                  .copyWith(color: const Color(0xFF878787), fontSize: getFontSize(14)),
+              style: TextStyles.bodyMediumMedium.copyWith(
+                  color: const Color(0xFF878787), fontSize: getFontSize(14)),
             ),
             const Gap(16),
             DefaultField(
-              controller: confirmPasswordController,
               hintText: "New Password",
               labelText: "New Password",
               isPasswordField: true,
@@ -58,8 +56,8 @@ class ResetPasswordView extends StatelessWidget {
             const Gap(8),
             Text(
               "Both password must match",
-              style: TextStyles.bodyMediumMedium
-                  .copyWith(color: const Color(0xFF878787), fontSize: getFontSize(14)),
+              style: TextStyles.bodyMediumMedium.copyWith(
+                  color: const Color(0xFF878787), fontSize: getFontSize(14)),
             ),
             const Spacer(),
             DefaultButton(
@@ -72,13 +70,11 @@ class ResetPasswordView extends StatelessWidget {
                     topRight: Radius.circular(24),
                   ),
                 ),
-
                 context: context,
                 builder: (context) {
                   return Container(
                     height: getHeight(492),
-                    padding:
-                        const EdgeInsets.only(left: 24, right: 24),
+                    padding: const EdgeInsets.only(left: 24, right: 24),
                     decoration: const ShapeDecoration(
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
@@ -159,15 +155,19 @@ class ResetPasswordView extends StatelessWidget {
                               ),
                             )),
                         const Gap(32),
-                        Text("Password Changed", style: TextStyles.headingH5SemiBold.copyWith(
-                          color: Pallete.neutral100,
-                            fontSize: getFontSize(24)
-                        ),),
+                        Text(
+                          "Password Changed",
+                          style: TextStyles.headingH5SemiBold.copyWith(
+                              color: Pallete.neutral100,
+                              fontSize: getFontSize(24)),
+                        ),
                         const Gap(32),
-                        Text("Password changed successfully, you can login again with a new password", style: TextStyles.bodyMediumMedium.copyWith(
-                          color: Color(0xFF878787), fontSize: getFontSize(14)
-                        ),),
-                        
+                        Text(
+                          "Password changed successfully, you can login again with a new password",
+                          style: TextStyles.bodyMediumMedium.copyWith(
+                              color: Color(0xFF878787),
+                              fontSize: getFontSize(14)),
+                        ),
                         const Gap(32),
                         DefaultButton(btnContent: "Verify Account")
                       ],

@@ -26,25 +26,25 @@ class ForgetPasswordView extends StatelessWidget {
             const Gap(32),
             Text(
               "Forgot password?",
-              style: TextStyles.headingH4SemiBold
-                  .copyWith(color: Pallete.neutral100, fontSize: getFontSize(32)),
+              style: TextStyles.headingH4SemiBold.copyWith(
+                  color: Pallete.neutral100, fontSize: getFontSize(32)),
             ),
             const Gap(8),
             Text(
               "Enter your email address and we’ll send you confirmation code to reset your password",
-              style: TextStyles.bodyMediumMedium
-                  .copyWith(color: Pallete.neutral60, fontSize: getFontSize(14)),
+              style: TextStyles.bodyMediumMedium.copyWith(
+                  color: Pallete.neutral60, fontSize: getFontSize(14)),
             ),
             const Gap(32),
             DefaultField(
               hintText: "Enter Email",
-              controller: emailController,
               labelText: "Email Address",
             ),
             const Spacer(),
-             DefaultButton(
+            DefaultButton(
               btnContent: "Continue",
-              function: () => Navigator.pushNamed(context, RoutesName.otpVerification),
+              function: () =>
+                  Navigator.pushNamed(context, RoutesName.otpVerification),
             ),
             const Gap(32)
           ],

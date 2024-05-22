@@ -17,12 +17,7 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-  final _pages = [
-    const HomeView(),
-    const CartView(),
-    const ChatView(),
-    const ProfilView()
-  ];
+  final _pages = [HomeView(), CartView(), const ChatView(), ProfilView()];
   int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -56,9 +51,8 @@ class _MainViewState extends State<MainView> {
           showUnselectedLabels: false,
           iconSize: getSize(24),
           selectedItemColor: Pallete.orangePrimary,
-          selectedLabelStyle: TextStyles.bodySmallMedium.copyWith(
-              fontSize: getFontSize(FontSizes.small)
-          ),
+          selectedLabelStyle: TextStyles.bodySmallMedium
+              .copyWith(fontSize: getFontSize(FontSizes.small)),
           unselectedItemColor: Pallete.neutral50,
           items: const [
             BottomNavigationBarItem(

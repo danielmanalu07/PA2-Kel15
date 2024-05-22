@@ -26,7 +26,6 @@ class SearchView extends StatelessWidget {
             children: [
               const Gap(16),
               DefaultField(
-                controller: searchController,
                 hintText: "Search Food",
                 prefixIcon: Icons.search,
                 suffixIcon: Icons.filter,
@@ -51,8 +50,9 @@ class SearchView extends StatelessWidget {
                                   spreadRadius: 0,
                                 )
                               ],
-                              color:
-                                  key == 0 ? Pallete.orangePrimary : Colors.white,
+                              color: key == 0
+                                  ? Pallete.orangePrimary
+                                  : Colors.white,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8)),
                             ),
@@ -80,12 +80,14 @@ class SearchView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Recent searches',
-                        style: TextStyles.bodyLargeSemiBold
-                            .copyWith(color: Pallete.neutral100, fontSize: getFontSize(FontSizes.large))),
+                        style: TextStyles.bodyLargeSemiBold.copyWith(
+                            color: Pallete.neutral100,
+                            fontSize: getFontSize(FontSizes.large))),
                     Text('Delete',
                         textAlign: TextAlign.center,
-                        style: TextStyles.bodyMediumMedium
-                            .copyWith(color: Pallete.orangePrimary, fontSize: getFontSize(FontSizes.medium))),
+                        style: TextStyles.bodyMediumMedium.copyWith(
+                            color: Pallete.orangePrimary,
+                            fontSize: getFontSize(FontSizes.medium))),
                   ],
                 ),
               ),
@@ -100,69 +102,96 @@ class SearchView extends StatelessWidget {
               ),
               const Gap(16),
               Text('My recent orders',
-                  style: TextStyles.bodyLargeSemiBold
-                      .copyWith(color: Pallete.neutral100, fontSize: getFontSize(FontSizes.large))),
-             Column(
-               children: List.generate(4, (index) =>  Padding(
-                 padding: EdgeInsets.only(top: getHeight(16)),
-                 child: SizedBox(
-                   height: getHeight(68),
-                   child: Row(
-                     children: [
-                       Container(
-                         width: getWidth(70),
-                         height: getHeight(65),
-                         decoration: BoxDecoration(
-                             borderRadius: BorderRadius.circular(getSize(8)),
-                             image: const DecorationImage(
-                                 image: AssetImage(AssetsConstants.ordinaryBurger),
-                                 fit: BoxFit.fill)),
-                       ),
-                       const Gap(8),
-                       Column(
-                         crossAxisAlignment: CrossAxisAlignment.start,
-                         mainAxisAlignment: MainAxisAlignment.center,
-                         children: [
-                           Text('Ordinary Burgers',
-                               style: TextStyles.bodyLargeSemiBold
-                                   .copyWith(color: Pallete.neutral100, fontSize: getFontSize(FontSizes.large))),
-                           const Gap(4),
-                           Text('Burger Restaurant',
-                               style: TextStyles.bodySmallRegular
-                                   .copyWith(color: const Color(0xFF878787), fontSize: getFontSize(FontSizes.small))),
-                           const Gap(8),
-                           Row(
-                             children: [
-                               Row(
-                                 children: [
-                                   Icon(Icons.star, color: Pallete.orangePrimary, size: getSize(16),),
-                                   const Gap(4),
-                                   Text("4.9", style: TextStyles.bodySmallMedium.copyWith(
-                                       color: Pallete.neutral100,
-                                       fontSize: getFontSize(FontSizes.small)
-                                   ),)
-                                 ],
-                               ),
-                               const Gap(8),
-                               Row(
-                                 children: [
-                                   Icon(Icons.location_on_outlined, color: Pallete.orangePrimary, size: getSize(16),),
-                                   const Gap(4),
-                                   Text("190m", style: TextStyles.bodySmallMedium.copyWith(
-                                       color: Pallete.neutral100,
-                                       fontSize: getFontSize(FontSizes.small)
-                                   ),)
-                                 ],
-                               )
-                             ],
-                           ),
-                         ],
-                       )
-                     ],
-                   ),
-                 ),
-               )),
-             )
+                  style: TextStyles.bodyLargeSemiBold.copyWith(
+                      color: Pallete.neutral100,
+                      fontSize: getFontSize(FontSizes.large))),
+              Column(
+                children: List.generate(
+                    4,
+                    (index) => Padding(
+                          padding: EdgeInsets.only(top: getHeight(16)),
+                          child: SizedBox(
+                            height: getHeight(68),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: getWidth(70),
+                                  height: getHeight(65),
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.circular(getSize(8)),
+                                      image: const DecorationImage(
+                                          image: AssetImage(
+                                              AssetsConstants.ordinaryBurger),
+                                          fit: BoxFit.fill)),
+                                ),
+                                const Gap(8),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Ordinary Burgers',
+                                        style: TextStyles.bodyLargeSemiBold
+                                            .copyWith(
+                                                color: Pallete.neutral100,
+                                                fontSize: getFontSize(
+                                                    FontSizes.large))),
+                                    const Gap(4),
+                                    Text('Burger Restaurant',
+                                        style: TextStyles.bodySmallRegular
+                                            .copyWith(
+                                                color: const Color(0xFF878787),
+                                                fontSize: getFontSize(
+                                                    FontSizes.small))),
+                                    const Gap(8),
+                                    Row(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.star,
+                                              color: Pallete.orangePrimary,
+                                              size: getSize(16),
+                                            ),
+                                            const Gap(4),
+                                            Text(
+                                              "4.9",
+                                              style: TextStyles.bodySmallMedium
+                                                  .copyWith(
+                                                      color: Pallete.neutral100,
+                                                      fontSize: getFontSize(
+                                                          FontSizes.small)),
+                                            )
+                                          ],
+                                        ),
+                                        const Gap(8),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.location_on_outlined,
+                                              color: Pallete.orangePrimary,
+                                              size: getSize(16),
+                                            ),
+                                            const Gap(4),
+                                            Text(
+                                              "190m",
+                                              style: TextStyles.bodySmallMedium
+                                                  .copyWith(
+                                                      color: Pallete.neutral100,
+                                                      fontSize: getFontSize(
+                                                          FontSizes.small)),
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        )),
+              )
             ],
           ),
         ),
