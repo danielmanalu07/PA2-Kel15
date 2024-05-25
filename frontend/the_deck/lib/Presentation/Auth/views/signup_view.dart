@@ -194,6 +194,7 @@ import 'package:the_deck/Core/app_colors.dart';
 import 'package:the_deck/Core/font_size.dart';
 import 'package:the_deck/Core/response_conf.dart';
 import 'package:the_deck/Core/text_styles.dart';
+import 'package:the_deck/Presentation/Auth/screens/defaultPw_field.dart';
 import 'package:the_deck/Presentation/Auth/screens/default_button.dart';
 import 'package:the_deck/Presentation/Auth/screens/default_field.dart';
 import 'package:flutter/gestures.dart';
@@ -275,7 +276,7 @@ class _SignUpViewState extends State<SignUpView> {
                   controller: _usernameController,
                 ),
                 const Gap(14),
-                DefaultField(
+                DefaultFieldPW(
                   hintText: "Password",
                   labelText: "Password",
                   isPasswordField: true,

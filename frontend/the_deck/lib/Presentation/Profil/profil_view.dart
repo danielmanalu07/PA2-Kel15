@@ -58,7 +58,7 @@ class _ProfilViewState extends State<ProfilView> {
                   children: [
                     CircleAvatar(
                       backgroundImage: NetworkImage(
-                          'http://192.168.217.64:8080/customer/image/${customer.image}'),
+                          'http://172.27.1.173:8080/customer/image/${customer.image}'),
                       radius: getSize(50),
                     ),
                     Positioned(

@@ -23,7 +23,7 @@ class Customer {
     return Customer(
       fullname: json['fullname']?? '',
       username: json['username'],
-      email: json['email'],
+      email: json['email'] ?? '',
       phone: json['phone'],
       address: json['address'],
       gender: json['gender'],

@@ -62,7 +62,7 @@ class _CartViewState extends State<CartView> {
                               productId: product.id,
                               productName: product.name,
                               productImage:
-                                  "http://192.168.30.215:8080/product/image/${product.image}",
+                                  "http://172.27.1.173:8080/product/image/${product.image}",
                               productPrice: product.price,
                             );
                           }).toList(),

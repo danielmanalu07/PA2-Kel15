@@ -36,7 +36,7 @@ func main() {
 	routes.RouteTable(app, tableController)
 	routes.RouteCustomer(app, customerController)
 
-	err := app.Listen(":8080")
+	err := app.Listen("172.27.1.173:8080")
 
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)

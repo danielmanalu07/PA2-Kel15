@@ -68,8 +68,9 @@ class _HomeViewState extends State<HomeView> {
                             children: [
                               Row(
                                 children: [
+                                  // Replace "Your Location" with customer's name
                                   Text(
-                                    "Your Location",
+                                    "Customer Name", // Replace this with the actual customer name variable
                                     style: TextStyles.bodyMediumRegular
                                         .copyWith(
                                             color: Colors.white,
@@ -94,7 +95,7 @@ class _HomeViewState extends State<HomeView> {
                                   ),
                                   const Gap(8),
                                   Text(
-                                    "New York City",
+                                    "New York City", // You might want to replace this with dynamic location if needed
                                     style: TextStyles.bodyMediumSemiBold
                                         .copyWith(
                                             color: Colors.white,
@@ -191,11 +192,19 @@ class _HomeViewState extends State<HomeView> {
                                 //     arguments: category.id.toString()),
                                 child: Container(
                                   margin: EdgeInsets.only(right: getSize(8)),
-                                  width: getSize(65),
-                                  height: getSize(65),
+                                  width: getSize(80), // Increased width
+                                  height: getSize(100), // Increased height
                                   padding: const EdgeInsets.all(8),
-                                  decoration: ShapeDecoration(
-                                    shadows: const [
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.orange,
+                                        Colors.deepOrange,
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    boxShadow: const [
                                       BoxShadow(
                                         color: Color(0x0A111111),
                                         blurRadius: 24,
@@ -203,18 +212,25 @@ class _HomeViewState extends State<HomeView> {
                                         spreadRadius: 0,
                                       )
                                     ],
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
+                                    borderRadius: BorderRadius.circular(16), // Increased border radius
                                   ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Gap(4),
+                                      Icon(
+                                        Icons.fastfood, // Replace with actual category icon if available
+                                        color: Colors.white,
+                                        size: getSize(40),
+                                      ),
+                                      const Gap(8),
                                       Text(
                                         category.name,
-                                        style: TextStyle(color: Colors.black),
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: getFontSize(FontSizes.medium),
+                                        ),
+                                        textAlign: TextAlign.center,
                                       ),
                                     ],
                                   ),
@@ -252,7 +268,7 @@ class _HomeViewState extends State<HomeView> {
                                 id: product.id,
                                 name: product.name,
                                 image:
-                                    "http://192.168.217.64:8080/product/image/${product.image}",
+                                    "http://172.27.1.173:8080/product/image/${product.image}",
                                 price: product.price,
                               );
                             },

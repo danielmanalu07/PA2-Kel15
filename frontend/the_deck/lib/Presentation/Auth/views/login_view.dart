@@ -5,6 +5,7 @@ import 'package:the_deck/Core/Routes/routes_name.dart';
 import 'package:the_deck/Core/app_colors.dart';
 import 'package:the_deck/Core/response_conf.dart';
 import 'package:the_deck/Core/text_styles.dart';
+import 'package:the_deck/Presentation/Auth/screens/defaultPw_field.dart';
 import 'package:the_deck/Presentation/Auth/screens/default_button.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +22,12 @@ class LoginView extends StatelessWidget {
         Get.put(RegisterController());
 
     void _login() async {
-      await _customerControlller.loginUser(
-          _emailController.text, _passwordController.text);
+      try {
+        await _customerControlller.loginUser(
+            _emailController.text, _passwordController.text);
+      } catch (error) {
+        Get.snackbar('Error ', 'Email dan password salah');
+      }
     }
 
     MathUtils.init(context);
@@ -53,7 +58,7 @@ class LoginView extends StatelessWidget {
             labelText: "Email",
           ),
           const Gap(14),
-          DefaultField(
+          DefaultFieldPW(
             hintText: "Password",
             labelText: "Password",
             controller: _passwordController,
