@@ -39,6 +39,7 @@ class Routes {
             builder: (context) => const ResetPasswordView());
       case RoutesName.main:
         return MaterialPageRoute(builder: (context) => const MainView());
+        
       case RoutesName.notification:
         return MaterialPageRoute(
             builder: (context) => const NotificationView());

@@ -45,3 +45,11 @@ func SetUpServiceCustomer() *controllers.CustomerController {
 
 	return customerController
 }
+
+func SetUpServiceRequestTable() *controllers.RequestTableController {
+	requestTableRepository := repository.NewRequestTableRepository()
+	requestTableService := service.NewRequestTableService(requestTableRepository)
+	requestTableController := controllers.NewRequestTableController(requestTableService)
+
+	return requestTableController
+}

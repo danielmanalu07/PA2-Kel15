@@ -62,7 +62,7 @@ class _AboutMenuViewState extends State<AboutMenuView> {
                       decoration: ShapeDecoration(
                         image: DecorationImage(
                           image: NetworkImage(
-                              "http://192.168.30.215:8080/product/image/${product.image}"),
+                              "http://192.168.217.64:8080/product/image/${product.image}"),
                           fit: BoxFit.fill,
                         ),
                         shape: RoundedRectangleBorder(

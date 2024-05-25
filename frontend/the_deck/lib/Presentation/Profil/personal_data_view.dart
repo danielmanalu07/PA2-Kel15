@@ -53,7 +53,7 @@ class _PersonalDataViewState extends State<PersonalDataView> {
                 children: [
                   CircleAvatar(
                     backgroundImage: NetworkImage(
-                        'http://192.168.30.215:8080/customer/image/${customer.image}'),
+                        'http://192.168.217.64:8080/customer/image/${customer.image}'),
                     radius: getSize(50),
                   ),
                   Positioned(
@@ -77,7 +77,7 @@ class _PersonalDataViewState extends State<PersonalDataView> {
               const Gap(24),
               Column(
                 children: [
-                  ReadOnlyField(labelText: "Full Name", value: customer.name),
+                  ReadOnlyField(labelText: "Full Name", value: customer.fullname),
                   const Gap(12),
                   ReadOnlyField(
                       labelText: "Date of birth", value: customer.dateOfBirth),

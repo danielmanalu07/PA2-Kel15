@@ -215,7 +215,7 @@ class _SignUpViewState extends State<SignUpView> {
   final _formKey = GlobalKey<FormState>();
 
   // Controllers for the text fields
-  final TextEditingController _NameController = TextEditingController();
+  final TextEditingController _fullnameController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -258,9 +258,9 @@ class _SignUpViewState extends State<SignUpView> {
                 ),
                 const Gap(12),
                 DefaultField(
-                  hintText: " Name",
+                  hintText: " Full Name",
                   labelText: " Name",
-                  controller: _NameController,
+                  controller: _fullnameController,
                 ),
                 const Gap(14),
                 DefaultField(
@@ -294,10 +294,33 @@ class _SignUpViewState extends State<SignUpView> {
                   controller: _addressController,
                 ),
                 const Gap(14),
-                DefaultField(
-                  hintText: "Gender",
-                  labelText: "Gender",
-                  controller: _genderController,
+                const Gap(14),
+                Text(
+                  "Gender",
+                  style: TextStyles.bodyMediumMedium.copyWith(
+                    color: Pallete.neutral100,
+                    fontSize: getFontSize(14),
+                  ),
+                ),
+                const Gap(8),
+                // Ganti dengan DropdownButtonFormField
+                DropdownButtonFormField(
+                  value: _genderController.text.isNotEmpty ? _genderController.text : null,
+                  items: [
+                    DropdownMenuItem(
+                      value: 'Laki-laki',
+                      child: Text('Laki-laki'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Perempuan',
+                      child: Text('Perempuan'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _genderController.text = value.toString();
+                    });
+                  },
                 ),
                 const Gap(14),
                 GestureDetector(
@@ -402,7 +425,7 @@ class _SignUpViewState extends State<SignUpView> {
   void _register() {
     if (_formKey.currentState!.validate()) {
       final registerModel = RegisterModel(
-        name: _NameController.text,
+        fullname: _fullnameController.text,
         username: _usernameController.text,
         email: _emailController.text,
         password: _passwordController.text,

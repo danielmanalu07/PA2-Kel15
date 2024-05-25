@@ -10,7 +10,7 @@ class ProductController extends GetxController {
 
   Future<List<Product>> getProductList() async {
     final response =
-        await http.get(Uri.parse('http://192.168.30.215:8080/product'));
+        await http.get(Uri.parse('http://192.168.217.64:8080/product'));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['message'];
       return data.map((json) => Product.fromJson(json)).toList();
@@ -21,7 +21,7 @@ class ProductController extends GetxController {
 
   Future<void> getProductById(int id) async {
     final response =
-        await http.get(Uri.parse('http://192.168.30.215:8080/product/${id}'));
+        await http.get(Uri.parse('http://192.168.217.64:8080/product/${id}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

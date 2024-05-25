@@ -19,11 +19,11 @@ class RegisterController extends GetxController {
   var cartItems = <CartItem>[].obs;
 
   Future<void> registerUser(RegisterModel registerModel) async {
-    final url = Uri.parse('http://192.168.30.215:8080/customer/register');
+    final url = Uri.parse('http://192.168.217.64:8080/customer/register');
 
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({'Content-Type': 'multipart/form-data'});
-    request.fields['name'] = registerModel.name;
+    request.fields['fullname'] = registerModel.fullname;
     request.fields['username'] = registerModel.username;
     request.fields['email'] = registerModel.email;
     request.fields['password'] = registerModel.password;
@@ -63,7 +63,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> loginUser(String email, String password) async {
-    final url = Uri.parse('http://192.168.30.215:8080/customer/login');
+    final url = Uri.parse('http://192.168.217.64:8080/customer/login');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -98,7 +98,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> getUserProfile() async {
-    final url = Uri.parse('http://192.168.30.215:8080/customer/profile');
+    final url = Uri.parse('http://192.168.217.64:8080/customer/profile');
     final token = box.read('token');
     final response = await http.get(
       url,
@@ -123,7 +123,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> logout() async {
-    final url = Uri.parse('http://192.168.30.215:8080/customer/logout');
+    final url = Uri.parse('http://192.168.217.64:8080/customer/logout');
     final token = box.read('token');
     final response = await http.post(
       url,
@@ -153,7 +153,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> addToCart(int productId) async {
-    final url = Uri.parse('http://192.168.30.215:8080/cart/add');
+    final url = Uri.parse('http://192.168.217.64:8080/cart/add');
     final token = box.read('token');
     final response = await http.post(
       url,
@@ -184,7 +184,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> getMyCart() async {
-    final url = Uri.parse('http://192.168.30.215:8080/cart/myCart');
+    final url = Uri.parse('http://192.168.217.64:8080/cart/myCart');
     final token = box.read('token');
     final response = await http.get(
       url,

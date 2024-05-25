@@ -1,5 +1,5 @@
 class RegisterModel {
-  final String name;
+  final String fullname;
   final String username;
   final String email;
   final String password;
@@ -10,7 +10,7 @@ class RegisterModel {
   final String image;
 
   RegisterModel({
-    required this.name,
+    required this.fullname,
     required this.username,
     required this.email,
     required this.password,
@@ -23,7 +23,7 @@ class RegisterModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
+      'fullname': fullname,
       'username': username,
       'email': email,
       'password': password,

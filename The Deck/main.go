@@ -27,7 +27,9 @@ func main() {
 	productController := settings.SetUpServiceProduct()
 	tableController := settings.SetUpServiceTable()
 	customerController := settings.SetUpServiceCustomer()
+	RequesttableController := settings.SetUpServiceRequestTable()
 
+	routes.RouteRequestTable(app, RequesttableController)
 	routes.RouteAdmin(app, adminController)
 	routes.RouteCategory(app, categoryController)
 	routes.RouteProduct(app, productController)

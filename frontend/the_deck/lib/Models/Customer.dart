@@ -1,5 +1,5 @@
 class Customer {
-  final String name;
+  final String fullname;
   final String username;
   final String email;
   final String phone;
@@ -9,7 +9,7 @@ class Customer {
   final String image;
 
   Customer({
-    required this.name,
+    required this.fullname,
     required this.username,
     required this.email,
     required this.phone,
@@ -21,7 +21,7 @@ class Customer {
 
   factory Customer.fromJson(Map<String, dynamic> json) {
     return Customer(
-      name: json['name'],
+      fullname: json['fullname']?? '',
       username: json['username'],
       email: json['email'],
       phone: json['phone'],

@@ -12,6 +12,7 @@ import 'package:the_deck/Models/Product.dart';
 import 'package:the_deck/Presentation/Base/food_item.dart';
 import 'package:the_deck/Presentation/Models/category_model.dart';
 import 'package:gap/gap.dart';
+import 'package:the_deck/Presentation/Product/views/Product_list.dart';
 
 class HomeView extends StatefulWidget {
   HomeView({Key? key}) : super(key: key);
@@ -183,7 +184,12 @@ class _HomeViewState extends State<HomeView> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: categoryController.categories
-                            .map((category) => Container(
+                            .map(
+                              (category) => GestureDetector(
+                                // onTap: () => Navigator.pushNamed(
+                                //     context, RoutesName.category,
+                                //     arguments: category.id.toString()),
+                                child: Container(
                                   margin: EdgeInsets.only(right: getSize(8)),
                                   width: getSize(65),
                                   height: getSize(65),
@@ -199,7 +205,8 @@ class _HomeViewState extends State<HomeView> {
                                     ],
                                     color: Colors.white,
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8)),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
                                   ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -211,7 +218,9 @@ class _HomeViewState extends State<HomeView> {
                                       ),
                                     ],
                                   ),
-                                ))
+                                ),
+                              ),
+                            )
                             .toList(),
                       ),
                     ),
@@ -243,7 +252,7 @@ class _HomeViewState extends State<HomeView> {
                                 id: product.id,
                                 name: product.name,
                                 image:
-                                    "http://192.168.30.215:8080/product/image/${product.image}",
+                                    "http://192.168.217.64:8080/product/image/${product.image}",
                                 price: product.price,
                               );
                             },

@@ -44,6 +44,16 @@ func RouteTable(App *fiber.App, tableController *controllers.TableController) {
 	table.Delete("/delete/:id", tableController.TableDelete)
 }
 
+func RouteRequestTable(App *fiber.App, requestTableController *controllers.RequestTableController) {
+	requestTable := App.Group("/request-table")
+	requestTable.Post("/create", requestTableController.CreateRequestTable)
+	requestTable.Get("/", requestTableController.GetAllRequestTables)
+	requestTable.Get("/:id", requestTableController.GetRequestTableById)
+	requestTable.Put("/edit/:id", requestTableController.UpdateRequestTable)
+	requestTable.Delete("/delete/:id", requestTableController.DeleteRequestTable)
+}
+
+
 func RouteCustomer(App *fiber.App, customerController *controllers.CustomerController) {
 	customer := App.Group("/customer")
 	customer.Post("/register", customerController.CustomerRegister)

@@ -58,7 +58,7 @@ class _ProfilViewState extends State<ProfilView> {
                   children: [
                     CircleAvatar(
                       backgroundImage: NetworkImage(
-                          'http://192.168.30.215:8080/customer/image/${customer.image}'),
+                          'http://192.168.217.64:8080/customer/image/${customer.image}'),
                       radius: getSize(50),
                     ),
                     Positioned(
@@ -81,7 +81,7 @@ class _ProfilViewState extends State<ProfilView> {
                 ),
                 const Gap(16),
                 Text(
-                  customer.name,
+                  customer.fullname,
                   style: TextStyles.bodyLargeSemiBold.copyWith(
                       color: Pallete.neutral100,
                       fontSize: getFontSize(FontSizes.large)),
