@@ -15,10 +15,40 @@ import (
 
 type OrderService interface {
 	CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate) (*response.OrderResponse, error)
+	GetAllOrder() ([]response.OrderResponse, error)
 }
 
 type orderService struct {
 	orderRepository repository.OrderRepository
+}
+
+func (o *orderService) GetAllOrder() ([]response.OrderResponse, error) {
+	orders, err := o.orderRepository.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var orderResponses []response.OrderResponse
+	for _, order := range orders {
+		orderResponse := response.OrderResponse{
+			Id:             order.Id,
+			Code:           order.Code,
+			CustomerID:     order.CustomerID,
+			Products:       order.Products,
+			Total:          order.Total,
+			Note:           order.Note,
+			PaymentMethod:  order.PaymentMethod,
+			TableId:        order.TableId,
+			PickUpType:     order.PickUpType,
+			ProofOfPayment: order.ProofOfPayment,
+			Status:         order.Status,
+			CreatedAt:      order.CreatedAt,
+			UpdatedAt:      order.UpdatedAt,
+		}
+		orderResponses = append(orderResponses, orderResponse)
+	}
+
+	return orderResponses, nil
 }
 
 func GenerateCodeOrder() string {
@@ -33,28 +63,23 @@ func GenerateCodeOrder() string {
 }
 
 func (o *orderService) CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate) (*response.OrderResponse, error) {
-	// Validate PaymentMethod
 	if input.PaymentMethod != "Cash" && input.PaymentMethod != "QRIS" {
 		return nil, utils.MessageJSON(ctx, 400, "error", "Invalid Payment Method")
 	}
 
-	// Validate PickUpType and TableId
 	if input.PickUpType == "Dine in" && input.TableId == 0 {
 		return nil, utils.MessageJSON(ctx, 400, "error", "Table is required for Dine in")
 	} else if input.PickUpType != "Take Away" && input.PickUpType != "Dine in" {
 		return nil, utils.MessageJSON(ctx, 400, "error", "Invalid Pick Up Type")
 	}
 
-	// Get customer from context
 	customer := ctx.Locals("customer").(entity.Customer)
 
-	// Fetch cart items for the customer
 	var cartItems []entity.Cart
 	if err := database.DB.Where("customer_id = ?", customer.Id).Preload("Product").Find(&cartItems).Error; err != nil {
 		return nil, utils.MessageJSON(ctx, 500, "error", "Could not fetch cart items")
 	}
 
-	// Create Order
 	order := entity.Order{
 		Code:           GenerateCodeOrder(),
 		CustomerID:     customer.Id,
@@ -67,13 +92,11 @@ func (o *orderService) CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate)
 		ProofOfPayment: "",
 	}
 
-	// Save the order
 	savedOrder, err := o.orderRepository.Create(order)
 	if err != nil {
 		return nil, utils.MessageJSON(ctx, 500, "error", "Could not create order")
 	}
 
-	// Create order products
 	for _, productID := range input.ProductIDs {
 		orderProduct := entity.OrderProduct{
 			OrderID:   savedOrder.Id,
@@ -84,7 +107,6 @@ func (o *orderService) CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate)
 		}
 	}
 
-	// Retrieve the order with products
 	if err := database.DB.Preload("Products").First(&savedOrder, savedOrder.Id).Error; err != nil {
 		return nil, utils.MessageJSON(ctx, 500, "error", "Could not retrieve created order")
 	}

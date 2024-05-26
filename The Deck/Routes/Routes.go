@@ -69,6 +69,7 @@ func RouteCart(App *fiber.App, cartController *controllers.CartController) {
 
 func RouteOrder(App *fiber.App, orderController *controllers.OrderController) {
 	order := App.Group("/order")
+	order.Get("/", orderController.GetAllOrder)
 	order.Use(middleware.CheckCustomer())
 	order.Post("/create", orderController.CustomerCreateOrder)
 }
