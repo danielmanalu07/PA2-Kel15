@@ -187,9 +187,9 @@ class _HomeViewState extends State<HomeView> {
                         children: categoryController.categories
                             .map(
                               (category) => GestureDetector(
-                                // onTap: () => Navigator.pushNamed(
-                                //     context, RoutesName.category,
-                                //     arguments: category.id.toString()),
+                                onTap: () => Get.to(() => ProductListScreen(
+                                      categoryId: category.id,
+                                    )),
                                 child: Container(
                                   margin: EdgeInsets.only(right: getSize(8)),
                                   width: getSize(80), // Increased width
@@ -212,13 +212,15 @@ class _HomeViewState extends State<HomeView> {
                                         spreadRadius: 0,
                                       )
                                     ],
-                                    borderRadius: BorderRadius.circular(16), // Increased border radius
+                                    borderRadius: BorderRadius.circular(
+                                        16), // Increased border radius
                                   ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Icon(
-                                        Icons.fastfood, // Replace with actual category icon if available
+                                        Icons
+                                            .fastfood, // Replace with actual category icon if available
                                         color: Colors.white,
                                         size: getSize(40),
                                       ),
@@ -228,7 +230,8 @@ class _HomeViewState extends State<HomeView> {
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: getFontSize(FontSizes.medium),
+                                          fontSize:
+                                              getFontSize(FontSizes.medium),
                                         ),
                                         textAlign: TextAlign.center,
                                       ),
@@ -268,7 +271,7 @@ class _HomeViewState extends State<HomeView> {
                                 id: product.id,
                                 name: product.name,
                                 image:
-                                    "http://172.27.1.173:8080/product/image/${product.image}",
+                                    "http://192.168.30.215:8080/product/image/${product.image}",
                                 price: product.price,
                               );
                             },

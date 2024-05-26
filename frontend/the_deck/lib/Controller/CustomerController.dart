@@ -15,15 +15,14 @@ class RegisterController extends GetxController {
   final token = ''.obs;
   final box = GetStorage();
   final userProfile = Rxn<Customer>();
-  // final cartItems = Rxn<CartItem>();
   var cartItems = <CartItem>[].obs;
 
   Future<void> registerUser(RegisterModel registerModel) async {
-    final url = Uri.parse('http://172.27.1.173:8080/customer/register');
+    final url = Uri.parse('http://192.168.30.215:8080/customer/register');
 
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({'Content-Type': 'multipart/form-data'});
-    request.fields['fullname'] = registerModel.fullname;
+    request.fields['name'] = registerModel.name;
     request.fields['username'] = registerModel.username;
     request.fields['email'] = registerModel.email;
     request.fields['password'] = registerModel.password;
@@ -58,12 +57,12 @@ class RegisterController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-      print('Registration failed: ${responseBody}');
+      print('Registration failed: $responseBody');
     }
   }
 
   Future<void> loginUser(String email, String password) async {
-    final url = Uri.parse('http://172.27.1.173:8080/customer/login');
+    final url = Uri.parse('http://192.168.30.215:8080/customer/login');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -84,7 +83,6 @@ class RegisterController extends GetxController {
         colorText: Colors.white,
       );
       print('Login successful');
-    
     } else {
       final responseBody = jsonDecode(response.body);
       Get.snackbar(
@@ -94,12 +92,12 @@ class RegisterController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-      print('Login failed: ${responseBody}');
+      print('Login failed: $responseBody');
     }
   }
 
   Future<void> getUserProfile() async {
-    final url = Uri.parse('http://172.27.1.173:8080/customer/profile');
+    final url = Uri.parse('http://192.168.30.215:8080/customer/profile');
     final token = box.read('token');
     final response = await http.get(
       url,
@@ -124,7 +122,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> logout() async {
-    final url = Uri.parse('http://172.27.1.173:8080/customer/logout');
+    final url = Uri.parse('http://192.168.30.215:8080/customer/logout');
     final token = box.read('token');
     final response = await http.post(
       url,
@@ -153,13 +151,16 @@ class RegisterController extends GetxController {
     }
   }
 
-  Future<void> addToCart(int productId) async {
-    final url = Uri.parse('http://172.27.1.173:8080/cart/add');
+  Future<void> addToCart(int productId, int quantity) async {
+    final url = Uri.parse('http://192.168.30.215:8080/cart/add');
     final token = box.read('token');
     final response = await http.post(
       url,
       headers: {'Cookie': 'jwt=$token'},
-      body: {'product_id': productId.toString()},
+      body: {
+        'product_id': productId.toString(),
+        'quantity': quantity.toString()
+      },
     );
 
     if (response.statusCode == 200) {
@@ -185,7 +186,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> getMyCart() async {
-    final url = Uri.parse('http://172.27.1.173:8080/cart/myCart');
+    final url = Uri.parse('http://192.168.30.215:8080/cart/myCart');
     final token = box.read('token');
     final response = await http.get(
       url,
@@ -200,6 +201,36 @@ class RegisterController extends GetxController {
       cartItems.assignAll(items);
     } else {
       print('Failed to fetch cart items');
+    }
+  }
+
+  Future<void> deleteCartItem(int cartItemId) async {
+    final url = Uri.parse('http://192.168.30.215:8080/cart/delete/$cartItemId');
+    final token = box.read('token');
+    final response = await http.delete(
+      url,
+      headers: {'Cookie': 'jwt=$token'},
+    );
+
+    if (response.statusCode == 200) {
+      Get.snackbar(
+        'Success',
+        'Item deleted from cart',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+      cartItems.removeWhere((item) => item.id == cartItemId);
+      print('Item deleted successfully');
+    } else {
+      Get.snackbar(
+        'Error',
+        'Failed to delete item from cart',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      print('Failed to delete item: ${response.body}');
     }
   }
 }

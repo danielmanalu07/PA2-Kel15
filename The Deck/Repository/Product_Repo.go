@@ -14,9 +14,20 @@ type ProductRepository interface {
 	GetById(id uint) (*entity.Product, error)
 	Update(product *entity.Product) (*entity.Product, error)
 	Delete(id uint) error
+	GetByCategory(categoryId uint) ([]entity.Product, error)
 }
 
 type productRepository struct{}
+
+func (p *productRepository) GetByCategory(categoryId uint) ([]entity.Product, error) {
+	var product []entity.Product
+
+	if err := database.DB.Where("category_id = ?", categoryId).Find(&product).Error; err != nil {
+		return nil, err
+	}
+
+	return product, nil
+}
 
 const PathImageProduct = "./Public/Product"
 

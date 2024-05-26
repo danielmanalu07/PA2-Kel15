@@ -9,7 +9,7 @@ import (
 
 func Migration() {
 	err := database.DB.AutoMigrate(
-		&entity.Admin{}, &entity.Category{}, &entity.Product{}, &entity.Table{}, &entity.Customer{},&entity.RequestTable{})
+		&entity.Admin{}, &entity.Category{}, &entity.Product{}, &entity.Table{}, &entity.Customer{}, &entity.Cart{}, &entity.Order{}, &entity.OrderProduct{})
 
 	if err != nil {
 		log.Println(err)

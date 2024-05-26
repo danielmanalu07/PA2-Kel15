@@ -19,7 +19,7 @@ class CategoryController extends GetxController {
     try {
       isLoading(true);
       final response =
-          await http.get(Uri.parse('http://172.27.1.173:8080/category'));
+          await http.get(Uri.parse('http://192.168.30.215:8080/category'));
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body)['message'];
         categories.value = data.map((json) => Category.fromJson(json)).toList();

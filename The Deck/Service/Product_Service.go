@@ -22,10 +22,34 @@ type ProductService interface {
 	ProductGetById(id uint) (*response.ProductResponse, error)
 	ProductUpdate(ctx *fiber.Ctx, id uint, input dto.RequestProductUpdate) (*response.ProductResponse, error)
 	ProductDelete(id uint) error
+	ProductGetByCategory(categoryId uint) ([]response.ProductResponse, error)
 }
 
 type productService struct {
 	productService repository.ProductRepository
+}
+
+func (p *productService) ProductGetByCategory(categoryId uint) ([]response.ProductResponse, error) {
+	prod, err := p.productService.GetByCategory(categoryId)
+	if err != nil {
+		return nil, err
+	}
+
+	var responses []response.ProductResponse
+	for _, products := range prod {
+		response := response.ProductResponse{
+			Id:          products.Id,
+			Name:        products.Name,
+			Description: products.Description,
+			Price:       products.Price,
+			Image:       products.Image,
+			CategoryID:  products.CategoryID,
+		}
+
+		responses = append(responses, response)
+	}
+
+	return responses, nil
 }
 
 func (p *productService) ProductDelete(id uint) error {

@@ -14,6 +14,7 @@ import 'package:gap/gap.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final TextEditingController _emailController = TextEditingController();
@@ -26,7 +27,7 @@ class LoginView extends StatelessWidget {
         await _customerControlller.loginUser(
             _emailController.text, _passwordController.text);
       } catch (error) {
-        Get.snackbar('Error ', 'Email dan password salah');
+        Get.snackbar('Error', 'Email and password are incorrect');
       }
     }
 

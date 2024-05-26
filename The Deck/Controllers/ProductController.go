@@ -107,3 +107,19 @@ func (p *ProductController) ProductDelete(ctx *fiber.Ctx) error {
 		"message": "Deleted Product Successfully",
 	})
 }
+
+func (p *ProductController) ProductGetByCategory(ctx *fiber.Ctx) error {
+	CategoryId, err := strconv.Atoi(ctx.Params("cat"))
+	if err != nil {
+		return utils.MessageJSON(ctx, 400, "Failed", err.Error())
+	}
+	product, err := p.productService.ProductGetById(uint(CategoryId))
+	if err != nil {
+		return utils.MessageJSON(ctx, 404, "Failed", err.Error())
+	}
+
+	return ctx.Status(200).JSON(fiber.Map{
+		"status":  "success",
+		"message": product,
+	})
+}

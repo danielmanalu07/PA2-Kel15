@@ -4,7 +4,7 @@ import "time"
 
 type Customer struct {
 	Id          uint      `json:"id"`
-	FullName    string    `json:"full_name" gorm:"type:varchar(100)" validate:"required"`
+	Name        string    `json:"name" gorm:"type:varchar(100)" validate:"required"`
 	Username    string    `json:"username" gorm:"type:varchar(100);uniqueIndex" validate:"required"`
 	Email       string    `json:"email" gorm:"type:varchar(100);unique" validate:"required,email"`
 	Password    string    `json:"password" gorm:"type:varchar(100)" validate:"required"`
@@ -13,6 +13,6 @@ type Customer struct {
 	Gender      string    `json:"gender" gorm:"type:varchar(50)" validate:"required"`
 	DateOfBirth string    `json:"date_of_birth" gorm:"type:varchar(100)" validate:"required"`
 	Image       string    `json:"image" gorm:"type:varchar(100)" validate:"required"`
-	CreatedAt   time.Time `json:"created_at" gorm:"autoCreateTime" db:"created_at"`
+	CreatedAt   time.Time `json:"created_at" gorm:"autoCreateTime" db:"created_atc"`
 	UpdatedAt   time.Time `json:"updated_at" gorm:"autoUpdateTime" db:"updated_at"`
 }

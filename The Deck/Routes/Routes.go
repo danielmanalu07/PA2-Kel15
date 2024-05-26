@@ -33,6 +33,7 @@ func RouteProduct(App *fiber.App, productController *controllers.ProductControll
 	product.Get("/:id", productController.ProductGetById)
 	product.Put("/edit/:id", productController.ProductUpdate)
 	product.Delete("/delete/:id", productController.ProductDelete)
+	product.Get("/category/:cat", productController.ProductGetByCategory)
 }
 
 func RouteTable(App *fiber.App, tableController *controllers.TableController) {
@@ -44,24 +45,30 @@ func RouteTable(App *fiber.App, tableController *controllers.TableController) {
 	table.Delete("/delete/:id", tableController.TableDelete)
 }
 
-func RouteRequestTable(App *fiber.App, requestTableController *controllers.RequestTableController) {
-	requestTable := App.Group("/request-table")
-	requestTable.Post("/create", requestTableController.CreateRequestTable)
-	requestTable.Get("/", requestTableController.GetAllRequestTables)
-	requestTable.Get("/:id", requestTableController.GetRequestTableById)
-	requestTable.Put("/edit/:id", requestTableController.UpdateRequestTable)
-	requestTable.Delete("/delete/:id", requestTableController.DeleteRequestTable)
-}
-
-
 func RouteCustomer(App *fiber.App, customerController *controllers.CustomerController) {
 	customer := App.Group("/customer")
 	customer.Post("/register", customerController.CustomerRegister)
 	customer.Post("/login", customerController.CustomerLogin)
+	customer.Static("/image", service.PathImageCustomer)
 	customer.Put("/forgot-password", customerController.CustomerForgotPassword)
 	customer.Use(middleware.CheckCustomer())
 	customer.Get("/profile", customerController.GetProfile)
 	customer.Post("/logout", customerController.CustomerLogout)
 	customer.Put("/update-profile", customerController.CustomerUpdateProfile)
 	customer.Put("/edit-password", customerController.CustomerEditPassword)
+}
+
+func RouteCart(App *fiber.App, cartController *controllers.CartController) {
+	cart := App.Group("/cart")
+	cart.Use(middleware.CheckCustomer())
+	cart.Post("/add", cartController.AddItemCart)
+	cart.Get("/myCart", cartController.GetItemMyCart)
+	cart.Delete("/delete/:id", cartController.DeleteMyCart)
+	cart.Put("/edit/:id", cartController.UpdateQuantity)
+}
+
+func RouteOrder(App *fiber.App, orderController *controllers.OrderController) {
+	order := App.Group("/order")
+	order.Use(middleware.CheckCustomer())
+	order.Post("/create", orderController.CustomerCreateOrder)
 }

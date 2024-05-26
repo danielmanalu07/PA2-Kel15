@@ -306,7 +306,9 @@ class _SignUpViewState extends State<SignUpView> {
                 const Gap(8),
                 // Ganti dengan DropdownButtonFormField
                 DropdownButtonFormField(
-                  value: _genderController.text.isNotEmpty ? _genderController.text : null,
+                  value: _genderController.text.isNotEmpty
+                      ? _genderController.text
+                      : null,
                   items: [
                     DropdownMenuItem(
                       value: 'Laki-laki',
@@ -426,7 +428,7 @@ class _SignUpViewState extends State<SignUpView> {
   void _register() {
     if (_formKey.currentState!.validate()) {
       final registerModel = RegisterModel(
-        fullname: _fullnameController.text,
+        name: _fullnameController.text,
         username: _usernameController.text,
         email: _emailController.text,
         password: _passwordController.text,

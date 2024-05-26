@@ -1,7 +1,7 @@
 package dto
 
 type RequestCustomerRegister struct {
-	FullName    string `json:"full_name" validate:"required"`
+	Name        string `json:"name" validate:"required"`
 	Username    string `json:"username" validate:"required"`
 	Email       string `json:"email" validate:"required,email"`
 	Password    string `json:"password" validate:"required"`
@@ -17,7 +17,7 @@ type RequestCustomerLogin struct {
 }
 
 type RequestCustomerUpdateProfile struct {
-	FullName    string `json:"full_name" validate:"required"`
+	Name        string `json:"name" validate:"required"`
 	Username    string `json:"username" validate:"required"`
 	Email       string `json:"email" validate:"required,email"`
 	Phone       string `json:"phone" validate:"required"`

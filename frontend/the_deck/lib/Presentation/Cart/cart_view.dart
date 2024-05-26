@@ -29,7 +29,6 @@ class _CartViewState extends State<CartView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _productFuture = _productController.getProductList();
   }
 
@@ -46,7 +45,10 @@ class _CartViewState extends State<CartView> {
             children: [
               Obx(() {
                 if (customterController.cartItems.isEmpty) {
-                  return CircularProgressIndicator();
+                  return Text("Cart Item Not Found",
+                      style: TextStyles.bodyLargeSemiBold.copyWith(
+                          color: Pallete.neutral100,
+                          fontSize: getFontSize(FontSizes.large)));
                 } else {
                   return FutureBuilder<List<Product>>(
                     future: _productFuture,
@@ -55,15 +57,15 @@ class _CartViewState extends State<CartView> {
                         final products = snapshot.data!;
                         return Column(
                           children: customterController.cartItems.map((item) {
-                            // Temukan produk berdasarkan ID produk di dalam cart
                             final product = products.firstWhere(
                                 (product) => product.id == item.productId);
                             return CardItemFood(
                               productId: product.id,
                               productName: product.name,
                               productImage:
-                                  "http://172.27.1.173:8080/product/image/${product.image}",
+                                  "http://192.168.30.215:8080/product/image/${product.image}",
                               productPrice: product.price,
+                              cartItemId: item.id,
                             );
                           }).toList(),
                         );
@@ -149,24 +151,6 @@ class _CartViewState extends State<CartView> {
                           "Free",
                           style: TextStyles.bodyMediumBold.copyWith(
                               color: Pallete.neutral100,
-                              fontSize: getFontSize(FontSizes.medium)),
-                        ),
-                      ],
-                    ),
-                    const Gap(16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Discount",
-                          style: TextStyles.bodyMediumMedium.copyWith(
-                              color: const Color(0xFF878787),
-                              fontSize: getFontSize(FontSizes.medium)),
-                        ),
-                        Text(
-                          "Rp 10,900",
-                          style: TextStyles.bodyMediumBold.copyWith(
-                              color: Pallete.orangePrimary,
                               fontSize: getFontSize(FontSizes.medium)),
                         ),
                       ],

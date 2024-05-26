@@ -57,7 +57,7 @@ func (c *customerService) CustomerForgotPassword(ctx *fiber.Ctx, input dto.Reque
 
 	response := &response.CustomerResponse{
 		Id:          result.Id,
-		FullName:    result.FullName,
+		Name:        result.Name,
 		Username:    result.Username,
 		Email:       result.Email,
 		Password:    result.Password,
@@ -97,7 +97,7 @@ func (c *customerService) CustomerEditPassword(ctx *fiber.Ctx, input dto.Request
 
 	response := &response.CustomerResponse{
 		Id:          result.Id,
-		FullName:    result.FullName,
+		Name:        result.Name,
 		Username:    result.Username,
 		Email:       result.Email,
 		Password:    result.Password,
@@ -115,8 +115,8 @@ func (c *customerService) CustomerEditPassword(ctx *fiber.Ctx, input dto.Request
 func (c *customerService) CustomerUpdate(ctx *fiber.Ctx, input dto.RequestCustomerUpdateProfile) (*response.CustomerResponse, error) {
 	customer := ctx.Locals("customer").(entity.Customer)
 
-	if input.FullName != "" {
-		customer.FullName = input.FullName
+	if input.Name != "" {
+		customer.Name = input.Name
 	}
 	if input.Username != "" {
 		customer.Username = input.Username
@@ -160,7 +160,7 @@ func (c *customerService) CustomerUpdate(ctx *fiber.Ctx, input dto.RequestCustom
 
 	response := &response.CustomerResponse{
 		Id:          save.Id,
-		FullName:    save.FullName,
+		Name:        save.Name,
 		Username:    save.Username,
 		Email:       save.Email,
 		Password:    save.Password,
@@ -193,7 +193,7 @@ func (c *customerService) GetProfile(ctx *fiber.Ctx) (*response.CustomerResponse
 
 	cst := &response.CustomerResponse{
 		Id:          data.Id,
-		FullName:    data.FullName,
+		Name:        data.Name,
 		Username:    data.Username,
 		Email:       data.Email,
 		Password:    data.Password,
@@ -234,9 +234,16 @@ func (c *customerService) CustomerLogin(ctx *fiber.Ctx, input dto.RequestCustome
 	ctx.Cookie(&cookie)
 
 	respon := &response.CustomerResponse{
-		Id:       customer.Id,
-		Email:    customer.Email,
-		Password: customer.Password,
+		Id:          customer.Id,
+		Name:        customer.Name,
+		Username:    customer.Username,
+		Email:       customer.Email,
+		Password:    customer.Password,
+		Phone:       customer.Phone,
+		Address:     customer.Address,
+		Gender:      customer.Gender,
+		DateOfBirth: customer.DateOfBirth,
+		Image:       customer.Image,
 	}
 
 	return respon, tokens, nil
@@ -262,7 +269,7 @@ func (c *customerService) CustomerRegister(ctx *fiber.Ctx, input dto.RequestCust
 	}
 
 	customer := entity.Customer{
-		FullName:    input.FullName,
+		Name:        input.Name,
 		Username:    input.Username,
 		Email:       input.Email,
 		Password:    input.Password,
@@ -280,7 +287,7 @@ func (c *customerService) CustomerRegister(ctx *fiber.Ctx, input dto.RequestCust
 
 	respon := &response.CustomerResponse{
 		Id:          register.Id,
-		FullName:    register.FullName,
+		Name:        register.Name,
 		Username:    register.Username,
 		Email:       register.Email,
 		Password:    register.Password,

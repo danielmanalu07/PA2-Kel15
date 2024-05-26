@@ -46,10 +46,18 @@ func SetUpServiceCustomer() *controllers.CustomerController {
 	return customerController
 }
 
-func SetUpServiceRequestTable() *controllers.RequestTableController {
-	requestTableRepository := repository.NewRequestTableRepository()
-	requestTableService := service.NewRequestTableService(requestTableRepository)
-	requestTableController := controllers.NewRequestTableController(requestTableService)
+func SetUpServiceCart() *controllers.CartController {
+	cartRepository := repository.NewCartRepository()
+	cartService := service.NewCartService(cartRepository)
+	cartController := controllers.NewCartController(cartService)
 
-	return requestTableController
+	return cartController
+}
+
+func SetUpServiceOrder() *controllers.OrderController {
+	orderRepository := repository.NewOrderRepository()
+	orderService := service.NewOrderService(orderRepository)
+	orderController := controllers.NewOrderController(orderService)
+
+	return orderController
 }

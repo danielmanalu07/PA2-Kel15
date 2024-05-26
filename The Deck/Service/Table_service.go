@@ -18,40 +18,43 @@ type TableService interface {
 }
 
 type tableService struct {
-	tableRepository repository.TableRepository
+	tableService repository.TableRepository
 }
 
 func (t *tableService) TableDelete(id uint) error {
-	return t.tableRepository.Delete(id)
+	return t.tableService.Delete(id)
 }
 
 func (t *tableService) TableUpdate(ctx *fiber.Ctx, id uint, input dto.RequestTableUpdate) (*response.TableResponse, error) {
-	table, err := t.tableRepository.GetById(id)
+	table, err := t.tableService.GetById(id)
 	if err != nil {
 		return nil, err
 	}
 
-	if input.Status != "" {
-		table.Status = input.Status
+	if input.Number != 0 {
+		table.Number = input.Number
 	}
 
-	updatedTable, err := t.tableRepository.Update(table)
+	if input.Capacity != 0 {
+		table.Capacity = input.Capacity
+	}
+
+	updateTbl, err := t.tableService.Update(table)
 	if err != nil {
 		return nil, err
 	}
 
 	respon := &response.TableResponse{
-		Id:       updatedTable.Id,
-		Number:   updatedTable.Number,
-		Capacity: updatedTable.Capacity,
-		Status:   updatedTable.Status,
+		Id:       updateTbl.Id,
+		Number:   updateTbl.Number,
+		Capacity: updateTbl.Capacity,
 	}
 
 	return respon, nil
 }
 
 func (t *tableService) TableGetById(id uint) (*response.TableResponse, error) {
-	table, err := t.tableRepository.GetById(id)
+	table, err := t.tableService.GetById(id)
 	if err != nil {
 		return nil, err
 	}
@@ -60,14 +63,13 @@ func (t *tableService) TableGetById(id uint) (*response.TableResponse, error) {
 		Id:       table.Id,
 		Number:   table.Number,
 		Capacity: table.Capacity,
-		Status:   table.Status,
 	}
 
 	return tbl, nil
 }
 
 func (t *tableService) TableGetAll() ([]response.TableResponse, error) {
-	tables, err := t.tableRepository.GetAll()
+	tables, err := t.tableService.GetAll()
 	if err != nil {
 		return nil, err
 	}
@@ -78,38 +80,31 @@ func (t *tableService) TableGetAll() ([]response.TableResponse, error) {
 			Id:       table.Id,
 			Number:   table.Number,
 			Capacity: table.Capacity,
-			Status:   table.Status,
 		})
 	}
 	return respon, nil
 }
 
 func (t *tableService) TableCreate(input dto.RequestTableCreate) (*response.TableResponse, error) {
-	// Set the default status to "pending" if not provided
-	status := input.Status
-	if status == "" {
-		status = "kosong"
-	}
-
 	table := entity.Table{
-		Status:   status,
+		Number:   input.Number,
+		Capacity: input.Capacity,
 	}
 
-	createdTable, err := t.tableRepository.Create(table)
+	tableCreate, err := t.tableService.Create(table)
 	if err != nil {
 		return nil, err
 	}
 
 	respon := &response.TableResponse{
-		Id:       createdTable.Id,
-		Number:   createdTable.Number,
-		Capacity: createdTable.Capacity,
-		Status:   createdTable.Status,
+		Id:       tableCreate.Id,
+		Number:   tableCreate.Number,
+		Capacity: tableCreate.Capacity,
 	}
 
 	return respon, nil
 }
 
 func NewTableService(tr repository.TableRepository) TableService {
-	return &tableService{tableRepository: tr}
+	return &tableService{tableService: tr}
 }
