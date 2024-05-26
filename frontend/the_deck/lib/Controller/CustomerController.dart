@@ -233,4 +233,21 @@ class RegisterController extends GetxController {
       print('Failed to delete item: ${response.body}');
     }
   }
+
+  Future<void> updateCartItemQuantity(int cartItemId, int quantity) async {
+    final url = Uri.parse('http://192.168.30.215:8080/cart/edit/$cartItemId');
+    final token = box.read('token');
+    final response = await http.put(
+      url,
+      headers: {'Cookie': 'jwt=$token'},
+      body: {'quantity': quantity.toString()},
+    );
+
+    if (response.statusCode == 200) {
+      await getMyCart();
+      print('Item quantity updated successfully');
+    } else {
+      print('Failed to update item quantity: ${response.body}');
+    }
+  }
 }

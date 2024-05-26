@@ -15,42 +15,38 @@ type CartService interface {
 	AddItemToCart(ctx *fiber.Ctx, input dto.RequestCartCreate) (*response.CartResponse, error)
 	CartGetItemMyCart(id uint) ([]response.CartResponse, error)
 	DeleteMyCart(CustomerID uint, id uint) error
-	UpdateMyCart(ctx *fiber.Ctx, CustomerID uint, id uint, input dto.RequestCartUpdate) ([]response.CartResponse, error)
+	UpdateMyCart(ctx *fiber.Ctx, CustomerID uint, id uint, input dto.RequestCartUpdate) (*response.CartResponse, error)
 }
 
 type cartService struct {
 	cartService repository.CartRepository
 }
 
-func (c *cartService) UpdateMyCart(ctx *fiber.Ctx, CustomerID uint, id uint, input dto.RequestCartUpdate) ([]response.CartResponse, error) {
-	cart, err := c.cartService.GetItemMyCart(CustomerID)
+func (c *cartService) UpdateMyCart(ctx *fiber.Ctx, CustomerID uint, id uint, input dto.RequestCartUpdate) (*response.CartResponse, error) {
+	// Check if the item exists in the cart
+	cartItem, err := c.cartService.GetItemByID(CustomerID, id)
+	if err != nil {
+		return nil, errors.New("item not found in the cart")
+	}
+
+	if input.Quantity != 0 {
+		cartItem.Quantity = input.Quantity
+	}
+
+	updatedCart, err := c.cartService.Update(CustomerID, id, cartItem)
 	if err != nil {
 		return nil, err
 	}
 
-	var cartResponses []response.CartResponse
-	for _, carts := range cart {
-		if input.Quantity != 0 {
-			carts.Quantity = input.Quantity
-		}
-		updateCart, err := c.cartService.Update(carts.CustomerID, id, &carts)
-		if err != nil {
-			return nil, err
-		}
-
-		response := response.CartResponse{
-			Id:         updateCart.Id,
-			ProductID:  updateCart.ProductID,
-			CustomerID: updateCart.CustomerID,
-			Quantity:   updateCart.Quantity,
-		}
-
-		cartResponses = append(cartResponses, response)
+	cartResponse := &response.CartResponse{
+		Id:         updatedCart.Id,
+		ProductID:  updatedCart.ProductID,
+		CustomerID: updatedCart.CustomerID,
+		Quantity:   updatedCart.Quantity,
 	}
 
-	return cartResponses, nil
+	return cartResponse, nil
 }
-
 func (c *cartService) DeleteMyCart(CustomerID uint, id uint) error {
 	result := c.cartService.Delete(CustomerID, id)
 	if result != nil {

@@ -7,6 +7,7 @@ import 'package:the_deck/Models/Product.dart';
 
 class ProductController extends GetxController {
   final product = Rxn<Product>();
+  var productList = <Product>[].obs;
 
   Future<List<Product>> getProductList() async {
     final response =
@@ -38,15 +39,20 @@ class ProductController extends GetxController {
     }
   }
 
-  Future<void> GetProductByCategoryId(int category_id) async {
-    final response =
-        await http.get(Uri.parse('http://192.168.30.215:8080/product'));
+  Future<void> getProductByCategoryId(int categoryId) async {
+    final response = await http.get(
+        Uri.parse('http://192.168.30.215:8080/product/category/$categoryId'));
     if (response.statusCode == 200) {
-      final data = json.decode(response.body)['message'];
-      if (jsonDecode(response.body)['message']['category_id'] == category_id) {
-        product.value = Product.fromJson(data['message']);
-      }
+      final List<dynamic> data = json.decode(response.body)['message'];
+      productList.value = data.map((json) => Product.fromJson(json)).toList();
     } else {
+      Get.snackbar(
+        'Error',
+        'Failed to load products for the category',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       throw Exception('Failed to load products');
     }
   }

@@ -81,13 +81,13 @@ func (cs *CartController) UpdateQuantity(ctx *fiber.Ctx) error {
 
 	customer := ctx.Locals("customer").(entity.Customer)
 
-	cart, err := cs.cartService.UpdateMyCart(ctx, uint(Id), customer.Id, input)
+	cart, err := cs.cartService.UpdateMyCart(ctx, customer.Id, uint(Id), input)
 	if err != nil {
-		return err
+		return utils.MessageJSON(ctx, 400, "Failed", err.Error())
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
-		"status":  "message",
+		"status":  "success",
 		"message": cart,
 	})
 }

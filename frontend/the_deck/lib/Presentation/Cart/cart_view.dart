@@ -24,12 +24,38 @@ class CartView extends StatefulWidget {
 
 class _CartViewState extends State<CartView> {
   final RegisterController customterController = Get.put(RegisterController());
-  final ProductController _productController = ProductController();
+  final ProductController _productController = Get.put(ProductController());
   late Future<List<Product>> _productFuture;
+
+  int _totalItems = 0;
+  double _totalPrice = 0.0;
 
   @override
   void initState() {
+    super.initState();
     _productFuture = _productController.getProductList();
+  }
+
+  void _updatePaymentSummary(List<Product> products) {
+    int totalItems = 0;
+    double totalPrice = 0.0;
+    for (var item in customterController.cartItems) {
+      final product =
+          products.firstWhere((product) => product.id == item.productId);
+      if (item.isChecked) {
+        totalItems += item.quantity;
+        totalPrice += item.quantity * product.price;
+      }
+    }
+    setState(() {
+      _totalItems = totalItems;
+      _totalPrice = totalPrice;
+    });
+  }
+
+  void _updateQuantity(int cartItemId, int newQuantity) async {
+    await customterController.updateCartItemQuantity(cartItemId, newQuantity);
+    _updatePaymentSummary(await _productFuture);
   }
 
   @override
@@ -66,6 +92,22 @@ class _CartViewState extends State<CartView> {
                                   "http://192.168.30.215:8080/product/image/${product.image}",
                               productPrice: product.price,
                               cartItemId: item.id,
+                              quantity: item.quantity,
+                              onDelete: () {
+                                customterController.deleteCartItem(item.id);
+                                _updatePaymentSummary(products);
+                              },
+                              onSelectionChanged: (isSelected) {
+                                setState(() {
+                                  item.isChecked = isSelected;
+                                  _updatePaymentSummary(products);
+                                });
+                              },
+                              onUpdateQuantity: (newQuantity) {
+                                _updateQuantity(item.id, newQuantity);
+                              },
+                              isChecked: item
+                                  .isChecked, // Pass the isChecked value from cart item
                             );
                           }).toList(),
                         );
@@ -83,7 +125,7 @@ class _CartViewState extends State<CartView> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Recomended For You",
+                    "Recommended For You",
                     style: TextStyles.bodyLargeSemiBold.copyWith(
                         color: Pallete.neutral100,
                         fontSize: getFontSize(FontSizes.large)),
@@ -125,13 +167,13 @@ class _CartViewState extends State<CartView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Total Items (4)",
+                          "Total Items ($_totalItems)",
                           style: TextStyles.bodyMediumMedium.copyWith(
                               color: const Color(0xFF878787),
                               fontSize: getFontSize(FontSizes.medium)),
                         ),
                         Text(
-                          "Rp 48,900",
+                          "Rp ${_totalPrice.toStringAsFixed(2)}",
                           style: TextStyles.bodyMediumBold
                               .copyWith(color: Pallete.neutral100),
                         ),
@@ -166,7 +208,7 @@ class _CartViewState extends State<CartView> {
                               fontSize: getFontSize(FontSizes.medium)),
                         ),
                         Text(
-                          "Rp 38,000",
+                          "Rp ${_totalPrice.toStringAsFixed(2)}",
                           style: TextStyles.bodyMediumBold.copyWith(
                               color: Pallete.neutral100,
                               fontSize: getFontSize(FontSizes.medium)),

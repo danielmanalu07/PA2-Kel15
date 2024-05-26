@@ -10,6 +10,7 @@ type CartRepository interface {
 	GetItemMyCart(id uint) ([]entity.Cart, error)
 	Delete(customerId uint, id uint) error
 	Update(customerId uint, id uint, cart *entity.Cart) (*entity.Cart, error)
+	GetItemByID(customerId uint, id uint) (*entity.Cart, error)
 }
 
 type cartRepository struct{}
@@ -19,6 +20,14 @@ func (c *cartRepository) Update(customerId uint, id uint, cart *entity.Cart) (*e
 		return nil, err
 	}
 	return cart, nil
+}
+
+func (c *cartRepository) GetItemByID(customerId uint, id uint) (*entity.Cart, error) {
+	var cart entity.Cart
+	if err := database.DB.Where("customer_id = ? AND id = ?", customerId, id).First(&cart).Error; err != nil {
+		return nil, err
+	}
+	return &cart, nil
 }
 
 func (c *cartRepository) Delete(customerId uint, id uint) error {

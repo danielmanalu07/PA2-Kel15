@@ -10,8 +10,8 @@ import 'package:the_deck/Core/response_conf.dart';
 import 'package:the_deck/Core/text_styles.dart';
 import 'package:the_deck/Models/Product.dart';
 import 'package:the_deck/Presentation/Base/food_item.dart';
-import 'package:the_deck/Presentation/Models/category_model.dart';
 import 'package:gap/gap.dart';
+import 'package:the_deck/Presentation/Models/category_model.dart';
 import 'package:the_deck/Presentation/Product/views/Product_list.dart';
 
 class HomeView extends StatefulWidget {

@@ -30,20 +30,20 @@ type productService struct {
 }
 
 func (p *productService) ProductGetByCategory(categoryId uint) ([]response.ProductResponse, error) {
-	prod, err := p.productService.GetByCategory(categoryId)
+	products, err := p.productService.GetByCategory(categoryId)
 	if err != nil {
 		return nil, err
 	}
 
 	var responses []response.ProductResponse
-	for _, products := range prod {
+	for _, product := range products {
 		response := response.ProductResponse{
-			Id:          products.Id,
-			Name:        products.Name,
-			Description: products.Description,
-			Price:       products.Price,
-			Image:       products.Image,
-			CategoryID:  products.CategoryID,
+			Id:          product.Id,
+			Name:        product.Name,
+			Description: product.Description,
+			Price:       product.Price,
+			Image:       product.Image,
+			CategoryID:  product.CategoryID,
 		}
 
 		responses = append(responses, response)
