@@ -31,4 +31,16 @@ class Customer {
       image: json['image'],
     );
   }
+  
+  Map<String, dynamic> toJson() {
+    return {
+      'fullname': name,
+      'email': email,
+      'phone': phone,
+      'address': address,
+      'image': image,
+      'dateOfBirth': dateOfBirth,
+      'gender': gender,
+    };
+  }
 }

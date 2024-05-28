@@ -45,7 +45,7 @@ class _OrderDetailsFormScreenState extends State<OrderDetailsFormScreen> {
   }
 
   void _submitOrder() async {
-    final url = Uri.parse('http://192.168.30.215:8080/order/create');
+    final url = Uri.parse('http://172.26.43.150:8080/order/create');
     final token = registerController.box.read('token');
 
     final pickUpType = _pickUpType;

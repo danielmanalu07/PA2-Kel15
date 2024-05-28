@@ -98,7 +98,7 @@ class _CardItemFoodState extends State<CardItemFood> {
                   widget.onSelectionChanged(isChecked);
                 },
                 fillColor: MaterialStateProperty.all(
-                    isChecked ? Pallete.orangePrimary : Colors.transparent),
+                    isChecked ? Pallete.greenStrong : Colors.transparent),
               ),
               const Gap(16),
               GestureDetector(
@@ -131,7 +131,7 @@ class _CardItemFoodState extends State<CardItemFood> {
                     Text('Rp ${widget.productPrice.toStringAsFixed(2)}',
                         textAlign: TextAlign.center,
                         style: TextStyles.bodyMediumBold.copyWith(
-                            color: Pallete.orangePrimary,
+                            color: Pallete.greenStrong,
                             fontSize: getFontSize(FontSizes.medium))),
                     const Gap(8),
                     Row(

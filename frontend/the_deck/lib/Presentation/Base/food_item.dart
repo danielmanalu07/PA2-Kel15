@@ -57,23 +57,6 @@ class FoodItem extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Container(
-                  width: getSize(24),
-                  height: getSize(24),
-                  margin: EdgeInsets.all(getSize(4)),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                  ),
-                  child: Icon(
-                    Icons.favorite_border,
-                    color: Pallete.pureError,
-                    size: getSize(20),
-                  ),
-                ),
-              ),
             ),
             const Gap(8),
             Text(
@@ -83,50 +66,12 @@ class FoodItem extends StatelessWidget {
                 fontSize: getFontSize(FontSizes.large),
               ),
             ),
-            const Gap(4),
-            Row(
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.star,
-                      color: Pallete.orangePrimary,
-                      size: getSize(16),
-                    ),
-                    const Gap(4),
-                    Text(
-                      "4.9",
-                      style: TextStyles.bodySmallMedium.copyWith(
-                        color: Pallete.neutral100,
-                      ),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.location_on_outlined,
-                      color: Pallete.orangePrimary,
-                      size: getSize(16),
-                    ),
-                    const Gap(4),
-                    Text(
-                      "190m",
-                      style: TextStyles.bodySmallMedium.copyWith(
-                        color: Pallete.neutral100,
-                        fontSize: getFontSize(FontSizes.small),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+        
             const Gap(6),
             Text(
               'Rp ${price.toStringAsFixed(2)}', // Menampilkan harga dengan dua desimal
               style: TextStyles.bodyLargeBold.copyWith(
-                color: Pallete.orangePrimary,
+                color: Pallete.greenStrong,
                 fontSize: getFontSize(FontSizes.large),
               ),
             ),

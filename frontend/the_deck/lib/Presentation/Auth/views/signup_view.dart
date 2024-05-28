@@ -222,7 +222,7 @@ class _SignUpViewState extends State<SignUpView> {
                                 context, RoutesName.login),
                           text: 'Sign In',
                           style: TextStyles.bodyMediumSemiBold.copyWith(
-                            color: Pallete.orangePrimary,
+                            color: Pallete.greenStrong,
                             fontSize: getFontSize(14),
                           ),
                         ),

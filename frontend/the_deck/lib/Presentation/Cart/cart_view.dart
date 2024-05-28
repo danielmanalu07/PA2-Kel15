@@ -138,7 +138,7 @@ class _CartViewState extends State<CartView> {
                   Text(
                     "See All",
                     style: TextStyles.bodyMediumMedium.copyWith(
-                      color: Pallete.orangePrimary,
+                      color: Pallete.greenStrong,
                       fontSize: getFontSize(FontSizes.medium),
                     ),
                   ),

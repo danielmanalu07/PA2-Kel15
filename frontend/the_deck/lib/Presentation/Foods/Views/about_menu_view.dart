@@ -63,53 +63,12 @@ class _AboutMenuViewState extends State<AboutMenuView> {
                       decoration: ShapeDecoration(
                         image: DecorationImage(
                           image: NetworkImage(
-                              "http://192.168.30.215:8080/product/image/${product.image}"),
+                              "http://172.26.43.150:8080/product/image/${product.image}"),
                           fit: BoxFit.fill,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Container(
-                            width: getHeight(30),
-                            height: getHeight(30),
-                            padding: EdgeInsets.all(getSize(5)),
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.favorite,
-                              color: Pallete.pureError,
-                              size: getSize(20),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(
-                              3,
-                              (index) => Padding(
-                                padding: EdgeInsets.only(left: getWidth(4)),
-                                child: Container(
-                                  width: 32,
-                                  height: 4,
-                                  decoration: ShapeDecoration(
-                                    color: index == 0
-                                        ? Pallete.orangePrimary
-                                        : Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(2),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                     const Gap(16),
@@ -124,73 +83,8 @@ class _AboutMenuViewState extends State<AboutMenuView> {
                     Text(
                       "Rp ${product.price.toStringAsFixed(2)}",
                       style: TextStyles.headingH6Bold.copyWith(
-                        color: Pallete.orangePrimary,
+                        color: Pallete.greenStrong,
                         fontSize: getFontSize(FontSizes.h6),
-                      ),
-                    ),
-                    const Gap(16),
-                    Container(
-                      height: getHeight(39),
-                      width: double.infinity,
-                      padding: EdgeInsets.all(getSize(8)),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFE8C00).withOpacity(0.04),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.attach_money_sharp,
-                                size: getSize(14),
-                                color: Pallete.orangePrimary,
-                              ),
-                              const Gap(8),
-                              Text(
-                                "Free Delivery",
-                                style: TextStyles.bodyMediumRegular.copyWith(
-                                  color: Pallete.neutral60,
-                                  fontSize: getFontSize(FontSizes.medium),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.access_time_filled_rounded,
-                                size: getSize(14),
-                                color: Pallete.orangePrimary,
-                              ),
-                              const Gap(8),
-                              Text(
-                                "20-30",
-                                style: TextStyles.bodyMediumRegular.copyWith(
-                                  color: Pallete.neutral60,
-                                  fontSize: getFontSize(FontSizes.medium),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.star,
-                                size: getSize(14),
-                                color: Pallete.orangePrimary,
-                              ),
-                              const Gap(8),
-                              Text(
-                                "4.5",
-                                style: TextStyles.bodyMediumRegular.copyWith(
-                                  color: Pallete.neutral60,
-                                  fontSize: getFontSize(FontSizes.medium),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
                       ),
                     ),
                     const Gap(16),
@@ -216,25 +110,6 @@ class _AboutMenuViewState extends State<AboutMenuView> {
                       ),
                     ),
                     const Gap(18),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Recomended For You",
-                          style: TextStyles.bodyLargeSemiBold.copyWith(
-                            color: Pallete.neutral100,
-                            fontSize: getFontSize(FontSizes.large),
-                          ),
-                        ),
-                        Text(
-                          "See All",
-                          style: TextStyles.bodyMediumMedium.copyWith(
-                            color: Pallete.orangePrimary,
-                            fontSize: getFontSize(FontSizes.medium),
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               );
@@ -252,57 +127,6 @@ class _AboutMenuViewState extends State<AboutMenuView> {
         ),
         child: Row(
           children: [
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    if (quantity > 1) {
-                      quantity.value--;
-                    }
-                  },
-                  child: Container(
-                    height: getSize(40),
-                    width: getSize(40),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border:
-                          Border.all(color: const Color(0xFFEAEAEA), width: 1),
-                    ),
-                    child: Icon(
-                      Icons.remove,
-                      size: getSize(24),
-                      color: Pallete.neutral100,
-                    ),
-                  ),
-                ),
-                const Gap(8),
-                Obx(() => Text(
-                      '${quantity.value}',
-                      style: TextStyles.bodyLargeBold
-                          .copyWith(color: Pallete.neutral100),
-                    )),
-                const Gap(16),
-                GestureDetector(
-                  onTap: () {
-                    quantity.value++;
-                  },
-                  child: Container(
-                    height: getSize(40),
-                    width: getSize(40),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border:
-                          Border.all(color: const Color(0xFFEAEAEA), width: 1),
-                    ),
-                    child: Icon(
-                      Icons.add,
-                      size: getSize(24),
-                      color: Pallete.neutral100,
-                    ),
-                  ),
-                ),
-              ],
-            ),
             const Gap(26),
             Expanded(
               child: DefaultButton(

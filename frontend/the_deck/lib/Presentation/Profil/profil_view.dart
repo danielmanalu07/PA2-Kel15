@@ -9,6 +9,7 @@ import 'package:the_deck/Core/response_conf.dart';
 import 'package:the_deck/Core/text_styles.dart';
 import 'package:the_deck/Presentation/Base/base.dart';
 import 'package:the_deck/Presentation/Cart/MyOrder.dart';
+import 'package:the_deck/Presentation/Profil/edit_personal_data_view.dart';
 import 'package:the_deck/Presentation/Profil/screens/profile_info_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -65,16 +66,22 @@ class _ProfilViewState extends State<ProfilView> {
                     Positioned(
                       left: getSize(72),
                       bottom: getSize(8),
-                      child: Container(
-                        width: getSize(32),
-                        height: getSize(32),
-                        padding: EdgeInsets.all(getSize(6)),
-                        decoration: const BoxDecoration(
-                            color: Color(0xFFF5F5FF), shape: BoxShape.circle),
-                        child: Icon(
-                          CupertinoIcons.camera_fill,
-                          color: Pallete.orangePrimary,
-                          size: getSize(20),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context, RoutesName.EditPersonalDataView);
+                        },
+                        child: Container(
+                          width: getSize(32),
+                          height: getSize(32),
+                          padding: EdgeInsets.all(getSize(6)),
+                          decoration: const BoxDecoration(
+                              color: Color(0xFFF5F5FF), shape: BoxShape.circle),
+                          child: Icon(
+                            CupertinoIcons.pencil,
+                            color: Pallete.orangePrimary,
+                            size: getSize(20),
+                          ),
                         ),
                       ),
                     )
@@ -93,6 +100,15 @@ class _ProfilViewState extends State<ProfilView> {
                   style: TextStyles.bodyMediumRegular.copyWith(
                       color: const Color(0xFF878787),
                       fontSize: getFontSize(FontSizes.medium)),
+                ),
+                const Gap(28),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(getSize(8)),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(getSize(8)),
+                  ),
                 ),
                 const Gap(24),
                 Container(
@@ -126,36 +142,6 @@ class _ProfilViewState extends State<ProfilView> {
                         function: () => Get.to(() => MyOrder()),
                         prefixIcon: Icons.shopping_bag,
                         title: "My Order"),
-                    ProfileInfoTile(
-                        function: () =>
-                            Navigator.pushNamed(context, RoutesName.settings),
-                        prefixIcon: Icons.settings,
-                        title: "Settings"),
-                    ProfileInfoTile(
-                        function: () =>
-                            Navigator.pushNamed(context, RoutesName.extraCard),
-                        prefixIcon: Icons.credit_card,
-                        title: "Extra Card"),
-                  ],
-                ),
-                const Gap(16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Support",
-                      style: TextStyles.bodySmallMedium.copyWith(
-                          color: const Color(0xFF878787),
-                          fontSize: getFontSize(FontSizes.small)),
-                    ),
-                    ProfileInfoTile(
-                        prefixIcon: Icons.info_outline, title: "Help Center"),
-                    ProfileInfoTile(
-                        prefixIcon: Icons.delete,
-                        title: "Request Account Deletion"),
-                    ProfileInfoTile(
-                        prefixIcon: Icons.person_add,
-                        title: "Add another account"),
                   ],
                 ),
                 const Gap(16),
@@ -167,9 +153,9 @@ class _ProfilViewState extends State<ProfilView> {
                         TextSpan(
                           recognizer: TapGestureRecognizer()
                             ..onTap = _controller.logout,
-                          text: 'Sing Out',
+                          text: 'Sign Out',
                           style: TextStyles.bodyMediumSemiBold.copyWith(
-                            color: Pallete.orangePrimary,
+                            color: Pallete.greenStrong,
                             fontSize: getFontSize(14),
                           ),
                         ),

@@ -12,7 +12,7 @@ class TableController extends GetxController {
     try {
       isLoading(true);
       final response =
-          await http.get(Uri.parse('http://192.168.30.215:8080/table'));
+          await http.get(Uri.parse('http://172.26.43.150:8080/table'));
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body)['message'];
         tables = data.map((json) => Table.fromJson(json)).toList();

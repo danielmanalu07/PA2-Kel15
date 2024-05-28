@@ -2,8 +2,8 @@ import 'package:the_deck/Core/app_colors.dart';
 import 'package:the_deck/Core/font_size.dart';
 import 'package:the_deck/Core/response_conf.dart';
 import 'package:the_deck/Core/text_styles.dart';
+import 'package:the_deck/Presentation/Cart/MyOrder.dart';
 import 'package:the_deck/Presentation/Cart/cart_view.dart';
-import 'package:the_deck/Presentation/Chat/chat_view.dart';
 import 'package:the_deck/Presentation/Main/home_view.dart';
 import 'package:the_deck/Presentation/Profil/profil_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,7 +17,7 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-  final _pages = [HomeView(), CartView(), const ChatView(), ProfilView()];
+  final _pages = [HomeView(), CartView(), const MyOrder(), ProfilView()];
   int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class _MainViewState extends State<MainView> {
           type: BottomNavigationBarType.fixed,
           showUnselectedLabels: false,
           iconSize: getSize(24),
-          selectedItemColor: Pallete.orangePrimary,
+          selectedItemColor: Pallete.greenStrong,
           selectedLabelStyle: TextStyles.bodySmallMedium
               .copyWith(fontSize: getFontSize(FontSizes.small)),
           unselectedItemColor: Pallete.neutral50,
@@ -64,7 +64,7 @@ class _MainViewState extends State<MainView> {
               label: "Cart",
             ),
             BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.chat_bubble), label: "Messenger"),
+                icon: Icon(Icons.shopping_bag), label: "My Order"),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil"),
           ],
           elevation: 0,

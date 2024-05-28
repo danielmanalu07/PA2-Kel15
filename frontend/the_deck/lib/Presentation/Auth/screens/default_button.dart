@@ -31,11 +31,11 @@ class DefaultButton extends StatelessWidget {
           style: ButtonStyle(
               shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                   side: BorderSide(
-                    color: borderColor ?? Pallete.orangePrimary,
+                    color: borderColor ?? Pallete.greenPrimary,
                   ),
                   borderRadius: BorderRadius.circular(getSize(100)))),
               backgroundColor:
-                  MaterialStatePropertyAll(bgColor ?? Pallete.orangePrimary)),
+                  MaterialStatePropertyAll(bgColor ?? Pallete.greenStrong)),
           onPressed: function,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -53,7 +53,7 @@ class _PersonalDataViewState extends State<PersonalDataView> {
                 children: [
                   CircleAvatar(
                     backgroundImage: NetworkImage(
-                        'http://192.168.30.215:8080/customer/image/${customer.image}'),
+                        'http://172.26.43.150:8080/customer/image/${customer.image}'),
                     radius: getSize(50),
                   ),
                   Positioned(

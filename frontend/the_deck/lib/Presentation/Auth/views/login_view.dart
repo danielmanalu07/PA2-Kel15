@@ -38,9 +38,17 @@ class LoginView extends StatelessWidget {
         top: MediaQuery.of(context).viewPadding.top,
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Gap(32),
+          Center(
+            child: CircleAvatar(
+              radius: 50,
+              backgroundImage: AssetImage(
+                  'assets/img/logo.jpg'), // Ensure the path is correct
+            ),
+          ),
           Text(
             "Login to your\n account.",
             style: TextStyles.headingH4SemiBold
@@ -66,18 +74,6 @@ class LoginView extends StatelessWidget {
             isPasswordField: true,
           ),
           const Gap(24),
-          Align(
-            alignment: Alignment.topRight,
-            child: InkWell(
-              onTap: () =>
-                  Navigator.pushNamed(context, RoutesName.forgetPassword),
-              child: Text(
-                "Forgot password?",
-                style: TextStyles.bodyMediumMedium.copyWith(
-                    color: Pallete.orangePrimary, fontSize: getFontSize(14)),
-              ),
-            ),
-          ),
           const Gap(24),
           DefaultButton(
             btnContent: "Sign In",
@@ -104,7 +100,7 @@ class LoginView extends StatelessWidget {
                             context, RoutesName.signUp),
                       text: 'Register',
                       style: TextStyles.bodyMediumSemiBold.copyWith(
-                          color: Pallete.orangePrimary,
+                          color: Pallete.greenStrong,
                           fontSize: getFontSize(14))),
                 ],
               ),
