@@ -5,6 +5,7 @@ import (
 	"api/the_deck/Models/entity"
 	service "api/the_deck/Service"
 	utils "api/the_deck/Utils"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -56,5 +57,46 @@ func (oc *OrderController) GetMyOrder(ctx *fiber.Ctx) error {
 	return ctx.Status(200).JSON(fiber.Map{
 		"status":  "success",
 		"message": orders,
+	})
+}
+
+func (oc *OrderController) ProofOfPayment(ctx *fiber.Ctx) error {
+	id, err := strconv.Atoi(ctx.Params("id"))
+	if err != nil {
+		return err
+	}
+
+	customer := ctx.Locals("customer").(entity.Customer)
+
+	order, err := oc.orderService.ProofPayment(ctx, customer.Id, uint(id))
+	if err != nil {
+		return utils.MessageJSON(ctx, 400, "Failed", err.Error())
+	}
+
+	return ctx.Status(200).JSON(fiber.Map{
+		"status":  "success",
+		"message": order,
+	})
+}
+
+func (oc *OrderController) UpdateStatus(ctx *fiber.Ctx) error {
+	id, err := strconv.Atoi(ctx.Params("id"))
+	if err != nil {
+		return utils.MessageJSON(ctx, 400, "Failed", err.Error())
+	}
+
+	var input dto.RequestOrderUpdateStatus
+	if err := ctx.BodyParser(&input); err != nil {
+		return err
+	}
+
+	order, err := oc.orderService.UpdateStatus(uint(id), input)
+	if err != nil {
+		return utils.MessageJSON(ctx, 400, "Failed", err.Error())
+	}
+
+	return ctx.Status(200).JSON(fiber.Map{
+		"status":  "success",
+		"message": order,
 	})
 }

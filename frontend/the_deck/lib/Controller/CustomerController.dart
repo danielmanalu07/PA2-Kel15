@@ -1,13 +1,17 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:the_deck/Models/Cart_Item.dart';
 import 'package:the_deck/Models/Customer.dart';
+import 'package:the_deck/Models/Order.dart';
 import 'package:the_deck/Models/Product.dart';
 import 'package:the_deck/Models/Register.dart';
 import 'package:the_deck/Presentation/Auth/views/login_view.dart';
+import 'package:the_deck/Presentation/Cart/MyOrder.dart';
 import 'package:the_deck/Presentation/Cart/Order.dart';
 import 'package:the_deck/Presentation/Cart/cart_view.dart';
 import 'package:the_deck/Presentation/Main/main_view.dart';
@@ -17,6 +21,7 @@ class RegisterController extends GetxController {
   final box = GetStorage();
   final userProfile = Rxn<Customer>();
   var cartItems = <CartItem>[].obs;
+  var orderItems = <Order>[].obs;
 
   Future<void> registerUser(RegisterModel registerModel) async {
     final url = Uri.parse('http://192.168.30.215:8080/customer/register');
@@ -131,6 +136,7 @@ class RegisterController extends GetxController {
     );
 
     if (response.statusCode == 200) {
+      box.remove('token'); // Clear the token on logout
       Get.offAll(() => LoginView());
       Get.snackbar(
         'Success',
@@ -183,6 +189,24 @@ class RegisterController extends GetxController {
         colorText: Colors.white,
       );
       print('Add To Cart Error');
+    }
+  }
+
+  Future<void> getMyOrder() async {
+    final url = Uri.parse('http://192.168.30.215:8080/order/myorder');
+    final token = box.read('token');
+    final response = await http.get(
+      url,
+      headers: {'Cookie': 'jwt=$token'},
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      List<dynamic> data = responseData['message'] ?? [];
+      List<Order> items = data.map((json) => Order.fromJson(json)).toList();
+      orderItems.assignAll(items);
+    } else {
+      print('Failed to fetch order');
     }
   }
 
@@ -255,60 +279,62 @@ class RegisterController extends GetxController {
     }
   }
 
-  Future<void> placeOrder() async {
-    final url = Uri.parse('http://192.168.30.215:8080/order/create');
+  Future<void> uploadImage(
+      BuildContext context, int orderId, XFile? image) async {
     final token = box.read('token');
+    if (image != null) {
+      File imageFile = File(image.path);
+      final uploadUrl = 'http://192.168.30.215:8080/order/payment/$orderId';
 
-    // Collecting product IDs and quantities from the cart
-    List<Map<String, dynamic>> products = cartItems.map((item) {
-      return {
-        'product_id': item.productId,
-        'quantity': item.quantity,
-      };
-    }).toList();
+      var request = http.MultipartRequest('PUT', Uri.parse(uploadUrl));
+      request.headers.addAll({'Cookie': 'jwt=${token}'});
 
-    // Calculating total price
-    double totalPrice = 0;
-    for (var item in cartItems) {
-      // Assuming you have a method to get product price by ID
-      double productPrice = await getProductPrice(item.productId);
-      totalPrice += item.quantity * productPrice;
-    }
+      request.files
+          .add(await http.MultipartFile.fromPath('image', imageFile.path));
 
-    final response = await http.post(
-      url,
-      headers: {'Cookie': 'jwt=$token', 'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'products': products,
-        'total': totalPrice.toStringAsFixed(2),
-      }),
-    );
+      var response = await request.send();
 
-    if (response.statusCode == 200) {
-      Get.snackbar(
-        'Success',
-        'Order placed successfully',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
-      print('Order placed successfully');
-
-      // Navigate to the order details form screen
-      Get.to(() => OrderDetailsFormScreen());
+      if (response.statusCode == 200) {
+        print('Image uploaded successfully');
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Image uploaded successfully')));
+      } else {
+        print('Image upload failed');
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Image upload failed')));
+      }
     } else {
-      Get.snackbar(
-        'Error',
-        'Failed to place order',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      print('Failed to place order: ${response.body}');
+      print('No image selected');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('No image selected')));
     }
   }
 
-  Future<double> getProductPrice(int productId) async {
-    return 100.0;
+  Future<void> updateOrderStatus(int orderId) async {
+    try {
+      final url = Uri.parse('http://192.168.30.215:8080/order/status/$orderId');
+      final token = box.read('token');
+      final response = await http.put(
+        url,
+        headers: {'Cookie': 'jwt=$token'},
+        body: {'status': '3'},
+      );
+
+      if (response.statusCode == 200) {
+        print('Order status updated successfully');
+        Get.to(() => MyOrder());
+        Get.snackbar(
+          'Success',
+          'Canceled Successfully',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        print('Failed to update order status: ${response.body}');
+      }
+    } catch (e) {
+      print('Error updating order status: $e');
+    }
   }
 }

@@ -8,6 +8,7 @@ import 'package:the_deck/Core/font_size.dart';
 import 'package:the_deck/Core/response_conf.dart';
 import 'package:the_deck/Core/text_styles.dart';
 import 'package:the_deck/Presentation/Base/base.dart';
+import 'package:the_deck/Presentation/Cart/MyOrder.dart';
 import 'package:the_deck/Presentation/Profil/screens/profile_info_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -93,147 +94,6 @@ class _ProfilViewState extends State<ProfilView> {
                       color: const Color(0xFF878787),
                       fontSize: getFontSize(FontSizes.medium)),
                 ),
-                const Gap(28),
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(getSize(8)),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(getSize(8)),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "My Orders",
-                            style: TextStyles.bodyLargeSemiBold.copyWith(
-                                color: Pallete.neutral100,
-                                fontSize: getFontSize(FontSizes.large)),
-                          ),
-                          Text(
-                            "See All",
-                            style: TextStyles.bodyMediumSemiBold.copyWith(
-                                color: Pallete.orangePrimary,
-                                fontSize: getFontSize(FontSizes.medium)),
-                          ),
-                        ],
-                      ),
-                      const Gap(16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Order ID",
-                                style: TextStyles.bodySmallSemiBold.copyWith(
-                                    color: const Color(0xFF878787),
-                                    fontSize: getFontSize(FontSizes.small)),
-                              ),
-                              const Gap(4),
-                              Text(
-                                "888333777",
-                                style: TextStyles.bodySmallSemiBold.copyWith(
-                                    color: Pallete.neutral100,
-                                    fontSize: getFontSize(FontSizes.small)),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            width: getWidth(67),
-                            height: getHeight(24),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: getWidth(8),
-                                vertical: getHeight(4)),
-                            decoration: ShapeDecoration(
-                              color: Pallete.orangePrimary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(getSize(30)),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'In Delivery',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: getFontSize(FontSizes.superSmall),
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      const Gap(12),
-                      Container(
-                        width: double.infinity,
-                        decoration: const ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1,
-                              strokeAlign: BorderSide.strokeAlignCenter,
-                              color: Color(0xFFEDEDED),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Gap(24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                height: getHeight(54),
-                                width: getWidth(52),
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.circular(getSize(8)),
-                                    image: const DecorationImage(
-                                        image: AssetImage(
-                                            AssetsConstants.ordinaryBurger),
-                                        fit: BoxFit.fill)),
-                              ),
-                              const Gap(14),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Burger With Meat",
-                                    style: TextStyles.bodyMediumSemiBold
-                                        .copyWith(
-                                            color: Pallete.neutral100,
-                                            fontSize:
-                                                getFontSize(FontSizes.medium)),
-                                  ),
-                                  const Gap(8),
-                                  Text(
-                                    "\$ 12,230",
-                                    style: TextStyles.bodyMediumBold.copyWith(
-                                        color: Pallete.orangePrimary,
-                                        fontSize:
-                                            getFontSize(FontSizes.medium)),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                          Text(
-                            "14 items",
-                            style: TextStyles.bodySmallMedium.copyWith(
-                                color: Pallete.neutral100,
-                                fontSize: getFontSize(FontSizes.small)),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
                 const Gap(24),
                 Container(
                   width: double.infinity,
@@ -262,6 +122,10 @@ class _ProfilViewState extends State<ProfilView> {
                             context, RoutesName.personnalData),
                         prefixIcon: Icons.person,
                         title: "Personal Data"),
+                    ProfileInfoTile(
+                        function: () => Get.to(() => MyOrder()),
+                        prefixIcon: Icons.shopping_bag,
+                        title: "My Order"),
                     ProfileInfoTile(
                         function: () =>
                             Navigator.pushNamed(context, RoutesName.settings),

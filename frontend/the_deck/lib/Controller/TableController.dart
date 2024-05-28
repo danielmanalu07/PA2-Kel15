@@ -5,14 +5,8 @@ import 'dart:convert';
 import 'package:the_deck/Models/Table.dart';
 
 class TableController extends GetxController {
-  var tables = <Table>[].obs; // Perbarui dari 'table' menjadi 'tables'
+  var tables = <Table>[];
   var isLoading = true.obs;
-
-  @override
-  void onInit() {
-    fetchTables(); // Perbarui nama metode menjadi 'fetchTables'
-    super.onInit();
-  }
 
   void fetchTables() async {
     try {
@@ -21,7 +15,7 @@ class TableController extends GetxController {
           await http.get(Uri.parse('http://192.168.30.215:8080/table'));
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body)['message'];
-        tables.value = data.map((json) => Table.fromJson(json)).toList();
+        tables = data.map((json) => Table.fromJson(json)).toList();
       } else {
         // Handle error
         Get.snackbar('Error', 'Failed to fetch tables');
@@ -29,8 +23,6 @@ class TableController extends GetxController {
     } catch (e) {
       // Handle error
       Get.snackbar('Error', 'Failed to fetch tables');
-    } finally {
-      isLoading(false);
     }
   }
 }

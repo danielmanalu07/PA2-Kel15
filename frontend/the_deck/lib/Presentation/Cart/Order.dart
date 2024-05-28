@@ -5,8 +5,10 @@ import 'package:the_deck/Controller/ProductController.dart';
 import 'package:the_deck/Controller/TableController.dart';
 import 'package:http/http.dart' as http;
 import 'package:the_deck/Models/Cart_Item.dart';
+import 'package:the_deck/Presentation/Cart/MyOrder.dart';
 import 'dart:convert';
 import 'package:the_deck/Presentation/Main/main_view.dart';
+import 'package:the_deck/Presentation/Profil/profil_view.dart';
 
 class OrderDetailsFormScreen extends StatefulWidget {
   @override
@@ -20,7 +22,7 @@ class _OrderDetailsFormScreenState extends State<OrderDetailsFormScreen> {
   final _tableController = Get.put(TableController());
   final _noteController = TextEditingController();
   String _paymentMethod = 'Cash';
-  String _pickUpType = 'Dine In';
+  String _pickUpType = 'Take Away';
   int? _tableId;
 
   @override
@@ -80,9 +82,9 @@ class _OrderDetailsFormScreenState extends State<OrderDetailsFormScreen> {
     );
 
     if (response.statusCode == 200) {
+      Get.to(() => ProfilView());
       Get.snackbar('Success', 'Order placed successfully',
           snackPosition: SnackPosition.TOP);
-      Get.to(() => MainView());
     } else {
       Get.snackbar('Error', 'Failed to place order',
           snackPosition: SnackPosition.TOP);
@@ -118,7 +120,7 @@ class _OrderDetailsFormScreenState extends State<OrderDetailsFormScreen> {
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(labelText: 'Pick Up Type'),
                 value: _pickUpType,
-                items: ['Dine In', 'Take Away']
+                items: ['Take Away', 'Dine In']
                     .map((type) => DropdownMenuItem(
                           value: type,
                           child: Text(type),
@@ -165,12 +167,14 @@ class _OrderDetailsFormScreenState extends State<OrderDetailsFormScreen> {
                           final product = _productController.productList
                               .firstWhere(
                                   (prod) => prod.id == cartItem.productId);
-                          return ListTile(
-                            title: Text(product.name),
-                            subtitle: Text('Quantity: ${cartItem.quantity}'),
-                            trailing: Text(
-                                'Price: Rp ${(cartItem.quantity * product.price).toStringAsFixed(2)}'),
-                          );
+                          if (cartItem.isChecked.obs.isTrue) {
+                            return ListTile(
+                              title: Text(product.name),
+                              subtitle: Text('Quantity: ${cartItem.quantity}'),
+                              trailing: Text(
+                                  'Price: Rp ${(cartItem.quantity * product.price).toStringAsFixed(2)}'),
+                            );
+                          }
                         },
                       );
                     }),

@@ -8,3 +8,7 @@ type RequestOrderCreate struct {
 	TableId       uint   `json:"table_id"`
 	PickUpType    string `json:"pick_up_type"`
 }
+
+type RequestOrderUpdateStatus struct {
+	Status int `json:"status"`
+}

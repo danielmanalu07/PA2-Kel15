@@ -70,7 +70,10 @@ func RouteCart(App *fiber.App, cartController *controllers.CartController) {
 func RouteOrder(App *fiber.App, orderController *controllers.OrderController) {
 	order := App.Group("/order")
 	order.Get("/", orderController.GetAllOrder)
+	order.Put("/status/:id", orderController.UpdateStatus)
+	order.Static("/image", service.PathImageOrder)
 	order.Use(middleware.CheckCustomer())
 	order.Post("/create", orderController.CustomerCreateOrder)
 	order.Get("/myorder", orderController.GetMyOrder)
+	order.Put("/payment/:id", orderController.ProofOfPayment)
 }

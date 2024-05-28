@@ -8,19 +8,101 @@ import (
 	repository "api/the_deck/Repository"
 	utils "api/the_deck/Utils"
 	"fmt"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
 
+const PathImageOrder = "./Public/Order"
+
 type OrderService interface {
 	CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate) (*response.OrderResponse, error)
 	GetAllOrder() ([]response.OrderResponse, error)
 	GetMyOrder(customerId uint) ([]response.OrderResponse, error)
+	ProofPayment(ctx *fiber.Ctx, customerId uint, id uint) (*response.OrderResponse, error)
+	UpdateStatus(id uint, input dto.RequestOrderUpdateStatus) (*response.OrderResponse, error)
 }
 
 type orderService struct {
 	orderRepository repository.OrderRepository
+}
+
+func (o *orderService) UpdateStatus(id uint, input dto.RequestOrderUpdateStatus) (*response.OrderResponse, error) {
+	order, err := o.orderRepository.GetById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if input.Status != 0 {
+		order.Status = input.Status
+	}
+
+	save, err := o.orderRepository.Update(order)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &response.OrderResponse{
+		Id:             save.Id,
+		Code:           save.Code,
+		CustomerID:     save.CustomerID,
+		Products:       save.Products,
+		Total:          save.Total,
+		Note:           save.Note,
+		PaymentMethod:  save.PaymentMethod,
+		TableId:        save.TableId,
+		PickUpType:     save.PickUpType,
+		ProofOfPayment: save.ProofOfPayment,
+		Status:         save.Status,
+	}
+
+	return response, nil
+}
+
+func (o *orderService) ProofPayment(ctx *fiber.Ctx, customerId uint, id uint) (*response.OrderResponse, error) {
+	orders, err := o.orderRepository.GetMyOrderById(customerId, id)
+	if err != nil {
+		return nil, err
+	}
+
+	image, err := ctx.FormFile("image")
+	if err == nil {
+		if orders.ProofOfPayment != "" {
+			oldPath := filepath.Join(PathImageOrder, orders.ProofOfPayment)
+			os.Remove(oldPath)
+		}
+
+		newFilename := utils.GenerateImageFile(orders.Code, image.Filename)
+		if err := ctx.SaveFile(image, filepath.Join(PathImageOrder, newFilename)); err != nil {
+			return nil, err
+		}
+
+		orders.ProofOfPayment = newFilename
+	}
+
+	save, err := o.orderRepository.Payment(customerId, id, orders)
+	if err != nil {
+		return nil, err
+	}
+
+	orderResponse := &response.OrderResponse{
+		Id:             save.Id,
+		Code:           save.Code,
+		CustomerID:     save.CustomerID,
+		Products:       save.Products,
+		Total:          save.Total,
+		Note:           save.Note,
+		PaymentMethod:  save.PaymentMethod,
+		TableId:        save.TableId,
+		PickUpType:     save.PickUpType,
+		ProofOfPayment: save.ProofOfPayment,
+		Status:         save.Status,
+	}
+
+	return orderResponse, nil
+
 }
 
 func (o *orderService) GetMyOrder(customerId uint) ([]response.OrderResponse, error) {
