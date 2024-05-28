@@ -41,15 +41,18 @@ class CardItemFood extends StatefulWidget {
 
 class _CardItemFoodState extends State<CardItemFood> {
   bool isChecked = false;
-  final RegisterController registerController = Get.find<RegisterController>();
 
-  void _updateQuantity(int newQuantity) async {
-    await registerController.updateCartItemQuantity(
-        widget.cartItemId, newQuantity);
+  @override
+  void initState() {
+    super.initState();
+    isChecked = widget.isChecked;
+  }
+
+  void _updateQuantity(int newQuantity) {
     setState(() {
       widget.quantity = newQuantity;
     });
-    widget.onSelectionChanged(isChecked);
+    widget.onUpdateQuantity(newQuantity);
   }
 
   @override
@@ -139,7 +142,7 @@ class _CardItemFoodState extends State<CardItemFood> {
                             GestureDetector(
                               onTap: () {
                                 if (widget.quantity > 1) {
-                                  widget.onUpdateQuantity(widget.quantity - 1);
+                                  _updateQuantity(widget.quantity - 1);
                                 }
                               },
                               child: Container(

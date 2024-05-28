@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -9,15 +8,26 @@ class ProductController extends GetxController {
   final product = Rxn<Product>();
   var productList = <Product>[].obs;
 
-  Future<List<Product>> getProductList() async {
+  @override
+  void onInit() {
+    super.onInit();
+    fetchProductList();
+  }
+
+  Future<void> fetchProductList() async {
     final response =
         await http.get(Uri.parse('http://192.168.30.215:8080/product'));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['message'];
-      return data.map((json) => Product.fromJson(json)).toList();
+      productList.value = data.map((json) => Product.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load products');
     }
+  }
+
+  Future<List<Product>> getProductList() async {
+    await fetchProductList();
+    return productList.toList();
   }
 
   Future<void> getProductById(int id) async {
@@ -43,7 +53,7 @@ class ProductController extends GetxController {
     final response = await http.get(
         Uri.parse('http://192.168.30.215:8080/product/category/$categoryId'));
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body)['message'];
+      final List<dynamic> data = json.decode(response.body)['message'] ?? [];
       productList.value = data.map((json) => Product.fromJson(json)).toList();
     } else {
       Get.snackbar(

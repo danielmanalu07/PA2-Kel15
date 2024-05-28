@@ -8,6 +8,7 @@ import 'package:the_deck/Models/Customer.dart';
 import 'package:the_deck/Models/Product.dart';
 import 'package:the_deck/Models/Register.dart';
 import 'package:the_deck/Presentation/Auth/views/login_view.dart';
+import 'package:the_deck/Presentation/Cart/Order.dart';
 import 'package:the_deck/Presentation/Cart/cart_view.dart';
 import 'package:the_deck/Presentation/Main/main_view.dart';
 
@@ -195,7 +196,7 @@ class RegisterController extends GetxController {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      List<dynamic> data = responseData['message'];
+      List<dynamic> data = responseData['message'] ?? [];
       List<CartItem> items =
           data.map((json) => CartItem.fromJson(json)).toList();
       cartItems.assignAll(items);
@@ -234,7 +235,8 @@ class RegisterController extends GetxController {
     }
   }
 
-  Future<void> updateCartItemQuantity(int cartItemId, int quantity) async {
+  Future<void> updateCartItemQuantity(int cartItemId, int quantity,
+      {VoidCallback? onSuccess}) async {
     final url = Uri.parse('http://192.168.30.215:8080/cart/edit/$cartItemId');
     final token = box.read('token');
     final response = await http.put(
@@ -244,10 +246,69 @@ class RegisterController extends GetxController {
     );
 
     if (response.statusCode == 200) {
-      await getMyCart();
+      if (onSuccess != null) {
+        onSuccess();
+      }
       print('Item quantity updated successfully');
     } else {
       print('Failed to update item quantity: ${response.body}');
     }
+  }
+
+  Future<void> placeOrder() async {
+    final url = Uri.parse('http://192.168.30.215:8080/order/create');
+    final token = box.read('token');
+
+    // Collecting product IDs and quantities from the cart
+    List<Map<String, dynamic>> products = cartItems.map((item) {
+      return {
+        'product_id': item.productId,
+        'quantity': item.quantity,
+      };
+    }).toList();
+
+    // Calculating total price
+    double totalPrice = 0;
+    for (var item in cartItems) {
+      // Assuming you have a method to get product price by ID
+      double productPrice = await getProductPrice(item.productId);
+      totalPrice += item.quantity * productPrice;
+    }
+
+    final response = await http.post(
+      url,
+      headers: {'Cookie': 'jwt=$token', 'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'products': products,
+        'total': totalPrice.toStringAsFixed(2),
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      Get.snackbar(
+        'Success',
+        'Order placed successfully',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+      print('Order placed successfully');
+
+      // Navigate to the order details form screen
+      Get.to(() => OrderDetailsFormScreen());
+    } else {
+      Get.snackbar(
+        'Error',
+        'Failed to place order',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      print('Failed to place order: ${response.body}');
+    }
+  }
+
+  Future<double> getProductPrice(int productId) async {
+    return 100.0;
   }
 }

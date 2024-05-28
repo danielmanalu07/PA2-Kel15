@@ -72,4 +72,5 @@ func RouteOrder(App *fiber.App, orderController *controllers.OrderController) {
 	order.Get("/", orderController.GetAllOrder)
 	order.Use(middleware.CheckCustomer())
 	order.Post("/create", orderController.CustomerCreateOrder)
+	order.Get("/myorder", orderController.GetMyOrder)
 }

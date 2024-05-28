@@ -16,10 +16,39 @@ import (
 type OrderService interface {
 	CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate) (*response.OrderResponse, error)
 	GetAllOrder() ([]response.OrderResponse, error)
+	GetMyOrder(customerId uint) ([]response.OrderResponse, error)
 }
 
 type orderService struct {
 	orderRepository repository.OrderRepository
+}
+
+func (o *orderService) GetMyOrder(customerId uint) ([]response.OrderResponse, error) {
+	order, err := o.orderRepository.GetMyOrder(customerId)
+	if err != nil {
+		return nil, err
+	}
+
+	var orderResponses []response.OrderResponse
+	for _, orders := range order {
+		orderResponse := response.OrderResponse{
+			Id:             orders.Id,
+			Code:           orders.Code,
+			CustomerID:     orders.CustomerID,
+			Products:       orders.Products,
+			Total:          orders.Total,
+			Note:           orders.Note,
+			PaymentMethod:  orders.PaymentMethod,
+			TableId:        orders.TableId,
+			PickUpType:     orders.PickUpType,
+			ProofOfPayment: orders.ProofOfPayment,
+			Status:         orders.Status,
+		}
+
+		orderResponses = append(orderResponses, orderResponse)
+	}
+
+	return orderResponses, nil
 }
 
 func (o *orderService) GetAllOrder() ([]response.OrderResponse, error) {
@@ -80,13 +109,18 @@ func (o *orderService) CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate)
 		return nil, utils.MessageJSON(ctx, 500, "error", "Could not fetch cart items")
 	}
 
+	var tableId *uint
+	if input.PickUpType == "Dine in" {
+		tableId = &input.TableId
+	}
+
 	order := entity.Order{
 		Code:           GenerateCodeOrder(),
 		CustomerID:     customer.Id,
 		Total:          input.Total,
 		Note:           input.Note,
 		PaymentMethod:  input.PaymentMethod,
-		TableId:        input.TableId,
+		TableId:        tableId,
 		PickUpType:     input.PickUpType,
 		Status:         0,
 		ProofOfPayment: "",

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:the_deck/Controller/CustomerController.dart';
 import 'package:the_deck/Controller/ProductController.dart';
@@ -5,15 +6,12 @@ import 'package:the_deck/Core/app_colors.dart';
 import 'package:the_deck/Core/font_size.dart';
 import 'package:the_deck/Core/response_conf.dart';
 import 'package:the_deck/Core/text_styles.dart';
-import 'package:the_deck/Models/Cart_Item.dart';
 import 'package:the_deck/Models/Product.dart';
-import 'package:the_deck/Presentation/Auth/screens/default_button.dart';
-import 'package:the_deck/Presentation/Base/base.dart';
-import 'package:the_deck/Presentation/Base/food_item.dart';
 import 'package:the_deck/Presentation/Cart/screens/cart_item_food.dart';
-import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:the_deck/Presentation/Models/category_model.dart';
+import 'package:the_deck/Presentation/Auth/screens/default_button.dart';
+import 'package:the_deck/Presentation/Cart/Order.dart';
+import 'package:the_deck/Presentation/Base/base.dart';
 
 class CartView extends StatefulWidget {
   CartView({Key? key}) : super(key: key);
@@ -34,6 +32,7 @@ class _CartViewState extends State<CartView> {
   void initState() {
     super.initState();
     _productFuture = _productController.getProductList();
+    customterController.getMyCart();
   }
 
   void _updatePaymentSummary(List<Product> products) {
@@ -43,8 +42,9 @@ class _CartViewState extends State<CartView> {
       final product =
           products.firstWhere((product) => product.id == item.productId);
       if (item.isChecked) {
-        totalItems += item.quantity;
-        totalPrice += item.quantity * product.price;
+        totalItems += item.quantity; // Tambahkan kuantitas
+        totalPrice += item.quantity *
+            product.price; // Kalikan kuantitas dengan harga produk
       }
     }
     setState(() {
@@ -55,12 +55,14 @@ class _CartViewState extends State<CartView> {
 
   void _updateQuantity(int cartItemId, int newQuantity) async {
     await customterController.updateCartItemQuantity(cartItemId, newQuantity);
-    _updatePaymentSummary(await _productFuture);
+    customterController.getMyCart();
+    _productFuture.then((products) {
+      _updatePaymentSummary(products);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    customterController.getMyCart();
     return Scaffold(
       appBar: buildAppBar(
           buildContext: context, screenTitle: "My Cart", isBackup: false),
@@ -71,10 +73,13 @@ class _CartViewState extends State<CartView> {
             children: [
               Obx(() {
                 if (customterController.cartItems.isEmpty) {
-                  return Text("Cart Item Not Found",
-                      style: TextStyles.bodyLargeSemiBold.copyWith(
-                          color: Pallete.neutral100,
-                          fontSize: getFontSize(FontSizes.large)));
+                  return Text(
+                    "Cart Item Not Found",
+                    style: TextStyles.bodyLargeSemiBold.copyWith(
+                      color: Pallete.neutral100,
+                      fontSize: getFontSize(FontSizes.large),
+                    ),
+                  );
                 } else {
                   return FutureBuilder<List<Product>>(
                     future: _productFuture,
@@ -106,8 +111,7 @@ class _CartViewState extends State<CartView> {
                               onUpdateQuantity: (newQuantity) {
                                 _updateQuantity(item.id, newQuantity);
                               },
-                              isChecked: item
-                                  .isChecked, // Pass the isChecked value from cart item
+                              isChecked: item.isChecked,
                             );
                           }).toList(),
                         );
@@ -127,15 +131,17 @@ class _CartViewState extends State<CartView> {
                   Text(
                     "Recommended For You",
                     style: TextStyles.bodyLargeSemiBold.copyWith(
-                        color: Pallete.neutral100,
-                        fontSize: getFontSize(FontSizes.large)),
+                      color: Pallete.neutral100,
+                      fontSize: getFontSize(FontSizes.large),
+                    ),
                   ),
                   Text(
                     "See All",
                     style: TextStyles.bodyMediumMedium.copyWith(
-                        color: Pallete.orangePrimary,
-                        fontSize: getFontSize(FontSizes.medium)),
-                  )
+                      color: Pallete.orangePrimary,
+                      fontSize: getFontSize(FontSizes.medium),
+                    ),
+                  ),
                 ],
               ),
               const Gap(16),
@@ -150,17 +156,18 @@ class _CartViewState extends State<CartView> {
                 width: double.infinity,
                 padding: EdgeInsets.all(getSize(12)),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(getSize(16)),
-                    border:
-                        Border.all(width: 1, color: const Color(0xFFEDEDED))),
+                  borderRadius: BorderRadius.circular(getSize(16)),
+                  border: Border.all(width: 1, color: const Color(0xFFEDEDED)),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Payment Summary",
                       style: TextStyles.bodyLargeSemiBold.copyWith(
-                          color: Pallete.neutral100,
-                          fontSize: getFontSize(FontSizes.large)),
+                        color: Pallete.neutral100,
+                        fontSize: getFontSize(FontSizes.large),
+                      ),
                     ),
                     const Gap(8),
                     Row(
@@ -169,13 +176,15 @@ class _CartViewState extends State<CartView> {
                         Text(
                           "Total Items ($_totalItems)",
                           style: TextStyles.bodyMediumMedium.copyWith(
-                              color: const Color(0xFF878787),
-                              fontSize: getFontSize(FontSizes.medium)),
+                            color: const Color(0xFF878787),
+                            fontSize: getFontSize(FontSizes.medium),
+                          ),
                         ),
                         Text(
                           "Rp ${_totalPrice.toStringAsFixed(2)}",
-                          style: TextStyles.bodyMediumBold
-                              .copyWith(color: Pallete.neutral100),
+                          style: TextStyles.bodyMediumBold.copyWith(
+                            color: Pallete.neutral100,
+                          ),
                         ),
                       ],
                     ),
@@ -186,14 +195,16 @@ class _CartViewState extends State<CartView> {
                         Text(
                           "Delivery Fee",
                           style: TextStyles.bodyMediumMedium.copyWith(
-                              color: const Color(0xFF878787),
-                              fontSize: getFontSize(FontSizes.medium)),
+                            color: const Color(0xFF878787),
+                            fontSize: getFontSize(FontSizes.medium),
+                          ),
                         ),
                         Text(
                           "Free",
                           style: TextStyles.bodyMediumBold.copyWith(
-                              color: Pallete.neutral100,
-                              fontSize: getFontSize(FontSizes.medium)),
+                            color: Pallete.neutral100,
+                            fontSize: getFontSize(FontSizes.medium),
+                          ),
                         ),
                       ],
                     ),
@@ -204,14 +215,16 @@ class _CartViewState extends State<CartView> {
                         Text(
                           "Total",
                           style: TextStyles.bodyMediumMedium.copyWith(
-                              color: const Color(0xFF878787),
-                              fontSize: getFontSize(FontSizes.medium)),
+                            color: const Color(0xFF878787),
+                            fontSize: getFontSize(FontSizes.medium),
+                          ),
                         ),
                         Text(
                           "Rp ${_totalPrice.toStringAsFixed(2)}",
                           style: TextStyles.bodyMediumBold.copyWith(
-                              color: Pallete.neutral100,
-                              fontSize: getFontSize(FontSizes.medium)),
+                            color: Pallete.neutral100,
+                            fontSize: getFontSize(FontSizes.medium),
+                          ),
                         ),
                       ],
                     ),
@@ -219,8 +232,18 @@ class _CartViewState extends State<CartView> {
                 ),
               ),
               const Gap(26),
-              DefaultButton(btnContent: "Order Now"),
-              const Gap(6)
+              ElevatedButton(
+                onPressed: () {
+                  Get.to(() => OrderDetailsFormScreen(), arguments: {
+                    'product_ids': customterController.cartItems
+                        .where((item) => item.isChecked)
+                        .map((item) => item.productId)
+                        .toList(),
+                  });
+                },
+                child: Text('Proceed to Order'),
+              ),
+              const Gap(6),
             ],
           ),
         ),

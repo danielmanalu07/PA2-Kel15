@@ -34,24 +34,4 @@ class CategoryController extends GetxController {
       isLoading(false);
     }
   }
-
-//   Future<List<Product>> fetchProductsByCategoryId(int categoryId) async {
-//     try {
-//       final response = await http.get(Uri.parse('http://192.168.217.64:8080/category/$categoryId/products'));
-//       if (response.statusCode == 200) {
-//         List<dynamic> data = jsonDecode(response.body)['message'];
-//         List<Product> products = data.map((json) => Product.fromJson(json)).toList();
-//         return products;
-//       } else {
-//         // Handle error
-//         Get.snackbar('Error', 'Failed to fetch products');
-//         return [];
-//       }
-//     } catch (e) {
-//       // Handle error
-//       Get.snackbar('Error', 'Failed to fetch products');
-//       return [];
-//     }
-//   }
-// }
 }
