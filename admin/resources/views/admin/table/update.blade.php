@@ -39,6 +39,13 @@ Update Data Tabel
             <label for="capacity">Capacity</label>
             <input type="number" name="capacity" class="form-control" id="capacity" value="{{ $table['capacity'] }}" required>
         </div>
+        {{-- <div class="form-group">
+            <label for="status">Status</label>
+            <select name="status" class="form-control" id="status" required>
+                <option value="kosong" {{ $table['status'] == 'kosong' ? 'selected' : '' }}>Kosong</option>
+                <option value="penuh" {{ $table['status'] == 'penuh' ? 'selected' : '' }}>Penuh</option>
+            </select>
+        </div> --}}
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 </div>

@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
-    private $apiUrl = 'http://127.0.0.1:8080';
-    private $admin = 'http://127.0.0.1:8080/admin';
+    private $apiUrl = 'http://172.26.43.150:8080';
+    private $admin = 'http://172.26.43.150:8080/admin';
 
     /**
      * Display a listing of the resource.
@@ -124,43 +124,33 @@ class CategoryController extends Controller
         }
     }
 
-
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
-{
-    try {
-        $token = session('jwt');
+    {
+        try {
+            $token = session('jwt');
 
-        $response = Http::withHeaders([
-            'Cookie' => "jwt={$token}",
-        ])->get("{$this->admin}/profile");
+            $response = Http::withHeaders([
+                'Cookie' => "jwt={$token}",
+            ])->get("{$this->admin}/profile");
 
-        $data = $response->json();
+            $data = $response->json();
 
-        $categoryData = Http::get("{$this->apiUrl}/category/" . $id);
+            $categoryData = Http::get("{$this->apiUrl}/category/" . $id);
 
-        if ($categoryData->successful()) {
-            $responseArray = $categoryData->json();
-
-            if (isset($responseArray['status']) && $responseArray['status'] === 'success' && isset($responseArray['message'])) {
-                $category = $responseArray['message'];
+            if ($categoryData->successful()) {
+                $category = $categoryData->json()['message'];
 
                 return view('admin.category.update', compact('category', 'data'));
             } else {
-                return redirect()->back()->with('error_message', 'Unexpected response structure. Please try again later.');
+                return redirect()->back()->with('error_message', 'Failed to find category. Please try again later.');
             }
-        } else {
+        } catch (\Throwable $th) {
             return redirect()->back()->with('error_message', 'Failed to find category. Please try again later.');
         }
-    } catch (\Throwable $th) {
-        return redirect()->back()->with('error_message', 'Failed to find category. Please try again later.');
     }
-}
-
-    
 
     /**
      * Update the specified resource in storage.
@@ -171,6 +161,7 @@ class CategoryController extends Controller
             'name' => 'required',
             'description' => 'required',
         ]);
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
@@ -178,27 +169,23 @@ class CategoryController extends Controller
         try {
             $token = session('jwt');
 
-            $response = Http::put("{$this->apiUrl}/category/" . $id . "/edit", [
+            $response = Http::put("{$this->apiUrl}/category/edit/" . $id, [
                 'name' => $request->input('name'),
                 'description' => $request->input('description'),
             ]);
 
-            $data = $response->json();
+            if ($response->successful()) {
+                $data = $response->json();
+                $category = $data['message'];
 
-            $CategoryResp = Http::get("{$this->apiUrl}/category/");
-
-            $category = $CategoryResp->json();
-
-            if ($CategoryResp->successful()) {
-                return redirect('/admin/category')->with('success_message', 'Updated  Successfully!');
+                return redirect('/admin/category')->with('success_message', 'Category updated successfully!');
             } else {
+                // Debugging line
+                dd($response->status(), $response->body());
+
                 return redirect()->back()->with('error_message', 'Failed to update category. Please try again later.');
             }
-
-            // return dd($data);
-
         } catch (\Throwable $th) {
-            //throw $th;
             return redirect()->back()->with('error_message', 'Failed to update category. Please try again later.');
         }
     }
@@ -211,18 +198,17 @@ class CategoryController extends Controller
         try {
             $token = session('jwt');
 
-            $response = Http::delete("{$this->apiUrl}/category/" . $id . "/delete");
+            $response = Http::delete("{$this->apiUrl}/category/delete/" . $id);
 
             $data = $response->json();
 
-            // return dd($data);
             if ($response->successful()) {
                 return redirect()->back()->with('success_message', 'Deleted  Successfully!');
             } else {
-                return redirect()->back()->with('error_message', 'Failed to delete category. Please try again later.');
+                return redirect()->back()->with('error_message', 'Failed to delete product. Please try again later.');
             }
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error_message', 'Failed to delete category. Please try again later.');
+            return redirect()->back()->with('error_message', 'Failed to delete product. Please try again later.');
         }
     }
 }

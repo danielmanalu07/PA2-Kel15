@@ -1,20 +1,19 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    private $product = 'http://127.0.0.1:8080';
-    private $category = 'http://127.0.0.1:8080';
-    private $admin = 'http://127.0.0.1:8080/admin';
-    /**
-     * Display a listing of the resource.
-     */
+    private $product = 'http://172.26.43.150:8080';
+    private $category = 'http://172.26.43.150:8080';
+    private $admin = 'http://172.26.43.150:8080/admin';
+
     public function index()
     {
         try {
@@ -35,9 +34,6 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         try {
@@ -76,7 +72,6 @@ class ProductController extends Controller
         }
 
         try {
-
             $productResponse = Http::attach('image', $request->file('image')->get(), $request->file('image')->getClientOriginalName())
                 ->post("{$this->product}/product/create", [
                     'name' => $request->name,
@@ -96,9 +91,6 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         try {
@@ -130,10 +122,6 @@ class ProductController extends Controller
         }
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
         try {
@@ -146,6 +134,7 @@ class ProductController extends Controller
             $data = $response->json();
 
             $productData = Http::get("{$this->product}/product/" . $id);
+            // dd($productData->status(), $productData->body());
 
             if ($productData->successful()) {
                 $responseArray = $productData->json();
@@ -164,68 +153,84 @@ class ProductController extends Controller
             return redirect()->back()->with('error_message', 'Failed to find product. Please try again later.');
         }
     }
+    
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
 {
+    // Validate the incoming request
     $validator = Validator::make($request->all(), [
-        'name' => 'required|string|max:255',
-        'description' => 'required|string',
+        'name' => 'required',
+        'description' => 'required',
         'price' => 'required|numeric',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        'category_id' => 'required|integer',
     ]);
 
+    // Handle validation failures
     if ($validator->fails()) {
-        return redirect()->back()->withErrors($validator)->withInput();
+        return redirect()->back()
+            ->withErrors($validator)
+            ->withInput();
     }
 
     try {
-        $token = session('jwt');
-
-        $response = Http::withHeaders([
-            'Cookie' => "jwt={$token}",
-        ])->get("{$this->admin}/profile");
-
-        $data = $response->json();
-
-        // Fetch the existing product to get the current image
-        $productResponse = Http::get("{$this->product}/product/" . $id);
-        if (!$productResponse->successful()) {
-            return redirect()->back()->with('error_message', 'Failed to retrieve product data. Please try again later.');
-        }
-        $product = $productResponse->json()['message'];
-
-        // Prepare form data
-        $formData = [
-            'name' => $request->input('name'),
-            'description' => $request->input('description'),
-            'price' => $request->input('price'),
-            'image' => $product['image'], // Use existing image as default
+        // Prepare data for updating the product
+        $updateData = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'category_id' => $request->category_id,
         ];
 
+        $token = session('jwt');
+
+        // Check if an image file is included in the request
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('product_images', 'public');
-            $formData['image'] = $imagePath;
+            // Attach the image file and send a POST request to update the product
+            $productResponse = Http::withToken($token)
+                ->attach('image', $request->file('image')->get(), $request->file('image')->getClientOriginalName())
+                ->post("{$this->product}/product/edit/{$id}", $updateData);
+        } else {
+            // Send a PUT request without an image to update the product
+            $productResponse = Http::withToken($token)
+                ->put("{$this->product}/product/edit/{$id}", $updateData);
         }
 
-        // Update the product
-        $updateResponse = Http::put("{$this->product}/product/" . $id . "/edit", $formData);
-
-        if ($updateResponse->successful()) {
-            return redirect('/admin/product')->with('success_message', 'Product updated successfully.');
+        // Check if the response indicates a successful update
+        if ($productResponse->successful()) {
+            return redirect('/admin/product')->with('success_message', 'Product updated successfully!');
         } else {
-            return redirect()->back()->with('error_message', 'Failed to update product. Please try again later.');
+            // Extract and display error message from the response body
+            $errorMessage = $productResponse->json()['message'] ?? 'Failed to update product.';
+            $responseBody = $productResponse->body();
+            return back()->with('error_message', $errorMessage . ' Response: ' . $responseBody);
         }
     } catch (\Throwable $th) {
-        return redirect()->back()->with('error_message', 'Failed to update product. Please try again later.');
+        // Log the error for debugging purposes
+        Log::error('Error updating product: ' . $th->getMessage());
+        return back()->with('error_message', 'An unexpected error occurred. Please try again later.');
     }
 }
 
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    
+
     public function destroy(string $id)
     {
-        //
+        try {
+            $token = session('jwt');
+
+            $response = Http::delete("{$this->product}/product/delete/" . $id);
+
+            $data = $response->json();
+
+            if ($response->successful()) {
+                return redirect()->back()->with('success_message', 'Deleted  Successfully!');
+            } else {
+                return redirect()->back()->with('error_message', 'Failed to delete product. Please try again later.');
+            }
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error_message', 'Failed to delete product. Please try again later.');
+        }
     }
 }

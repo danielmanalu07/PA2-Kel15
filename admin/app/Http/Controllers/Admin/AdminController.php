@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
-    private $apiUrl = 'http://127.0.0.1:8080/admin';
+    private $apiUrl = 'http://172.26.43.150:8080/admin';
 
     public function adminLogin(Request $request)
     {
@@ -77,18 +77,19 @@ class AdminController extends Controller
             if (!$token) {
                 return redirect('/admin/login')->with('error', 'Unauthenticated');
             }
-
+    
             $response = Http::withHeaders([
-                'Cookie' => "jwt {$token}",
+                'Cookie' => "jwt={$token}",
             ])->post("{$this->apiUrl}/logout");
-
+    
             session()->forget('jwt');
             return redirect('/admin/login')->with('success', 'Logout successful');
-
+    
         } catch (\Throwable $th) {
             return redirect('/admin/login')->with('error', 'You must be logged in.');
         }
     }
+    
 
     public function profile(Request $request)
     {
@@ -115,26 +116,67 @@ class AdminController extends Controller
     }
 
     // Add the dashboard method here
+
     public function dashboard(Request $request)
+        {
+            try {
+                $token = session('jwt');
+                if (!$token) {
+                    return redirect('/admin/login')->with('error', 'Unauthenticated');
+                }
+                $response = Http::withHeaders([
+                    'Cookie' => "jwt={$token}",
+                ])->get("{$this->apiUrl}/profile");
+    
+                if ($response->failed()) {
+                    throw new \Exception("Failed to fetch profile.");
+                }
+    
+                $data = $response->json();
+    
+                return view('admin.dashboard', compact('data')); // Ensure you have a 'dashboard.blade.php' file in the 'admin' view directory
+            } catch (\Throwable $th) {
+                return redirect('/admin/login')->with('error', 'You must be logged in.');
+            }
+        }
+
+    
+    public function approve(string $id)
     {
         try {
             $token = session('jwt');
-            if (!$token) {
-                return redirect('/admin/login')->with('error', 'Unauthenticated');
+    
+            $response = Http::put("http://172.26.43.150:8080/order/status/" . $id, [
+                'status' => 1,
+            ]);
+    
+            if ($response->successful()) {
+                return redirect('/admin/order')->with('success_message', 'Order approved successfully!');
+            } else {
+                return redirect()->back()->with('error_message', 'Failed to update order. Please try again later.');
             }
-            $response = Http::withHeaders([
-                'Cookie' => "jwt={$token}",
-            ])->get("{$this->apiUrl}/profile");
-
-            if ($response->failed()) {
-                throw new \Exception("Failed to fetch profile.");
-            }
-
-            $data = $response->json();
-
-            return view('admin.dashboard', compact('data')); // Ensure you have a 'dashboard.blade.php' file in the 'admin' view directory
         } catch (\Throwable $th) {
-            return redirect('/admin/login')->with('error', 'You must be logged in.');
+            return redirect()->back()->with('error_message', 'Failed to update order. Please try again later.');
         }
     }
+    
+    public function reject(string $id)
+    {
+        try {
+            $token = session('jwt');
+    
+            $response = Http::put("http://172.26.43.150:8080/order/status/" . $id, [
+                'status' => 2,
+            ]);
+    
+            if ($response->successful()) {
+                return redirect('/admin/order')->with('success_message', 'Order rejected successfully!');
+            } else {
+                return redirect()->back()->with('error_message', 'Failed to update order. Please try again later.');
+            }
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error_message', 'Failed to update order. Please try again later.');
+        }
+    }
+        
 }

@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class TableController extends Controller
 {
-    private $tableService = 'http://127.0.0.1:8080';
-    private $admin = 'http://127.0.0.1:8080/admin';
+    private $tableService = 'http://172.26.43.150:8080';
+    private $admin = 'http://172.26.43.150:8080/admin';
 
     /**
      * Display a listing of the resource.
@@ -19,20 +20,24 @@ class TableController extends Controller
     {
         try {
             $token = session('jwt');
-
+    
             $response = Http::withHeaders([
                 'Cookie' => "jwt={$token}",
             ])->get("{$this->admin}/profile");
-
+    
             $data = $response->json();
+    
             $tableResp = Http::get("{$this->tableService}/table");
-
+    
             $tables = $tableResp->json();
+            // dd($tables); // Debug the table data
+    
             return view('admin.table.index', compact('data', 'tables'));
         } catch (\Throwable $th) {
             throw $th;
         }
     }
+    
 
     /**
      * Show the form for creating a new resource.
@@ -45,10 +50,6 @@ class TableController extends Controller
             $response = Http::withHeaders([
                 'Cookie' => "jwt={$token}",
             ])->get("{$this->admin}/profile");
-
-            $tableResp = Http::get("{$this->tableService}/table");
-
-            $category = $tableResp->json();
 
             $data = $response->json();
 
@@ -66,6 +67,7 @@ class TableController extends Controller
         $validator = Validator::make($request->all(), [
             'number' => 'required|integer',
             'capacity' => 'required|integer',
+            // 'status' => 'required|string', // Remove this line
         ]);
 
         if ($validator->fails()) {
@@ -75,60 +77,93 @@ class TableController extends Controller
         }
 
         try {
-            $TableResp = Http::post("{$this->tableService}/table/create", [
-                'number' => $request->number,
-                'capacity' => $request->capacity,
+            $status = $request->input('status', 'kosong'); // Set default status to "pending"
+
+            $tableResp = Http::post("{$this->tableService}/table/create", [
+                'number' => intval($request->input('number')),
+                'capacity' => intval($request->input('capacity')),
+                'status' => $status,
             ]);
 
-            if ($TableResp->successful()) {
+            if ($tableResp->successful()) {
                 return redirect('/admin/table')->with('success_message', 'Table created successfully!');
             } else {
-                $errorMessage = $TableResp->json()['message'] ?? 'Failed to create table.';
+                $errorMessage = $tableResp->json()['message'] ?? 'Failed to create table.';
                 return back()->with('error_message', $errorMessage);
             }
         } catch (\Throwable $th) {
+            Log::error('Table creation failed: ' . $th->getMessage());
             return back()->with('error_message', 'Failed to create table. Please try again later.');
         }
     }
 
-
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
         try {
-            $response = Http::get("{$this->tableService}/{$id}");
+            $token = session('jwt');
 
-            if ($response->successful()) {
-                $table = $response->json();
-                return view('admin.table.show', compact('table'));
+            $response = Http::withHeaders([
+                'Cookie' => "jwt={$token}",
+            ])->get("{$this->admin}/profile");
+
+            $data = $response->json();
+
+            $tableData = Http::get("{$this->tableService}/table/" . $id);
+
+            if ($tableData->successful()) {
+                $responseArray = $tableData->json();
+
+                if (isset($responseArray['status']) && $responseArray['status'] === 'success' && isset($responseArray['message'])) {
+                    $table = $responseArray['message'];
+
+                    return view('admin.table.show', compact('table', 'data'));
+                } else {
+                    return redirect()->back()->with('error_message', 'Unexpected response structure. Please try again later.');
+                }
             } else {
-                return redirect('/admin/table')->with('error_message', 'Table not found.');
+                return redirect()->back()->with('error_message', 'Failed to find table. Please try again later.');
             }
         } catch (\Throwable $th) {
-            throw $th;
+            return redirect()->back()->with('error_message', 'Failed to find table. Please try again later.');
         }
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    // public function edit(string $id)
-    // {
-    //     try {
-    //         $response = Http::get("{$this->tableService}/{$id}");
+    public function edit($id)
+    {
+        try {
+            $token = session('jwt');
 
-    //         if ($response->successful()) {
-    //             $table = $response->json();
-    //             return view('admin.table.edit', compact('table'));
-    //         } else {
-    //             return redirect('/admin/table')->with('error_message', 'Table not found.');
-    //         }
-    //     } catch (\Throwable $th) {
-    //         throw $th;
-    //     }
-    // }
+            $response = Http::withHeaders([
+                'Cookie' => "jwt={$token}",
+            ])->get("{$this->admin}/profile");
+
+            $data = $response->json();
+
+            $tableData = Http::get("{$this->tableService}/table/" . $id);
+
+            if ($tableData->successful()) {
+                $responseArray = $tableData->json();
+
+                if (isset($responseArray['status']) && $responseArray['status'] === 'success' && isset($responseArray['message'])) {
+                    $table = $responseArray['message'];
+
+                    return view('admin.table.update', compact('table', 'data'));
+                } else {
+                    return redirect()->back()->with('error_message', 'Unexpected response structure. Please try again later.');
+                }
+            } else {
+                return redirect()->back()->with('error_message', 'Failed to find table. Please try again later.');
+            }
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error_message', 'Failed to find table. Please try again later.');
+        }
+    }
 
     /**
      * Update the specified resource in storage.
@@ -138,6 +173,7 @@ class TableController extends Controller
         $validator = Validator::make($request->all(), [
             'number' => 'required|integer',
             'capacity' => 'required|integer',
+            'status' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -145,18 +181,21 @@ class TableController extends Controller
         }
 
         try {
-            $response = Http::put("{$this->tableService}/{$id}/edit", [
-                'number' => $request->number,
-                'capacity' => $request->capacity,
+            $token = session('jwt');
+
+            $response = Http::put("{$this->tableService}/table/edit/" . $id, [
+                'number' => intval($request->input('number')),
+                'capacity' => intval($request->input('capacity')),
+                'status' => $request->input('status'),
             ]);
 
             if ($response->successful()) {
                 return redirect('/admin/table')->with('success_message', 'Table updated successfully!');
             } else {
-                return redirect()->back()->with('error_message', 'Failed to update table.');
+                return redirect()->back()->with('error_message', 'Failed to update table. Please try again later.');
             }
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error_message', 'Failed to update table.');
+            return redirect()->back()->with('error_message', 'Failed to update table. Please try again later.');
         }
     }
 
@@ -166,7 +205,7 @@ class TableController extends Controller
     public function destroy(string $id)
     {
         try {
-            $response = Http::delete("{$this->tableService}/{$id}/delete");
+            $response = Http::delete("{$this->tableService}/table/delete/" . $id);
 
             if ($response->successful()) {
                 return redirect()->back()->with('success_message', 'Table deleted successfully!');

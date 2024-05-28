@@ -12,8 +12,8 @@
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <img src="http://127.0.0.1:8080/product/image/{{ $product['image'] }}" alt="Product Image"
-                        class="img-fluid rounded mb-3" style="max-width: 100%; height: auto;">
+                    <img src="http://172.27.80.102:8080/product/image/{{ $product['image'] }}" alt="Product Image"
+                        class="img-fluid rounded mb-3" style="max-width: 30%; height: auto;">
                 </div>
                 <div class="mb-3">
                     <h5 class="card-title">Description</h5>

@@ -1,7 +1,7 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="dashboard">
         <div class="sidebar-brand-icon rotate">
             <i class="fas fa-user"></i>
         </div>
@@ -71,6 +71,22 @@
                 <h6 class="collapse-header">Custom Table</h6>
                 <a class="collapse-item" href="/admin/table/create">Create Table</a>
                 <a class="collapse-item" href="/admin/table">List Table</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Utilities Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#Order" aria-expanded="true"
+            aria-controls="Product">
+            <i class="fas fa-fw fa-book"></i>
+            <span>Order</span>
+        </a>
+        <div id="Order" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Custom Order</h6>
+                {{-- <a class="collapse-item" href="/admin/Order/create">Create Order</a> --}}
+                <a class="collapse-item" href="/admin/order">List Order</a>
             </div>
         </div>
     </li>

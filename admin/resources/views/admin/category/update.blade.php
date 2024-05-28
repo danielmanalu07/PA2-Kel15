@@ -25,7 +25,7 @@
 @endpush
 @section('content')
     <div class="container d-block">
-        <form action="/admin/category/{{ $category['id'] }}" method="POST" id="update-form">
+        <form action="{{ route('admin.category.update', $category['id']) }}" method="POST" id="update-form">
             @csrf
             @method('PUT')
             <div class="mb-3 pt-3">
@@ -43,7 +43,7 @@
                 <div class="alert alert-danger">{{ $message }}</div>
             @enderror
             <button type="button" class="btn btn-primary" onclick="confirmUpdate(event)">Update</button>
-            <a href="/admin/catgory" class="btn btn-secondary">Back to List</a>
+            <a href="/admin/category" class="btn btn-secondary">Back to List</a>
 
         </form>
     </div>
