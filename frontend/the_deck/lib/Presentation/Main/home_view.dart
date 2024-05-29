@@ -114,7 +114,8 @@ class _HomeViewState extends State<HomeView> {
                               fontSize: getFontSize(FontSizes.large)),
                         ),
                         GestureDetector(
-                          onTap: () => Get.to(() => CategoryListScreen()), // Navigate to CategoryListScreen
+                          onTap: () => Get.to(() =>
+                              CategoryListScreen()), // Navigate to CategoryListScreen
                           child: Text(
                             "See All",
                             style: TextStyles.bodyMediumMedium.copyWith(
@@ -129,6 +130,7 @@ class _HomeViewState extends State<HomeView> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: categoryController.categories
+                            .take(4)
                             .map(
                               (category) => GestureDetector(
                                 onTap: () => Get.to(() => ProductListScreen(

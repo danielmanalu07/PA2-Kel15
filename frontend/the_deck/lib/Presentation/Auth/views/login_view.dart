@@ -33,80 +33,82 @@ class LoginView extends StatelessWidget {
 
     MathUtils.init(context);
     return Scaffold(
-        body: Padding(
-      padding: EdgeInsets.symmetric(horizontal: getWidth(24)).copyWith(
-        top: MediaQuery.of(context).viewPadding.top,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Gap(32),
-          Center(
-            child: CircleAvatar(
-              radius: 50,
-              backgroundImage: AssetImage(
-                  'assets/img/logo.jpg'), // Ensure the path is correct
-            ),
-          ),
-          Text(
-            "Login to your\n account.",
-            style: TextStyles.headingH4SemiBold
-                .copyWith(color: Pallete.neutral100),
-          ),
-          const Gap(8),
-          Text(
-            "Please sign in to your account ",
-            style: TextStyles.bodyMediumMedium
-                .copyWith(color: Pallete.neutral60, fontSize: getFontSize(14)),
-          ),
-          const Gap(32),
-          DefaultField(
-            hintText: "Enter Email",
-            controller: _emailController,
-            labelText: "Email",
-          ),
-          const Gap(14),
-          DefaultFieldPW(
-            hintText: "Password",
-            labelText: "Password",
-            controller: _passwordController,
-            isPasswordField: true,
-          ),
-          const Gap(24),
-          const Gap(24),
-          DefaultButton(
-            btnContent: "Sign In",
-            function: _login,
-          ),
-          const Gap(32),
-          Align(
-            alignment: Alignment.center,
-            child: Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: "Don't have an account?",
-                    style: TextStyles.bodyMediumMedium.copyWith(
-                        color: Pallete.neutral100, fontSize: getFontSize(14)),
-                  ),
-                  TextSpan(
-                      text: ' ',
-                      style: TextStyles.bodyMediumSemiBold
-                          .copyWith(fontSize: getFontSize(14))),
-                  TextSpan(
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => Navigator.pushReplacementNamed(
-                            context, RoutesName.signUp),
-                      text: 'Register',
-                      style: TextStyles.bodyMediumSemiBold.copyWith(
-                          color: Pallete.greenStrong,
-                          fontSize: getFontSize(14))),
-                ],
+        body: SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: getWidth(24)).copyWith(
+          top: MediaQuery.of(context).viewPadding.top,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Gap(32),
+            Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage: AssetImage(
+                    'assets/img/logo.jpg'), // Ensure the path is correct
               ),
             ),
-          )
-        ],
+            Text(
+              "Login to your\n account.",
+              style: TextStyles.headingH4SemiBold
+                  .copyWith(color: Pallete.neutral100),
+            ),
+            const Gap(8),
+            Text(
+              "Please sign in to your account ",
+              style: TextStyles.bodyMediumMedium.copyWith(
+                  color: Pallete.neutral60, fontSize: getFontSize(14)),
+            ),
+            const Gap(32),
+            DefaultField(
+              hintText: "Enter Email",
+              controller: _emailController,
+              labelText: "Email",
+            ),
+            const Gap(14),
+            DefaultFieldPW(
+              hintText: "Password",
+              labelText: "Password",
+              controller: _passwordController,
+              isPasswordField: true,
+            ),
+            const Gap(24),
+            const Gap(24),
+            DefaultButton(
+              btnContent: "Sign In",
+              function: _login,
+            ),
+            const Gap(32),
+            Align(
+              alignment: Alignment.center,
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "Don't have an account?",
+                      style: TextStyles.bodyMediumMedium.copyWith(
+                          color: Pallete.neutral100, fontSize: getFontSize(14)),
+                    ),
+                    TextSpan(
+                        text: ' ',
+                        style: TextStyles.bodyMediumSemiBold
+                            .copyWith(fontSize: getFontSize(14))),
+                    TextSpan(
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => Navigator.pushReplacementNamed(
+                              context, RoutesName.signUp),
+                        text: 'Register',
+                        style: TextStyles.bodyMediumSemiBold.copyWith(
+                            color: Pallete.greenStrong,
+                            fontSize: getFontSize(14))),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     ));
   }

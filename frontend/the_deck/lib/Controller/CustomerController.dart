@@ -24,7 +24,7 @@ class RegisterController extends GetxController {
   var orderItems = <Order>[].obs;
 
   Future<void> registerUser(RegisterModel registerModel) async {
-    final url = Uri.parse('http://172.26.43.150:8080/customer/register');
+    final url = Uri.parse('http://192.168.30.215:8080/customer/register');
 
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({'Content-Type': 'multipart/form-data'});
@@ -68,7 +68,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> loginUser(String email, String password) async {
-    final url = Uri.parse('http://172.26.43.150:8080/customer/login');
+    final url = Uri.parse('http://192.168.30.215:8080/customer/login');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -103,14 +103,12 @@ class RegisterController extends GetxController {
   }
 
   Future<void> getUserProfile() async {
-    final url = Uri.parse('http://172.26.43.150:8080/customer/profile');
+    final url = Uri.parse('http://192.168.30.215:8080/customer/profile');
     final token = box.read('token');
     final response = await http.get(
       url,
       headers: {'Cookie': 'jwt=$token'},
     );
-
-    print('Token : $token');
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
@@ -123,12 +121,11 @@ class RegisterController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-      print('Fetching profile data failed: ${response.body}');
     }
   }
 
   Future<void> logout() async {
-    final url = Uri.parse('http://172.26.43.150:8080/customer/logout');
+    final url = Uri.parse('http://192.168.30.215:8080/customer/logout');
     final token = box.read('token');
     final response = await http.post(
       url,
@@ -159,7 +156,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> addToCart(int productId, int quantity) async {
-    final url = Uri.parse('http://172.26.43.150:8080/cart/add');
+    final url = Uri.parse('http://192.168.30.215:8080/cart/add');
     final token = box.read('token');
     final response = await http.post(
       url,
@@ -193,7 +190,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> getMyOrder() async {
-    final url = Uri.parse('http://172.26.43.150:8080/order/myorder');
+    final url = Uri.parse('http://192.168.30.215:8080/order/myorder');
     final token = box.read('token');
     final response = await http.get(
       url,
@@ -211,7 +208,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> getMyCart() async {
-    final url = Uri.parse('http://172.26.43.150:8080/cart/myCart');
+    final url = Uri.parse('http://192.168.30.215:8080/cart/myCart');
     final token = box.read('token');
     final response = await http.get(
       url,
@@ -230,7 +227,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> deleteCartItem(int cartItemId) async {
-    final url = Uri.parse('http://172.26.43.150:8080/cart/delete/$cartItemId');
+    final url = Uri.parse('http://192.168.30.215:8080/cart/delete/$cartItemId');
     final token = box.read('token');
     final response = await http.delete(
       url,
@@ -261,7 +258,7 @@ class RegisterController extends GetxController {
 
   Future<void> updateCartItemQuantity(int cartItemId, int quantity,
       {VoidCallback? onSuccess}) async {
-    final url = Uri.parse('http://172.26.43.150:8080/cart/edit/$cartItemId');
+    final url = Uri.parse('http://192.168.30.215:8080/cart/edit/$cartItemId');
     final token = box.read('token');
     final response = await http.put(
       url,
@@ -284,7 +281,7 @@ class RegisterController extends GetxController {
     final token = box.read('token');
     if (image != null) {
       File imageFile = File(image.path);
-      final uploadUrl = 'http://172.26.43.150:8080/order/payment/$orderId';
+      final uploadUrl = 'http://192.168.30.215:8080/order/payment/$orderId';
 
       var request = http.MultipartRequest('PUT', Uri.parse(uploadUrl));
       request.headers.addAll({'Cookie': 'jwt=${token}'});
@@ -312,17 +309,16 @@ class RegisterController extends GetxController {
 
   Future<void> updateOrderStatus(int orderId) async {
     try {
-      final url = Uri.parse('http://172.26.43.150:8080/order/status/$orderId');
+      final url = Uri.parse('http://192.168.30.215:8080/order/status/$orderId');
       final token = box.read('token');
       final response = await http.put(
         url,
         headers: {'Cookie': 'jwt=$token'},
-        body: {'status': '3'},
+        body: {'status': '5'},
       );
 
       if (response.statusCode == 200) {
         print('Order status updated successfully');
-        Get.to(() => MyOrder());
         Get.snackbar(
           'Success',
           'Canceled Successfully',
@@ -337,6 +333,7 @@ class RegisterController extends GetxController {
       print('Error updating order status: $e');
     }
   }
+
   Future<void> updateUserProfile(Customer updatedCustomer) async {
     final url = Uri.parse('http://192.168.30.215:8080/customer/update-profile');
     final token = box.read('token');
@@ -358,7 +355,6 @@ class RegisterController extends GetxController {
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
-      print('Profile update successful');
     } else {
       Get.snackbar(
         'Error',
@@ -367,7 +363,32 @@ class RegisterController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-      print('Profile update failed: ${response.body}');
+    }
+  }
+
+  Future<String?> uploadImages(File image) async {
+    final url = Uri.parse('http://192.168.30.215:8080/customer/upload-profile');
+    final token = box.read('token');
+    final request = http.MultipartRequest('POST', url);
+    request.headers['Cookie'] = 'jwt=$token';
+
+    request.files.add(await http.MultipartFile.fromPath('image', image.path));
+
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseData = await http.Response.fromStream(response);
+      final data = jsonDecode(responseData.body);
+      return data['imageUrl'];
+    } else {
+      Get.snackbar(
+        'Error',
+        'Image upload failed',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return null;
     }
   }
 }

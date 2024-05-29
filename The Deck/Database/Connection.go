@@ -10,7 +10,7 @@ import (
 var DB *gorm.DB
 
 func Connection() {
-	const con = "root@tcp(localhost)/the_deck?charset=utf8mb4&parseTime=True&loc=Local"
+	const con = "root@tcp(localhost)/thedeckpa2?charset=utf8mb4&parseTime=True&loc=Local"
 	dsn := con
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 

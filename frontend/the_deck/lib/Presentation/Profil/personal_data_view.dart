@@ -53,24 +53,8 @@ class _PersonalDataViewState extends State<PersonalDataView> {
                 children: [
                   CircleAvatar(
                     backgroundImage: NetworkImage(
-                        'http://172.26.43.150:8080/customer/image/${customer.image}'),
+                        'http://192.168.30.215:8080/customer/image/${customer.image}'),
                     radius: getSize(50),
-                  ),
-                  Positioned(
-                    left: getSize(72),
-                    bottom: getSize(8),
-                    child: Container(
-                      width: getSize(32),
-                      height: getSize(32),
-                      padding: EdgeInsets.all(getSize(6)),
-                      decoration: const BoxDecoration(
-                          color: Color(0xFFF5F5FF), shape: BoxShape.circle),
-                      child: Icon(
-                        CupertinoIcons.camera_fill,
-                        color: Pallete.orangePrimary,
-                        size: getSize(20),
-                      ),
-                    ),
                   ),
                 ],
               ),

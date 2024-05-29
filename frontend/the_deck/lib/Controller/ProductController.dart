@@ -16,9 +16,9 @@ class ProductController extends GetxController {
 
   Future<void> fetchProductList() async {
     final response =
-        await http.get(Uri.parse('http://172.26.43.150:8080/product'));
+        await http.get(Uri.parse('http://192.168.30.215:8080/product'));
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body)['message'];
+      final List<dynamic> data = json.decode(response.body)['message'] ?? [];
       productList.value = data.map((json) => Product.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load products');
@@ -32,7 +32,7 @@ class ProductController extends GetxController {
 
   Future<void> getProductById(int id) async {
     final response =
-        await http.get(Uri.parse('http://172.26.43.150:8080/product/${id}'));
+        await http.get(Uri.parse('http://192.168.30.215:8080/product/${id}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -51,7 +51,7 @@ class ProductController extends GetxController {
 
   Future<void> getProductByCategoryId(int categoryId) async {
     final response = await http.get(
-        Uri.parse('http://172.26.43.150:8080/product/category/$categoryId'));
+        Uri.parse('http://192.168.30.215:8080/product/category/$categoryId'));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['message'] ?? [];
       productList.value = data.map((json) => Product.fromJson(json)).toList();

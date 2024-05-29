@@ -178,24 +178,37 @@ func (o *orderService) CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate)
 		return nil, utils.MessageJSON(ctx, 400, "error", "Invalid Payment Method")
 	}
 
-	if input.PickUpType == "Dine in" && input.TableId == 0 {
-		return nil, utils.MessageJSON(ctx, 400, "error", "Table is required for Dine in")
-	} else if input.PickUpType != "Take Away" && input.PickUpType != "Dine in" {
+	if input.PickUpType == "Dine In" && input.TableId == 0 {
+		return nil, utils.MessageJSON(ctx, 400, "error", "Table is required for Dine In")
+	} else if input.PickUpType != "Take Away" && input.PickUpType != "Dine In" {
 		return nil, utils.MessageJSON(ctx, 400, "error", "Invalid Pick Up Type")
 	}
 
-	customer := ctx.Locals("customer").(entity.Customer)
+	// Mendapatkan informasi pelanggan dari konteks
+	customer, ok := ctx.Locals("customer").(entity.Customer)
+	if !ok {
+		return nil, utils.MessageJSON(ctx, 400, "error", "Customer not found")
+	}
 
+	// Mendapatkan item keranjang
 	var cartItems []entity.Cart
 	if err := database.DB.Where("customer_id = ?", customer.Id).Preload("Product").Find(&cartItems).Error; err != nil {
 		return nil, utils.MessageJSON(ctx, 500, "error", "Could not fetch cart items")
 	}
 
+	if len(cartItems) == 0 {
+		return nil, utils.MessageJSON(ctx, 400, "error", "Cart is empty")
+	}
+
+	// Set TableId to nil if PickUpType is "Take Away"
 	var tableId *uint
-	if input.PickUpType == "Dine in" {
+	if input.PickUpType == "Take Away" {
+		tableId = nil
+	} else {
 		tableId = &input.TableId
 	}
 
+	// Membuat pesanan
 	order := entity.Order{
 		Code:           GenerateCodeOrder(),
 		CustomerID:     customer.Id,
@@ -213,10 +226,10 @@ func (o *orderService) CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate)
 		return nil, utils.MessageJSON(ctx, 500, "error", "Could not create order")
 	}
 
-	for _, productID := range input.ProductIDs {
+	for _, cartItem := range cartItems {
 		orderProduct := entity.OrderProduct{
 			OrderID:   savedOrder.Id,
-			ProductID: productID,
+			ProductID: cartItem.ProductID,
 		}
 		if err := database.DB.Create(&orderProduct).Error; err != nil {
 			return nil, utils.MessageJSON(ctx, 500, "error", "Could not associate product with order")
@@ -227,6 +240,7 @@ func (o *orderService) CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate)
 		return nil, utils.MessageJSON(ctx, 500, "error", "Could not retrieve created order")
 	}
 
+	// Membuat respons pesanan
 	orderResponse := &response.OrderResponse{
 		Id:             savedOrder.Id,
 		Code:           savedOrder.Code,

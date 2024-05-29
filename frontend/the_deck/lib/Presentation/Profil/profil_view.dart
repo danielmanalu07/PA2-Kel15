@@ -31,6 +31,32 @@ class _ProfilViewState extends State<ProfilView> {
     _controller.getUserProfile();
   }
 
+  void _confirmLogout() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Logout'),
+          content: Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Tutup pop-up
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _controller.logout(); // Panggil fungsi logout
+              },
+              child: Text('Logout'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -147,19 +173,14 @@ class _ProfilViewState extends State<ProfilView> {
                 const Gap(16),
                 Align(
                   alignment: Alignment.center,
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = _controller.logout,
-                          text: 'Sign Out',
-                          style: TextStyles.bodyMediumSemiBold.copyWith(
-                            color: Pallete.greenStrong,
-                            fontSize: getFontSize(14),
-                          ),
-                        ),
-                      ],
+                  child: TextButton(
+                    onPressed: _confirmLogout,
+                    child: Text(
+                      'Sign Out',
+                      style: TextStyles.bodyMediumSemiBold.copyWith(
+                        color: Pallete.greenStrong,
+                        fontSize: getFontSize(14),
+                      ),
                     ),
                   ),
                 ),

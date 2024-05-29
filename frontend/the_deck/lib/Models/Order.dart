@@ -4,7 +4,7 @@ class Order {
   final String total;
   final String note;
   final String paymentMethod;
-  final int tableId;
+  final int? tableId;
   final String pickUpType;
   final String proofOfPayment;
   final int status;

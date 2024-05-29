@@ -69,7 +69,7 @@ func (o *orderRepository) GetAll() ([]entity.Order, error) {
 }
 
 func (o *orderRepository) Create(order entity.Order) (*entity.Order, error) {
-	if err := database.DB.Debug().Create(&order).Error; err != nil {
+	if err := database.DB.Debug().Preload("Tables").Create(&order).Error; err != nil {
 		return nil, err
 	}
 

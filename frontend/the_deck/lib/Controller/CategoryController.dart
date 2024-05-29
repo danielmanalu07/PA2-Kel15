@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:the_deck/Config/api.dart';
 import 'dart:convert';
 
 import 'package:the_deck/Models/Category.dart';
@@ -18,8 +19,7 @@ class CategoryController extends GetxController {
   void fetchCategories() async {
     try {
       isLoading(true);
-      final response =
-          await http.get(Uri.parse('http://172.26.43.150:8080/category'));
+      final response = await http.get(Uri.parse('${url}/category'));
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body)['message'];
         categories.value = data.map((json) => Category.fromJson(json)).toList();

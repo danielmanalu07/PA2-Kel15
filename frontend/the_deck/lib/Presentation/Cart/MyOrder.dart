@@ -53,62 +53,95 @@ class _MyOrderState extends State<MyOrder> {
   void _showImagePickerDialog(BuildContext context, int orderId) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Upload Proof of Payment'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () async {
-                await _pickImage(context);
-                setState(() {});
-              },
-              child: Container(
-                width: double.infinity,
-                height: 150,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[400]!),
-                ),
-                child: _image != null
-                    ? Image.file(
-                        File(_image!.path),
-                        fit: BoxFit.cover,
-                      )
-                    : Center(
-                        child: Text(
-                          'Tap to select image',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-              ),
-            ),
-            SizedBox(height: 16),
-            if (_image != null) Text('Selected: ${_image!.name}'),
-          ],
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
         ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              setState(() {
-                _image = null;
-              });
-              Navigator.of(context).pop();
-            },
-            child: Text('Cancel'),
+        child: Container(
+          padding: EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Upload Proof of Payment',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  height: 450,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey[400]!),
+                  ),
+                  child: Image.asset(
+                    'assets/img/QRIS.jpeg', // Path to your QRIS image
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                SizedBox(height: 16),
+                GestureDetector(
+                  onTap: () async {
+                    await _pickImage(context);
+                    setState(() {});
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey[400]!),
+                    ),
+                    child: _image != null
+                        ? Image.file(
+                            File(_image!.path),
+                            fit: BoxFit.cover,
+                          )
+                        : Center(
+                            child: Text(
+                              'Tap to select image',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                if (_image != null) Text('Selected: ${_image!.name}'),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _image = null;
+                        });
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        await _customerController.uploadImage(
+                            context, orderId, _image);
+                        await _fetchOrders();
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Submit'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          TextButton(
-            onPressed: () async {
-              await _customerController.uploadImage(
-                  context, orderId, _image);
-              Navigator.of(context).pop();
-              _fetchOrders();
-            },
-            child: Text('Submit'),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -136,14 +169,30 @@ class _MyOrderState extends State<MyOrder> {
                   itemBuilder: (context, index) {
                     final order = orders[index];
                     String status;
+                    String table;
+                    String payment;
                     if (order.status == 0) {
                       status = 'Waiting';
                     } else if (order.status == 1) {
                       status = 'Accepted';
                     } else if (order.status == 2) {
                       status = 'Rejected';
+                    } else if (order.status == 3) {
+                      status = 'Ready for Pick Up';
+                    } else if (order.status == 4) {
+                      status = 'Finished';
                     } else {
                       status = 'Canceled';
+                    }
+                    if (order.tableId == 0) {
+                      table = 'Tidak Menggunakan Meja Makan';
+                    } else {
+                      table = 'Menggunakan Meja ${order.tableId}';
+                    }
+                    if (order.proofOfPayment == "") {
+                      payment = 'Belum Terkirim';
+                    } else {
+                      payment = 'Sudah Terkirim';
                     }
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -157,19 +206,21 @@ class _MyOrderState extends State<MyOrder> {
                               Text('Total: ${order.total}'),
                               Text('Status: $status'),
                               Text('Jenis Pembayaran: ${order.paymentMethod}'),
-                              Text('Table: ${order.tableId}'),
+                              Text('Table: $table'),
                               Text('Note: ${order.note}'),
                               Text('Jenis Pengambilan: ${order.pickUpType}'),
-                              Text('Bukti Pembayaran: ${order.proofOfPayment}'),
+                              Text('Bukti Pembayaran: $payment'),
                             ],
                           ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              if (order.proofOfPayment.isEmpty)
+                              if (order.proofOfPayment.isEmpty &&
+                                  status != 'Canceled' &&
+                                  order.paymentMethod != "Cash")
                                 TextButton(
-                                  onPressed: () => _showImagePickerDialog(
-                                      context, order.id),
+                                  onPressed: () =>
+                                      _showImagePickerDialog(context, order.id),
                                   child: Text(
                                     "Upload Payment",
                                     style: TextStyle(color: Colors.blue),
@@ -190,7 +241,7 @@ class _MyOrderState extends State<MyOrder> {
                                     "Cancel Order",
                                     style: TextStyle(
                                       color: Colors.red,
-                                      fontSize: 12, // Change the font size
+                                      fontSize: 12,
                                     ),
                                   ),
                                 ),

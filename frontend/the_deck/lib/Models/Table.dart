@@ -1,7 +1,7 @@
 class Table {
   final int id;
-  final String number;
-  final String capacity;
+  final int number;
+  final int capacity;
 
   Table({required this.id, required this.number, required this.capacity});
 

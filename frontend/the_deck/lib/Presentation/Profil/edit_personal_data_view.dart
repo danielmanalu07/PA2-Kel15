@@ -1,14 +1,15 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:gap/gap.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:the_deck/Controller/CustomerController.dart';
 import 'package:the_deck/Core/app_colors.dart';
 import 'package:the_deck/Models/Customer.dart';
 import 'package:the_deck/Presentation/Auth/screens/default_button.dart';
 import 'package:the_deck/Presentation/Base/base.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
 class EditPersonalDataView extends StatefulWidget {
   const EditPersonalDataView({Key? key}) : super(key: key);
@@ -26,8 +27,6 @@ class _EditPersonalDataViewState extends State<EditPersonalDataView> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
-    final TextEditingController _genderController = TextEditingController();
-
 
   String? _selectedGender;
   File? _selectedImage;
@@ -43,7 +42,7 @@ class _EditPersonalDataViewState extends State<EditPersonalDataView> {
         _phoneController.text = customer.phone;
         _addressController.text = customer.address;
         _dateOfBirthController.text = customer.dateOfBirth;
-        _selectedGender = customer.gender == 'laki laki' ? 'Male' : 'Female';
+        _selectedGender = customer.gender;
       }
     });
   }
@@ -73,10 +72,18 @@ class _EditPersonalDataViewState extends State<EditPersonalDataView> {
     }
   }
 
-  void _updateProfile() {
-    print("Updating profile with:");
-    print("Name: ${_nameController.text}");
-    print("Date of Birth: ${_dateOfBirthController.text}");
+  Future<void> _updateProfile() async {
+    // Upload the image first if there is a new selected image
+    String? imageUrl;
+    if (_selectedImage != null) {
+      final uploadResponse = await _controller.uploadImages(_selectedImage!);
+      if (uploadResponse != null) {
+        imageUrl = uploadResponse;
+      } else {
+        Get.snackbar('Error', 'Could not upload image');
+        return;
+      }
+    }
 
     final updatedCustomer = Customer(
       name: _nameController.text,
@@ -84,17 +91,12 @@ class _EditPersonalDataViewState extends State<EditPersonalDataView> {
       email: _emailController.text,
       phone: _phoneController.text,
       address: _addressController.text,
-      image: _selectedImage?.path ?? _controller.userProfile.value?.image ?? '',
+      image: imageUrl ?? _controller.userProfile.value?.image ?? '',
       dateOfBirth: _dateOfBirthController.text,
       gender: _selectedGender ?? '',
     );
-    _controller.updateUserProfile(updatedCustomer).then((_) {
-      // Debugging check to confirm update
-      final updatedCustomer = _controller.userProfile.value;
-      print("Updated customer profile:");
-      print("Name: ${updatedCustomer?.name}");
-      print("Date of Birth: ${updatedCustomer?.dateOfBirth}");
-    });
+
+    await _controller.updateUserProfile(updatedCustomer);
   }
 
   @override
@@ -128,7 +130,9 @@ class _EditPersonalDataViewState extends State<EditPersonalDataView> {
                     CircleAvatar(
                       backgroundImage: _selectedImage != null
                           ? FileImage(_selectedImage!)
-                          : NetworkImage('http://192.168.30.215:8080/customer/image/${customer.image}') as ImageProvider,
+                          : NetworkImage(
+                                  'http://192.168.30.215:8080/customer/image/${customer.image}')
+                              as ImageProvider,
                       radius: 50,
                     ),
                     Positioned(
@@ -209,8 +213,19 @@ class _EditPersonalDataViewState extends State<EditPersonalDataView> {
                   decoration: InputDecoration(labelText: "Address"),
                 ),
                 const Gap(12),
-                TextField(
-                  controller: _genderController,
+                DropdownButtonFormField<String>(
+                  value: _selectedGender,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _selectedGender = newValue;
+                    });
+                  },
+                  items: ['Laki-laki', 'Perempuan'].map((gender) {
+                    return DropdownMenuItem(
+                      value: gender,
+                      child: Text(gender),
+                    );
+                  }).toList(),
                   decoration: InputDecoration(labelText: "Gender"),
                 ),
                 const Gap(36),
