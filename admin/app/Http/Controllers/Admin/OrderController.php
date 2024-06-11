@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
-    private $orderService = 'http://192.168.187.215:8080';
-    private $admin = 'http://192.168.187.215:8080/admin';
+    private $orderService = 'http://172.27.1.162:8080';
+    private $admin = 'http://172.27.1.162:8080/admin';
 
     /**
      * Display a listing of the resource.
@@ -49,31 +49,46 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
+    public function approve(string $id)
     {
-        try {
-            $token = session('jwt');
-
-            $response = Http::withHeaders([
-                'Cookie' => "jwt={$token}",
-            ])->get("{$this->admin}/profile");
-
-            $data = $response->json();
-
-            // Convert $id to string to avoid type issues
-            $orderData = Http::get("{$this->orderService}/order/" . strval($id));
-
-            if ($orderData->successful()) {
-                $order = $orderData->json();
-                return view('admin.order.show', compact('order', 'data'));
-            } else {
-                return redirect()->back()->with('error_message', 'Failed to find order. Please try again later.');
-            }
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('error_message', 'Failed to find order. Please try again later.');
-        }
+        return $this->updateOrderStatus($id, 1, 'Order approved successfully!');
     }
+
+    public function reject(string $id)
+    {
+        return $this->updateOrderStatus($id, 2, 'Order rejected successfully!');
+    }
+
+    public function ready(string $id)
+    {
+        return $this->updateOrderStatus($id, 3, 'Order marked as ready for pickup!');
+    }
+
+    public function complete(string $id)
+    {
+        return $this->updateOrderStatus($id, 4, 'Order marked as completed!');
+    }
+
+    private function updateOrderStatus(string $id, int $status, string $successMessage)
+{
+    try {
+        $token = session('jwt');
+
+        $response = Http::withHeaders([
+            'Cookie' => "jwt={$token}",
+        ])->put("{$this->admin}/order/{$id}", [
+            'status' => $status,
+        ]);
+
+        if ($response->successful()) {
+            // Jika perlu, dapatkan kembali data pesanan setelah diperbarui
+            $order = $response->json()['message'];
+            return redirect('/admin/order')->with('success_message', $successMessage);
+        } else {
+            return redirect()->back()->with('error_message', 'Failed to update order. Please try again later.');
+        }
+    } catch (\Throwable $th) {
+        return redirect()->back()->with('error_message', 'Failed to update order. Please try again later.');
+    }
+}
 }

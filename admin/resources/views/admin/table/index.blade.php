@@ -69,9 +69,8 @@ List Tables
                 <th scope="col">ID</th>
                 <th scope="col">Number</th>
                 <th scope="col">Capacity</th>
-                {{-- <th scope="col">Status</th> --}}
+                <th scope="col">Status</th>
                 <th scope="col">Action</th>
-
             </tr>
         </thead>
         <tbody>
@@ -80,7 +79,9 @@ List Tables
                     <td>{{ $table['id'] }}</td>
                     <td>{{ $table['number'] }}</td>
                     <td>{{ $table['capacity'] }}</td>
-                    {{-- <td>{{ $table['status'] }}</td> --}}
+                    <td>
+                        {{ $table['status'] == 1 ? 'Sedang digunakan' : ($table['status'] == 0 ? 'Tersedia' : ($table['status'] == 2 ? 'Rejected' : 'Finished')) }}
+                    </td>
                     <td>
                         <form id="delete-form-{{ $table['id'] }}" action="/admin/table/{{ $table['id'] }}" method="POST">
                             @csrf
