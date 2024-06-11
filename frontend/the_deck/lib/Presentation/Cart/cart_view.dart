@@ -7,6 +7,7 @@ import 'package:the_deck/Core/font_size.dart';
 import 'package:the_deck/Core/response_conf.dart';
 import 'package:the_deck/Core/text_styles.dart';
 import 'package:the_deck/Models/Product.dart';
+import 'package:the_deck/Presentation/Auth/views/login_view.dart';
 import 'package:the_deck/Presentation/Cart/screens/cart_item_food.dart';
 import 'package:gap/gap.dart';
 import 'package:the_deck/Presentation/Auth/screens/default_button.dart';
@@ -94,7 +95,7 @@ class _CartViewState extends State<CartView> {
                               productId: product.id,
                               productName: product.name,
                               productImage:
-                                  "http://192.168.30.215:8080/product/image/${product.image}",
+                                  "http://192.168.66.215:8080/product/image/${product.image}",
                               productPrice: product.price,
                               cartItemId: item.id,
                               quantity: item.quantity,
@@ -234,12 +235,22 @@ class _CartViewState extends State<CartView> {
               const Gap(26),
               ElevatedButton(
                 onPressed: () {
-                  Get.to(() => OrderDetailsFormScreen(), arguments: {
-                    'product_ids': customterController.cartItems
-                        .where((item) => item.isChecked)
-                        .map((item) => item.productId)
-                        .toList(),
-                  });
+                  if (customterController.cartItems.isEmpty) {
+                    Get.snackbar(
+                      'Error',
+                      'Cannot to procced order item',
+                      snackPosition: SnackPosition.TOP,
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                  } else {
+                    Get.to(() => OrderDetailsFormScreen(), arguments: {
+                      'product_ids': customterController.cartItems
+                          .where((item) => item.isChecked)
+                          .map((item) => item.productId)
+                          .toList(),
+                    });
+                  }
                 },
                 child: Text('Proceed to Order'),
               ),

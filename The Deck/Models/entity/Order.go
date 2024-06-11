@@ -15,14 +15,14 @@ type Order struct {
 	Total          string         `json:"total" gorm:"type:varchar(50)"`
 	Note           string         `json:"note" gorm:"type:text"`
 	PaymentMethod  string         `json:"payment_method" gorm:"type:varchar(50)"`
-	TableId        *uint          `json:"table_id" gorm:"idxtb"`
-	Table          Table          `json:"-" gorm:"foreignKey:TableId"`
 	PickUpType     string         `json:"pick_up_type" gorm:"type:varchar(50)" validate:"required"`
 	ProofOfPayment string         `json:"proof_of_payment" gorm:"type:varchar(50)" validate:"required"`
 	Status         int            `json:"status" gorm:"idxst"`
 	CreatedAt      time.Time      `json:"created_at" gorm:"autoCreateTime" db:"created_at"`
 	UpdatedAt      time.Time      `json:"updated_at" gorm:"autoUpdateTime" db:"updated_at"`
 	DeletedAt      gorm.DeletedAt `gorm:"index"`
+	AdminID        *uint          `json:"admin_id" gorm:"idxcs"`
+	Admin          Admin          `json:"-" gorm:"foreignKey:admin_id"`
 }
 
 type OrderProduct struct {

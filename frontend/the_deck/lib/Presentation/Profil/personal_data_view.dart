@@ -3,7 +3,6 @@ import 'package:the_deck/Controller/CustomerController.dart';
 import 'package:the_deck/Core/app_colors.dart';
 import 'package:the_deck/Core/assets_constantes.dart';
 import 'package:the_deck/Core/response_conf.dart';
-import 'package:the_deck/Presentation/Auth/screens/default_button.dart';
 import 'package:the_deck/Presentation/Auth/screens/read_only.dart';
 import 'package:the_deck/Presentation/Base/base.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,19 +29,13 @@ class _PersonalDataViewState extends State<PersonalDataView> {
   Widget build(BuildContext context) {
     return Obx(() {
       final customer = _controller.userProfile.value;
-      if (customer == null) {
-        return Scaffold(
-          appBar: buildAppBar(
-            buildContext: context,
-            screenTitle: "Profile Settings",
-            isBackup: false,
-          ),
-          body: Center(child: CircularProgressIndicator()),
-        );
-      }
+      final isLoggedIn = customer != null;
+
       return Scaffold(
-        appBar:
-            buildAppBar(buildContext: context, screenTitle: "Personal Date"),
+        appBar: buildAppBar(
+          buildContext: context,
+          screenTitle: "Personal Data",
+        ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: getWidth(24)),
           child: Column(
@@ -52,8 +45,11 @@ class _PersonalDataViewState extends State<PersonalDataView> {
               Stack(
                 children: [
                   CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        'http://192.168.30.215:8080/customer/image/${customer.image}'),
+                    backgroundImage: isLoggedIn
+                        ? NetworkImage(
+                            'http://192.168.66.215:8080/customer/image/${customer?.image}')
+                        : AssetImage('assets/images/user_icon.png')
+                            as ImageProvider,
                     radius: getSize(50),
                   ),
                 ],
@@ -61,18 +57,35 @@ class _PersonalDataViewState extends State<PersonalDataView> {
               const Gap(24),
               Column(
                 children: [
-                  ReadOnlyField(labelText: "Full Name", value: customer.name),
+                  ReadOnlyField(
+                    labelText: "Full Name",
+                    value: isLoggedIn ? customer.name : 'Guest',
+                  ),
                   const Gap(12),
                   ReadOnlyField(
-                      labelText: "Date of birth", value: customer.dateOfBirth),
+                    labelText: "Date of birth",
+                    value: isLoggedIn ? customer.dateOfBirth : 'N/A',
+                  ),
                   const Gap(12),
-                  ReadOnlyField(labelText: "Phone", value: customer.phone),
+                  ReadOnlyField(
+                    labelText: "Phone",
+                    value: isLoggedIn ? customer.phone : 'N/A',
+                  ),
                   const Gap(12),
-                  ReadOnlyField(labelText: "Email", value: customer.email),
+                  ReadOnlyField(
+                    labelText: "Email",
+                    value: isLoggedIn ? customer.email : 'guest@example.com',
+                  ),
                   const Gap(12),
-                  ReadOnlyField(labelText: "Address", value: customer.address),
+                  ReadOnlyField(
+                    labelText: "Address",
+                    value: isLoggedIn ? customer.address : 'N/A',
+                  ),
                   const Gap(12),
-                  ReadOnlyField(labelText: "Gender", value: customer.gender),
+                  ReadOnlyField(
+                    labelText: "Gender",
+                    value: isLoggedIn ? customer.gender : 'N/A',
+                  ),
                 ],
               ),
               const Gap(36),

@@ -29,6 +29,7 @@ func main() {
 	customerController := settings.SetUpServiceCustomer()
 	cartController := settings.SetUpServiceCart()
 	orderController := settings.SetUpServiceOrder()
+	requestTableController := settings.SetUpServiceRequestTable()
 
 	routes.RouteAdmin(app, adminController)
 	routes.RouteCategory(app, categoryController)
@@ -37,8 +38,9 @@ func main() {
 	routes.RouteCustomer(app, customerController)
 	routes.RouteCart(app, cartController)
 	routes.RouteOrder(app, orderController)
+	routes.RouteRequestTable(app, requestTableController)
 
-	err := app.Listen("192.168.30.215:8080")
+	err := app.Listen("192.168.66.215:8080")
 
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)

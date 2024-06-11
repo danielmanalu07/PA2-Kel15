@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Validator;
 
 class TableController extends Controller
 {
-    private $tableService = 'http://172.26.43.150:8080';
-    private $admin = 'http://172.26.43.150:8080/admin';
+    private $tableService = 'http://192.168.187.215:8080';
+    private $admin = 'http://192.168.187.215:8080/admin';
 
     /**
      * Display a listing of the resource.
@@ -20,24 +20,23 @@ class TableController extends Controller
     {
         try {
             $token = session('jwt');
-    
+
             $response = Http::withHeaders([
                 'Cookie' => "jwt={$token}",
             ])->get("{$this->admin}/profile");
-    
+
             $data = $response->json();
-    
+
             $tableResp = Http::get("{$this->tableService}/table");
-    
+
             $tables = $tableResp->json();
             // dd($tables); // Debug the table data
-    
+
             return view('admin.table.index', compact('data', 'tables'));
         } catch (\Throwable $th) {
             throw $th;
         }
     }
-    
 
     /**
      * Show the form for creating a new resource.

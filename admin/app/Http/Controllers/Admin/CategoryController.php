@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
-    private $apiUrl = 'http://172.26.43.150:8080';
-    private $admin = 'http://172.26.43.150:8080/admin';
+    private $apiUrl = 'http://192.168.187.215:8080';
+    private $admin = 'http://192.168.187.215:8080/admin';
 
     /**
      * Display a listing of the resource.

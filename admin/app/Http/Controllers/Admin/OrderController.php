@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
-    private $orderService = 'http://172.26.43.150:8080';
-    private $admin = 'http://172.26.43.150:8080/admin';
+    private $orderService = 'http://192.168.187.215:8080';
+    private $admin = 'http://192.168.187.215:8080/admin';
 
     /**
      * Display a listing of the resource.
@@ -18,20 +18,20 @@ class OrderController extends Controller
     {
         try {
             $token = session('jwt');
-    
+
             // Fetch the admin profile
             $response = Http::withHeaders([
                 'Cookie' => "jwt={$token}",
             ])->get("{$this->admin}/profile");
-    
+
             $data = $response->json();
-    
+
             // Fetch the list of orders
             $orderResp = Http::get("{$this->orderService}/order");
-    
+
             if ($orderResp->successful()) {
                 $responseData = $orderResp->json();
-    
+
                 // Check if the 'message' key exists in the response data
                 if (isset($responseData['message'])) {
                     $orders = $responseData['message']; // Access the 'message' key
@@ -48,7 +48,6 @@ class OrderController extends Controller
             return back()->with('error_message', 'Failed to fetch orders. Please try again later.');
         }
     }
-    
 
     /**
      * Display the specified resource.

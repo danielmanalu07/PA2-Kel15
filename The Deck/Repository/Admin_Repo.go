@@ -10,12 +10,15 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 type AdminRepository interface {
 	AdminLogin(ctx *fiber.Ctx, input dto.RequestAdminLogin) (*entity.Admin, error)
 	GetProfile(ctx *fiber.Ctx) (*entity.Admin, error)
 	LogoutAdmin(ctx *fiber.Ctx) (*fiber.Cookie, error)
+	Approve(order entity.Order) (*entity.Order, error)
+	ApproveTable(tx *gorm.DB, reqTable entity.RequestTable) (*entity.RequestTable, error)
 }
 
 type adminRepository struct{}
@@ -24,6 +27,21 @@ func NewAdminRepository() AdminRepository {
 	return &adminRepository{}
 }
 
+func (a *adminRepository) ApproveTable(tx *gorm.DB, reqTable entity.RequestTable) (*entity.RequestTable, error) {
+	if err := tx.Save(&reqTable).Error; err != nil {
+		return nil, err
+	}
+
+	return &reqTable, nil
+}
+
+func (a *adminRepository) Approve(order entity.Order) (*entity.Order, error) {
+	if err := database.DB.Save(order).Error; err != nil {
+		return nil, err
+	}
+
+	return &order, nil
+}
 func (a *adminRepository) AdminLogin(ctx *fiber.Ctx, input dto.RequestAdminLogin) (*entity.Admin, error) {
 	validation := validator.New()
 	if err := validation.Struct(input); err != nil {

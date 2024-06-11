@@ -60,7 +60,7 @@ class _MainViewState extends State<MainView> {
               label: "Home",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_bag),
+              icon: Icon(Icons.shop_sharp),
               label: "Cart",
             ),
             BottomNavigationBarItem(

@@ -4,6 +4,7 @@ import (
 	"api/the_deck/Models/dto"
 	service "api/the_deck/Service"
 	utils "api/the_deck/Utils"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -68,5 +69,49 @@ func (c *AdminController) LogoutAdmin(ctx *fiber.Ctx) error {
 	return ctx.Status(200).JSON(fiber.Map{
 		"status":  "success",
 		"message": "Logout successfully",
+	})
+}
+
+func (c *AdminController) UpdateStatusOrder(ctx *fiber.Ctx) error {
+	id, err := strconv.Atoi(ctx.Params("id"))
+	if err != nil {
+		return utils.MessageJSON(ctx, 400, "Failed", err.Error())
+	}
+
+	var input dto.RequestOrderUpdateStatus
+	if err := ctx.BodyParser(&input); err != nil {
+		return err
+	}
+
+	order, err := c.adminService.UpdateStatus(ctx, uint(id), input)
+	if err != nil {
+		return utils.MessageJSON(ctx, 400, "Failed", err.Error())
+	}
+
+	return ctx.Status(200).JSON(fiber.Map{
+		"status":  "success",
+		"message": order,
+	})
+}
+
+func (c *AdminController) ApproveReqTable(ctx *fiber.Ctx) error {
+	id, err := strconv.Atoi(ctx.Params("id"))
+	if err != nil {
+		return err
+	}
+
+	var input dto.UpdateRequestTable
+	if err := ctx.BodyParser(&input); err != nil {
+		return err
+	}
+
+	req_table, err := c.adminService.ApproveReqTable(ctx, uint(id), input)
+	if err != nil {
+		return utils.MessageJSON(ctx, 400, "Failed", err.Error())
+	}
+
+	return ctx.Status(200).JSON(fiber.Map{
+		"status":  "success",
+		"message": req_table,
 	})
 }

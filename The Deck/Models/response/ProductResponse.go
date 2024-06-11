@@ -11,4 +11,5 @@ type ProductResponse struct {
 	CategoryID  uint      `json:"category_id"`
 	CreatedAt   time.Time `json:"created_at" gorm:"autoCreateTime" db:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" gorm:"autoUpdateTime" db:"updated_at"`
+	AdminID     uint      `json:"admin_id" gorm:"index"`
 }

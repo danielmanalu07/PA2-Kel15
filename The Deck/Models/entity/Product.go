@@ -12,4 +12,6 @@ type Product struct {
 	Category    Category  `json:"-" gorm:"foreignKey:category_id"`
 	CreatedAt   time.Time `json:"created_at" gorm:"autoCreateTime" db:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" gorm:"autoUpdateTime" db:"updated_at"`
+	AdminID     uint      `json:"admin_id" gorm:"index"`
+	Admin       Admin     `json:"-" gorm:"foreignKey:admin_id"`
 }

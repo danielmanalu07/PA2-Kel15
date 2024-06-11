@@ -10,7 +10,7 @@ import (
 )
 
 type CategoryService interface {
-	CategoryCreate(input dto.RequestCategoryCreate) (*response.CategoryResponse, error)
+	CategoryCreate(ctx *fiber.Ctx, input dto.RequestCategoryCreate) (*response.CategoryResponse, error)
 	CategoryGetAll() ([]response.CategoryResponse, error)
 	CategoryGetById(id uint) (*response.CategoryResponse, error)
 	CategoryUpdate(ctx *fiber.Ctx, id uint, input dto.RequestCategoryUpdate) (*response.CategoryResponse, error)
@@ -48,6 +48,7 @@ func (c *categoryService) CategoryUpdate(ctx *fiber.Ctx, id uint, input dto.Requ
 		Id:          updateCat.Id,
 		Name:        updateCat.Name,
 		Description: updateCat.Description,
+		AdminID:     updateCat.AdminID,
 	}
 
 	return respon, nil
@@ -63,6 +64,7 @@ func (c *categoryService) CategoryGetById(id uint) (*response.CategoryResponse, 
 		Id:          category.Id,
 		Name:        category.Name,
 		Description: category.Description,
+		AdminID:     category.AdminID,
 	}
 
 	return cat, nil
@@ -80,16 +82,20 @@ func (c *categoryService) CategoryGetAll() ([]response.CategoryResponse, error) 
 			Id:          category.Id,
 			Name:        category.Name,
 			Description: category.Description,
+			AdminID:     category.AdminID,
 		})
 	}
 
 	return respon, nil
 }
 
-func (c *categoryService) CategoryCreate(input dto.RequestCategoryCreate) (*response.CategoryResponse, error) {
+func (c *categoryService) CategoryCreate(ctx *fiber.Ctx, input dto.RequestCategoryCreate) (*response.CategoryResponse, error) {
+	admin := ctx.Locals("admin").(entity.Admin)
 	category := entity.Category{
 		Name:        input.Name,
 		Description: input.Description,
+		AdminID:     admin.Id,
+		Admin:       admin,
 	}
 
 	categoryCreate, err := c.categoryService.Create(category)
@@ -101,6 +107,7 @@ func (c *categoryService) CategoryCreate(input dto.RequestCategoryCreate) (*resp
 		Id:          categoryCreate.Id,
 		Name:        categoryCreate.Name,
 		Description: categoryCreate.Description,
+		AdminID:     admin.Id,
 	}
 
 	return respon, nil

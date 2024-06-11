@@ -35,8 +35,8 @@ class CategoryListScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Colors.orange,
-                      Colors.deepOrange,
+                      Colors.green,
+                      Colors.greenAccent,
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -54,7 +54,8 @@ class CategoryListScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(
-                      Icons.fastfood, // Replace with actual category icon if available
+                      Icons
+                          .fastfood, // Replace with actual category icon if available
                       color: Colors.white,
                       size: getSize(40),
                     ),

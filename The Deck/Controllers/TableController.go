@@ -28,7 +28,7 @@ func (t *TableController) TableCreate(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	table, err := t.tableService.TableCreate(input)
+	table, err := t.tableService.TableCreate(ctx, input)
 	if err != nil {
 		return utils.MessageJSON(ctx, 400, "Failed", "Cannot created table")
 	}

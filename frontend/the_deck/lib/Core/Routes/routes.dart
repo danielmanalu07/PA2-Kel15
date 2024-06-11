@@ -1,4 +1,6 @@
+import 'package:get/get.dart';
 import 'package:the_deck/Core/Routes/routes_name.dart';
+import 'package:the_deck/Guest/HomeView.dart';
 
 import 'package:the_deck/Presentation/Auth/views/login_view.dart';
 import 'package:the_deck/Presentation/Auth/views/signup_view.dart';
@@ -17,11 +19,11 @@ class Routes {
         return MaterialPageRoute(builder: (context) => const SignUpView());
       case RoutesName.main:
         return MaterialPageRoute(builder: (context) => const MainView());
+      case RoutesName.guest:
+        return MaterialPageRoute(builder: (context) => HomeGuest());
 
-      
       // case RoutesName.aboutMenu:
       //   return MaterialPageRoute(builder: (context) => const AboutMenuView());
-     
 
       case RoutesName.personnalData:
         return MaterialPageRoute(

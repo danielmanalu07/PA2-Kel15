@@ -28,7 +28,7 @@ func (c *CategoryController) CategoryCreate(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	category, err := c.categoryService.CategoryCreate(input)
+	category, err := c.categoryService.CategoryCreate(ctx, input)
 	if err != nil {
 		return utils.MessageJSON(ctx, 400, "Failed", "Cannot create category")
 	}

@@ -8,4 +8,6 @@ type Category struct {
 	Description string    `json:"description" gorm:"type:text" validate:"required"`
 	CreatedAt   time.Time `json:"created_at" gorm:"autoCreateTime" db:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" gorm:"autoUpdateTime" db:"updated_at"`
+	AdminID     uint      `json:"admin_id" gorm:"index"`
+	Admin       Admin     `json:"-" gorm:"foreignKey:admin_id"`
 }

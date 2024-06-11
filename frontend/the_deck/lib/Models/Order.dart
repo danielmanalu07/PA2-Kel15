@@ -4,7 +4,6 @@ class Order {
   final String total;
   final String note;
   final String paymentMethod;
-  final int? tableId;
   final String pickUpType;
   final String proofOfPayment;
   final int status;
@@ -15,7 +14,6 @@ class Order {
     required this.total,
     required this.note,
     required this.paymentMethod,
-    required this.tableId,
     required this.pickUpType,
     required this.proofOfPayment,
     required this.status,
@@ -28,7 +26,6 @@ class Order {
       total: json['total'] ?? '',
       note: json['note'] ?? '',
       paymentMethod: json['payment_method'] ?? '',
-      tableId: json['table_id'] ?? 0,
       pickUpType: json['pick_up_type'] ?? '',
       proofOfPayment: json['proof_of_payment'] ?? '',
       status: json['status'] ?? 0,

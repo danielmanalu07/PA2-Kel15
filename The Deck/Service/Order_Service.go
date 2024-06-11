@@ -52,7 +52,6 @@ func (o *orderService) UpdateStatus(id uint, input dto.RequestOrderUpdateStatus)
 		Total:          save.Total,
 		Note:           save.Note,
 		PaymentMethod:  save.PaymentMethod,
-		TableId:        save.TableId,
 		PickUpType:     save.PickUpType,
 		ProofOfPayment: save.ProofOfPayment,
 		Status:         save.Status,
@@ -95,7 +94,6 @@ func (o *orderService) ProofPayment(ctx *fiber.Ctx, customerId uint, id uint) (*
 		Total:          save.Total,
 		Note:           save.Note,
 		PaymentMethod:  save.PaymentMethod,
-		TableId:        save.TableId,
 		PickUpType:     save.PickUpType,
 		ProofOfPayment: save.ProofOfPayment,
 		Status:         save.Status,
@@ -121,7 +119,6 @@ func (o *orderService) GetMyOrder(customerId uint) ([]response.OrderResponse, er
 			Total:          orders.Total,
 			Note:           orders.Note,
 			PaymentMethod:  orders.PaymentMethod,
-			TableId:        orders.TableId,
 			PickUpType:     orders.PickUpType,
 			ProofOfPayment: orders.ProofOfPayment,
 			Status:         orders.Status,
@@ -149,7 +146,6 @@ func (o *orderService) GetAllOrder() ([]response.OrderResponse, error) {
 			Total:          order.Total,
 			Note:           order.Note,
 			PaymentMethod:  order.PaymentMethod,
-			TableId:        order.TableId,
 			PickUpType:     order.PickUpType,
 			ProofOfPayment: order.ProofOfPayment,
 			Status:         order.Status,
@@ -177,13 +173,6 @@ func (o *orderService) CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate)
 	if input.PaymentMethod != "Cash" && input.PaymentMethod != "QRIS" {
 		return nil, utils.MessageJSON(ctx, 400, "error", "Invalid Payment Method")
 	}
-
-	if input.PickUpType == "Dine In" && input.TableId == 0 {
-		return nil, utils.MessageJSON(ctx, 400, "error", "Table is required for Dine In")
-	} else if input.PickUpType != "Take Away" && input.PickUpType != "Dine In" {
-		return nil, utils.MessageJSON(ctx, 400, "error", "Invalid Pick Up Type")
-	}
-
 	// Mendapatkan informasi pelanggan dari konteks
 	customer, ok := ctx.Locals("customer").(entity.Customer)
 	if !ok {
@@ -200,14 +189,6 @@ func (o *orderService) CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate)
 		return nil, utils.MessageJSON(ctx, 400, "error", "Cart is empty")
 	}
 
-	// Set TableId to nil if PickUpType is "Take Away"
-	var tableId *uint
-	if input.PickUpType == "Take Away" {
-		tableId = nil
-	} else {
-		tableId = &input.TableId
-	}
-
 	// Membuat pesanan
 	order := entity.Order{
 		Code:           GenerateCodeOrder(),
@@ -215,10 +196,10 @@ func (o *orderService) CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate)
 		Total:          input.Total,
 		Note:           input.Note,
 		PaymentMethod:  input.PaymentMethod,
-		TableId:        tableId,
 		PickUpType:     input.PickUpType,
 		Status:         0,
 		ProofOfPayment: "",
+		AdminID:        nil,
 	}
 
 	savedOrder, err := o.orderRepository.Create(order)
@@ -248,12 +229,12 @@ func (o *orderService) CreateOrder(ctx *fiber.Ctx, input dto.RequestOrderCreate)
 		Total:          savedOrder.Total,
 		Note:           savedOrder.Note,
 		PaymentMethod:  savedOrder.PaymentMethod,
-		TableId:        savedOrder.TableId,
 		PickUpType:     savedOrder.PickUpType,
 		ProofOfPayment: savedOrder.ProofOfPayment,
 		Status:         savedOrder.Status,
 		CreatedAt:      savedOrder.CreatedAt,
 		UpdatedAt:      savedOrder.UpdatedAt,
+		AdminID:        savedOrder.AdminID,
 	}
 
 	return orderResponse, nil

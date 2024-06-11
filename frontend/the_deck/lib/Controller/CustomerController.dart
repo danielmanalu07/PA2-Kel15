@@ -10,11 +10,14 @@ import 'package:the_deck/Models/Customer.dart';
 import 'package:the_deck/Models/Order.dart';
 import 'package:the_deck/Models/Product.dart';
 import 'package:the_deck/Models/Register.dart';
+import 'package:the_deck/Models/RequestTable.dart';
 import 'package:the_deck/Presentation/Auth/views/login_view.dart';
 import 'package:the_deck/Presentation/Cart/MyOrder.dart';
 import 'package:the_deck/Presentation/Cart/Order.dart';
 import 'package:the_deck/Presentation/Cart/cart_view.dart';
+import 'package:the_deck/Presentation/Main/home_view.dart';
 import 'package:the_deck/Presentation/Main/main_view.dart';
+import 'package:the_deck/Presentation/Profil/profil_view.dart';
 
 class RegisterController extends GetxController {
   final token = ''.obs;
@@ -22,9 +25,11 @@ class RegisterController extends GetxController {
   final userProfile = Rxn<Customer>();
   var cartItems = <CartItem>[].obs;
   var orderItems = <Order>[].obs;
+  var reqTable = <RequestTable>[].obs;
+  var isLoading = true.obs;
 
   Future<void> registerUser(RegisterModel registerModel) async {
-    final url = Uri.parse('http://192.168.30.215:8080/customer/register');
+    final url = Uri.parse('http://192.168.66.215:8080/customer/register');
 
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({'Content-Type': 'multipart/form-data'});
@@ -68,7 +73,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> loginUser(String email, String password) async {
-    final url = Uri.parse('http://192.168.30.215:8080/customer/login');
+    final url = Uri.parse('http://192.168.66.215:8080/customer/login');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -103,7 +108,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> getUserProfile() async {
-    final url = Uri.parse('http://192.168.30.215:8080/customer/profile');
+    final url = Uri.parse('http://192.168.66.215:8080/customer/profile');
     final token = box.read('token');
     final response = await http.get(
       url,
@@ -112,20 +117,21 @@ class RegisterController extends GetxController {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      userProfile.value = Customer.fromJson(responseData['message']);
+      userProfile.value = Customer.fromJson(responseData['message'] ?? []);
     } else {
-      Get.snackbar(
-        'Error',
-        'Could not fetch profile data',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   'Error',
+      //   'Could not fetch profile data',
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      print("Failed Data User");
     }
   }
 
   Future<void> logout() async {
-    final url = Uri.parse('http://192.168.30.215:8080/customer/logout');
+    final url = Uri.parse('http://192.168.66.215:8080/customer/logout');
     final token = box.read('token');
     final response = await http.post(
       url,
@@ -156,7 +162,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> addToCart(int productId, int quantity) async {
-    final url = Uri.parse('http://192.168.30.215:8080/cart/add');
+    final url = Uri.parse('http://192.168.66.215:8080/cart/add');
     final token = box.read('token');
     final response = await http.post(
       url,
@@ -177,6 +183,15 @@ class RegisterController extends GetxController {
         colorText: Colors.white,
       );
       print('Add To Cart successful');
+    } else if (response.statusCode == 401) {
+      Get.snackbar(
+        'Error',
+        'You must login first',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      Get.to(() => LoginView());
     } else {
       Get.snackbar(
         'Error',
@@ -189,8 +204,42 @@ class RegisterController extends GetxController {
     }
   }
 
+  Future<void> requestTable(int selectedTableId, String notes) async {
+    final token = GetStorage().read('token');
+    final url = 'http://192.168.66.215:8080/requestTable/create';
+    final headers = {
+      'Cookie': 'jwt=$token',
+      'Content-Type': 'application/json',
+    };
+    final body = json.encode({
+      'table_id': selectedTableId,
+      'notes': notes,
+    });
+
+    final response =
+        await http.post(Uri.parse(url), headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      Get.snackbar('Success', 'Table requested successfully');
+      Get.to(() => ProfilView());
+    } else if (response.statusCode == 401) {
+      Get.snackbar(
+        'Error',
+        'You must login first',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      Get.to(() => LoginView());
+    } else {
+      print(response.body);
+      Get.snackbar('Error', 'Failed to request table');
+    }
+  }
+
   Future<void> getMyOrder() async {
-    final url = Uri.parse('http://192.168.30.215:8080/order/myorder');
+    final url = Uri.parse('http://192.168.66.215:8080/order/myorder');
     final token = box.read('token');
     final response = await http.get(
       url,
@@ -207,8 +256,32 @@ class RegisterController extends GetxController {
     }
   }
 
+  Future<void> getMyRequestTable() async {
+    final url = Uri.parse('http://192.168.66.215:8080/requestTable/myRequest');
+    final token =
+        box.read('token'); // Pastikan Anda telah menginisialisasi 'box'
+    final response = await http.get(
+      url,
+      headers: {'Cookie': 'jwt=$token'},
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      List<dynamic> data = responseData['message'] ?? [];
+      List<RequestTable> items =
+          data.map((json) => RequestTable.fromJson(json)).toList();
+      reqTable.assignAll(
+          items); // Ganti 'reqTable' menjadi 'customerController.reqTable'
+    } else {
+      print("Failed to fetch Request Table");
+    }
+
+    isLoading.value =
+        false; // Ganti 'isLoading' menjadi 'customerController.isLoading'
+  }
+
   Future<void> getMyCart() async {
-    final url = Uri.parse('http://192.168.30.215:8080/cart/myCart');
+    final url = Uri.parse('http://192.168.66.215:8080/cart/myCart');
     final token = box.read('token');
     final response = await http.get(
       url,
@@ -227,7 +300,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> deleteCartItem(int cartItemId) async {
-    final url = Uri.parse('http://192.168.30.215:8080/cart/delete/$cartItemId');
+    final url = Uri.parse('http://192.168.66.215:8080/cart/delete/$cartItemId');
     final token = box.read('token');
     final response = await http.delete(
       url,
@@ -258,7 +331,7 @@ class RegisterController extends GetxController {
 
   Future<void> updateCartItemQuantity(int cartItemId, int quantity,
       {VoidCallback? onSuccess}) async {
-    final url = Uri.parse('http://192.168.30.215:8080/cart/edit/$cartItemId');
+    final url = Uri.parse('http://192.168.66.215:8080/cart/edit/$cartItemId');
     final token = box.read('token');
     final response = await http.put(
       url,
@@ -281,7 +354,7 @@ class RegisterController extends GetxController {
     final token = box.read('token');
     if (image != null) {
       File imageFile = File(image.path);
-      final uploadUrl = 'http://192.168.30.215:8080/order/payment/$orderId';
+      final uploadUrl = 'http://192.168.66.215:8080/order/payment/$orderId';
 
       var request = http.MultipartRequest('PUT', Uri.parse(uploadUrl));
       request.headers.addAll({'Cookie': 'jwt=${token}'});
@@ -309,7 +382,7 @@ class RegisterController extends GetxController {
 
   Future<void> updateOrderStatus(int orderId) async {
     try {
-      final url = Uri.parse('http://192.168.30.215:8080/order/status/$orderId');
+      final url = Uri.parse('http://192.168.66.215:8080/order/status/$orderId');
       final token = box.read('token');
       final response = await http.put(
         url,
@@ -334,8 +407,37 @@ class RegisterController extends GetxController {
     }
   }
 
+  Future<void> CancleRequestTable(int reqTableId) async {
+    try {
+      final url = Uri.parse(
+          'http://192.168.66.215:8080/requestTable/status/$reqTableId');
+      final token = box.read('token');
+      final response = await http.put(
+        url,
+        headers: {'Cookie': 'jwt=$token'},
+        body: {'status': '2'},
+      );
+
+      if (response.statusCode == 200) {
+        print('Request Table status updated successfully');
+        Get.snackbar(
+          'Success',
+          'Canceled Successfully',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        await getMyRequestTable();
+      } else {
+        print('Failed to update req. Table status: ${response.body}');
+      }
+    } catch (e) {
+      print('Error updating req. Table  status: $e');
+    }
+  }
+
   Future<void> updateUserProfile(Customer updatedCustomer) async {
-    final url = Uri.parse('http://192.168.30.215:8080/customer/update-profile');
+    final url = Uri.parse('http://192.168.66.215:8080/customer/update-profile');
     final token = box.read('token');
     final response = await http.put(
       url,
@@ -367,7 +469,7 @@ class RegisterController extends GetxController {
   }
 
   Future<String?> uploadImages(File image) async {
-    final url = Uri.parse('http://192.168.30.215:8080/customer/upload-profile');
+    final url = Uri.parse('http://192.168.66.215:8080/customer/upload-profile');
     final token = box.read('token');
     final request = http.MultipartRequest('POST', url);
     request.headers['Cookie'] = 'jwt=$token';

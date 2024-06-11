@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:the_deck/Controller/CustomerController.dart';
 import 'package:the_deck/Controller/ProductController.dart';
-import 'package:the_deck/Controller/TableController.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:the_deck/Models/Cart_Item.dart';
@@ -20,11 +19,9 @@ class _OrderDetailsFormScreenState extends State<OrderDetailsFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final registerController = Get.find<RegisterController>();
   final _productController = Get.put(ProductController());
-  final _tableController = Get.put(TableController());
   final _noteController = TextEditingController();
   String _paymentMethod = 'Cash';
   String _pickUpType = 'Take Away';
-  int? _tableId;
 
   @override
   void initState() {
@@ -41,21 +38,14 @@ class _OrderDetailsFormScreenState extends State<OrderDetailsFormScreen> {
         ));
       }
     }
-    _tableController.fetchTables();
     _productController.fetchProductList();
   }
 
   void _submitOrder() async {
-    final url = Uri.parse('http://192.168.30.215:8080/order/create');
+    final url = Uri.parse('http://192.168.66.215:8080/order/create');
     final token = registerController.box.read('token');
 
     final pickUpType = _pickUpType;
-    int? tableId; // Mengubah tipe data menjadi int?
-    if (_pickUpType == 'Dine In') {
-      tableId = _tableId; // Menggunakan _tableId
-    } else {
-      tableId = 0;
-    }
 
     List<int> productIds = registerController.cartItems
         .where((item) => item.isChecked)
@@ -76,7 +66,7 @@ class _OrderDetailsFormScreenState extends State<OrderDetailsFormScreen> {
       'total': total.toStringAsFixed(2),
       'note': _noteController.text,
       'payment_method': _paymentMethod,
-      'table_id': tableId,
+      'table_id': 0, // Set table_id to 0 by default
       'pick_up_type': pickUpType,
     });
 
@@ -137,31 +127,6 @@ class _OrderDetailsFormScreenState extends State<OrderDetailsFormScreen> {
                       .toList(),
                   onChanged: (value) => setState(() => _pickUpType = value!),
                 ),
-                if (_pickUpType == 'Dine In')
-                  Obx(() {
-                    if (_tableController.isLoading.value) {
-                      return CircularProgressIndicator();
-                    } else if (_tableController.tables.isEmpty) {
-                      return Text('No tables available');
-                    } else {
-                      return DropdownButtonFormField<int>(
-                        decoration: InputDecoration(labelText: 'Table'),
-                        value: _tableId,
-                        items: _tableController.tables
-                            .map((table) => DropdownMenuItem(
-                                  value: table.id,
-                                  child: Text(
-                                      'Table ${table.number} (Capacity: ${table.capacity})'),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _tableId = value;
-                          });
-                        },
-                      );
-                    }
-                  }),
                 if (registerController.cartItems.isNotEmpty)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

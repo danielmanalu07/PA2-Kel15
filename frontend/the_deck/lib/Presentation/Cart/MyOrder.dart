@@ -89,7 +89,6 @@ class _MyOrderState extends State<MyOrder> {
                 GestureDetector(
                   onTap: () async {
                     await _pickImage(context);
-                    setState(() {});
                   },
                   child: Container(
                     width: double.infinity,
@@ -169,7 +168,6 @@ class _MyOrderState extends State<MyOrder> {
                   itemBuilder: (context, index) {
                     final order = orders[index];
                     String status;
-                    String table;
                     String payment;
                     if (order.status == 0) {
                       status = 'Waiting';
@@ -183,11 +181,6 @@ class _MyOrderState extends State<MyOrder> {
                       status = 'Finished';
                     } else {
                       status = 'Canceled';
-                    }
-                    if (order.tableId == 0) {
-                      table = 'Tidak Menggunakan Meja Makan';
-                    } else {
-                      table = 'Menggunakan Meja ${order.tableId}';
                     }
                     if (order.proofOfPayment == "") {
                       payment = 'Belum Terkirim';
@@ -206,7 +199,6 @@ class _MyOrderState extends State<MyOrder> {
                               Text('Total: ${order.total}'),
                               Text('Status: $status'),
                               Text('Jenis Pembayaran: ${order.paymentMethod}'),
-                              Text('Table: $table'),
                               Text('Note: ${order.note}'),
                               Text('Jenis Pengambilan: ${order.pickUpType}'),
                               Text('Bukti Pembayaran: $payment'),

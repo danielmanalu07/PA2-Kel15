@@ -10,7 +10,7 @@ import (
 )
 
 type TableService interface {
-	TableCreate(input dto.RequestTableCreate) (*response.TableResponse, error)
+	TableCreate(ctx *fiber.Ctx, input dto.RequestTableCreate) (*response.TableResponse, error)
 	TableGetAll() ([]response.TableResponse, error)
 	TableGetById(id uint) (*response.TableResponse, error)
 	TableUpdate(ctx *fiber.Ctx, id uint, input dto.RequestTableUpdate) (*response.TableResponse, error)
@@ -48,6 +48,8 @@ func (t *tableService) TableUpdate(ctx *fiber.Ctx, id uint, input dto.RequestTab
 		Id:       updateTbl.Id,
 		Number:   updateTbl.Number,
 		Capacity: updateTbl.Capacity,
+		AdminID:  updateTbl.AdminID,
+		Status:   updateTbl.Status,
 	}
 
 	return respon, nil
@@ -63,6 +65,8 @@ func (t *tableService) TableGetById(id uint) (*response.TableResponse, error) {
 		Id:       table.Id,
 		Number:   table.Number,
 		Capacity: table.Capacity,
+		AdminID:  table.AdminID,
+		Status:   table.Status,
 	}
 
 	return tbl, nil
@@ -80,15 +84,21 @@ func (t *tableService) TableGetAll() ([]response.TableResponse, error) {
 			Id:       table.Id,
 			Number:   table.Number,
 			Capacity: table.Capacity,
+			AdminID:  table.AdminID,
+			Status:   table.Status,
 		})
 	}
 	return respon, nil
 }
 
-func (t *tableService) TableCreate(input dto.RequestTableCreate) (*response.TableResponse, error) {
+func (t *tableService) TableCreate(ctx *fiber.Ctx, input dto.RequestTableCreate) (*response.TableResponse, error) {
+	admin := ctx.Locals("admin").(entity.Admin)
 	table := entity.Table{
 		Number:   input.Number,
 		Capacity: input.Capacity,
+		AdminID:  admin.Id,
+		Admin:    admin,
+		Status:   0,
 	}
 
 	tableCreate, err := t.tableService.Create(table)
@@ -100,6 +110,8 @@ func (t *tableService) TableCreate(input dto.RequestTableCreate) (*response.Tabl
 		Id:       tableCreate.Id,
 		Number:   tableCreate.Number,
 		Capacity: tableCreate.Capacity,
+		AdminID:  tableCreate.AdminID,
+		Status:   tableCreate.Status,
 	}
 
 	return respon, nil

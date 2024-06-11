@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:the_deck/Controller/CategoryController.dart';
 import 'package:the_deck/Controller/CustomerController.dart';
 import 'package:the_deck/Controller/ProductController.dart';
+import 'package:the_deck/Controller/TableController.dart';
 import 'package:the_deck/Core/Routes/routes_name.dart';
 import 'package:the_deck/Core/app_colors.dart';
 import 'package:the_deck/Core/assets_constantes.dart';
@@ -15,6 +16,7 @@ import 'package:gap/gap.dart';
 import 'package:the_deck/Presentation/Category/CategoryList.dart';
 import 'package:the_deck/Presentation/Models/category_model.dart';
 import 'package:the_deck/Presentation/Product/views/Product_list.dart';
+import 'package:the_deck/Presentation/Table/TableListScreen.dart';
 
 class HomeView extends StatefulWidget {
   HomeView({Key? key}) : super(key: key);
@@ -27,6 +29,7 @@ class _HomeViewState extends State<HomeView> {
   final CategoryController categoryController = Get.put(CategoryController());
   final ProductController _productController = ProductController();
   final RegisterController _controller = Get.put(RegisterController());
+  final TableController tableController = Get.put(TableController());
 
   late Future<List<Product>> _productFuture;
 
@@ -129,64 +132,62 @@ class _HomeViewState extends State<HomeView> {
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
-                        children: categoryController.categories
-                            .take(4)
-                            .map(
-                              (category) => GestureDetector(
-                                onTap: () => Get.to(() => ProductListScreen(
-                                      categoryId: category.id,
-                                    )),
-                                child: Container(
-                                  margin: EdgeInsets.only(right: getSize(8)),
-                                  width: getSize(80), // Increased width
-                                  height: getSize(100), // Increased height
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.green,
-                                        Colors.greenAccent,
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
+                        children: categoryController.categories.take(4).map(
+                          (category) {
+                            return GestureDetector(
+                              onTap: () => Get.to(() => ProductListScreen(
+                                    categoryId: category.id,
+                                  )),
+                              child: Container(
+                                margin: EdgeInsets.only(right: getSize(8)),
+                                width: getSize(80), // Increased width
+                                height: getSize(100), // Increased height
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.green,
+                                      Colors.greenAccent,
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x0A111111),
+                                      blurRadius: 24,
+                                      offset: Offset(0, 4),
+                                      spreadRadius: 0,
+                                    )
+                                  ],
+                                  borderRadius: BorderRadius.circular(
+                                      16), // Increased border radius
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons
+                                          .fastfood, // Replace with actual category icon if available
+                                      color: Colors.white,
+                                      size: getSize(40),
                                     ),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Color(0x0A111111),
-                                        blurRadius: 24,
-                                        offset: Offset(0, 4),
-                                        spreadRadius: 0,
-                                      )
-                                    ],
-                                    borderRadius: BorderRadius.circular(
-                                        16), // Increased border radius
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons
-                                            .fastfood, // Replace with actual category icon if available
+                                    const Gap(8),
+                                    Text(
+                                      category.name,
+                                      style: TextStyle(
                                         color: Colors.white,
-                                        size: getSize(40),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: getFontSize(FontSizes.medium),
                                       ),
-                                      const Gap(8),
-                                      Text(
-                                        category.name,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize:
-                                              getFontSize(FontSizes.medium),
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
                                 ),
                               ),
-                            )
-                            .toList(),
+                            );
+                          },
+                        ).toList(),
                       ),
                     ),
                     const Gap(24),
@@ -217,13 +218,86 @@ class _HomeViewState extends State<HomeView> {
                                 id: product.id,
                                 name: product.name,
                                 image:
-                                    "http://192.168.30.215:8080/product/image/${product.image}",
+                                    "http://192.168.66.215:8080/product/image/${product.image}",
                                 price: product.price,
                               );
                             },
                           );
                         }
                       },
+                    ),
+                    const Gap(24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Available Tables",
+                          style: TextStyles.bodyLargeSemiBold.copyWith(
+                              color: Pallete.neutral100,
+                              fontSize: getFontSize(FontSizes.large)),
+                        ),
+                        GestureDetector(
+                          onTap: () => Get.to(() => Tablelistscreen()),
+                          child: Text(
+                            "See All",
+                            style: TextStyles.bodyMediumMedium.copyWith(
+                                color: Pallete.greenStrong,
+                                fontSize: getFontSize(FontSizes.medium)),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Gap(18),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: tableController.tables.take(4).map((table) {
+                          return Container(
+                            margin: EdgeInsets.only(right: getSize(8)),
+                            width: getSize(150),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Pallete.neutral10,
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color(0x0A111111),
+                                  blurRadius: 24,
+                                  offset: Offset(0, 4),
+                                  spreadRadius: 0,
+                                )
+                              ],
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Table ${table.number}',
+                                  style: TextStyles.bodyMediumRegular.copyWith(
+                                      color: Pallete.neutral100,
+                                      fontSize: getFontSize(FontSizes.medium)),
+                                ),
+                                Text(
+                                  'Capacity: ${table.capacity}',
+                                  style: TextStyles.bodySmallRegular.copyWith(
+                                      color: Pallete.neutral70,
+                                      fontSize: getFontSize(FontSizes.small)),
+                                ),
+                                Text(
+                                  table.status == 1
+                                      ? 'Tidak Tersedia'
+                                      : 'Tersedia',
+                                  style: TextStyles.bodySmallBold.copyWith(
+                                      color: table.status == 1
+                                          ? Colors.red
+                                          : Colors.green,
+                                      fontSize: getFontSize(FontSizes.small)),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ],
                 ),

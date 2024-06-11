@@ -14,6 +14,7 @@ import 'package:the_deck/Presentation/Profil/screens/profile_info_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:the_deck/Presentation/Table/MyRequestTable.dart';
 
 class ProfilView extends StatefulWidget {
   const ProfilView({Key? key}) : super(key: key);
@@ -41,13 +42,13 @@ class _ProfilViewState extends State<ProfilView> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Tutup pop-up
+                Navigator.of(context).pop(); // Close the pop-up
               },
               child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                _controller.logout(); // Panggil fungsi logout
+                _controller.logout(); // Call logout function
               },
               child: Text('Logout'),
             ),
@@ -61,20 +62,14 @@ class _ProfilViewState extends State<ProfilView> {
   Widget build(BuildContext context) {
     return Obx(() {
       final customer = _controller.userProfile.value;
-      if (customer == null) {
-        return Scaffold(
-          appBar: buildAppBar(
-              buildContext: context,
-              screenTitle: "Profile Settings",
-              isBackup: false),
-          body: Center(child: CircularProgressIndicator()),
-        );
-      }
+      final isLoggedIn = customer != null;
+
       return Scaffold(
         appBar: buildAppBar(
-            buildContext: context,
-            screenTitle: "Profile Settings",
-            isBackup: false),
+          buildContext: context,
+          screenTitle: "Profile Settings",
+          isBackup: false,
+        ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: getWidth(24)),
           child: SingleChildScrollView(
@@ -85,47 +80,55 @@ class _ProfilViewState extends State<ProfilView> {
                 Stack(
                   children: [
                     CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          'http://192.168.30.215:8080/customer/image/${customer.image}'),
+                      backgroundImage: isLoggedIn
+                          ? NetworkImage(
+                              'http://192.168.66.215:8080/customer/image/${customer.image}')
+                          : AssetImage('assets/images/user_icon.png')
+                              as ImageProvider,
                       radius: getSize(50),
                     ),
-                    Positioned(
-                      left: getSize(72),
-                      bottom: getSize(8),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(
-                              context, RoutesName.EditPersonalDataView);
-                        },
-                        child: Container(
-                          width: getSize(32),
-                          height: getSize(32),
-                          padding: EdgeInsets.all(getSize(6)),
-                          decoration: const BoxDecoration(
-                              color: Color(0xFFF5F5FF), shape: BoxShape.circle),
-                          child: Icon(
-                            CupertinoIcons.pencil,
-                            color: Pallete.orangePrimary,
-                            size: getSize(20),
+                    if (isLoggedIn)
+                      Positioned(
+                        left: getSize(72),
+                        bottom: getSize(8),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, RoutesName.EditPersonalDataView);
+                          },
+                          child: Container(
+                            width: getSize(32),
+                            height: getSize(32),
+                            padding: EdgeInsets.all(getSize(6)),
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFF5F5FF),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              CupertinoIcons.pencil,
+                              color: Pallete.orangePrimary,
+                              size: getSize(20),
+                            ),
                           ),
                         ),
-                      ),
-                    )
+                      )
                   ],
                 ),
                 const Gap(16),
                 Text(
-                  customer.name,
+                  isLoggedIn ? customer.name : 'Guest',
                   style: TextStyles.bodyLargeSemiBold.copyWith(
-                      color: Pallete.neutral100,
-                      fontSize: getFontSize(FontSizes.large)),
+                    color: Pallete.neutral100,
+                    fontSize: getFontSize(FontSizes.large),
+                  ),
                 ),
                 const Gap(4),
                 Text(
-                  customer.email,
+                  isLoggedIn ? customer.email : 'guest@example.com',
                   style: TextStyles.bodyMediumRegular.copyWith(
-                      color: const Color(0xFF878787),
-                      fontSize: getFontSize(FontSizes.medium)),
+                    color: const Color(0xFF878787),
+                    fontSize: getFontSize(FontSizes.medium),
+                  ),
                 ),
                 const Gap(28),
                 Container(
@@ -156,27 +159,39 @@ class _ProfilViewState extends State<ProfilView> {
                     Text(
                       "Profile",
                       style: TextStyles.bodySmallMedium.copyWith(
-                          color: const Color(0xFF878787),
-                          fontSize: getFontSize(FontSizes.small)),
+                        color: const Color(0xFF878787),
+                        fontSize: getFontSize(FontSizes.small),
+                      ),
                     ),
                     ProfileInfoTile(
-                        function: () => Navigator.pushNamed(
-                            context, RoutesName.personnalData),
-                        prefixIcon: Icons.person,
-                        title: "Personal Data"),
+                      function: () => Navigator.pushNamed(
+                          context, RoutesName.personnalData),
+                      prefixIcon: Icons.person,
+                      title: "Personal Data",
+                    ),
                     ProfileInfoTile(
-                        function: () => Get.to(() => MyOrder()),
-                        prefixIcon: Icons.shopping_bag,
-                        title: "My Order"),
+                      function: () => Get.to(() => MyOrder()),
+                      prefixIcon: Icons.shopping_bag,
+                      title: "My Order",
+                    ),
+                    ProfileInfoTile(
+                      function: () => Get.to(() => MyRequestTableScreen()),
+                      prefixIcon: Icons.shopping_bag,
+                      title: "My Request Table",
+                    ),
                   ],
                 ),
                 const Gap(16),
                 Align(
                   alignment: Alignment.center,
                   child: TextButton(
-                    onPressed: _confirmLogout,
+                    onPressed: isLoggedIn
+                        ? _confirmLogout
+                        : () {
+                            Navigator.pushNamed(context, RoutesName.login);
+                          },
                     child: Text(
-                      'Sign Out',
+                      isLoggedIn ? 'Sign Out' : 'Login',
                       style: TextStyles.bodyMediumSemiBold.copyWith(
                         color: Pallete.greenStrong,
                         fontSize: getFontSize(14),

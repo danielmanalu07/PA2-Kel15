@@ -112,6 +112,7 @@ func (p *productService) ProductUpdate(ctx *fiber.Ctx, id uint, input dto.Reques
 		Price:       updateProduct.Price,
 		Image:       updateProduct.Image,
 		CategoryID:  updateProduct.CategoryID,
+		AdminID:     updateProduct.AdminID,
 	}
 
 	return respon, nil
@@ -130,6 +131,7 @@ func (p *productService) ProductGetById(id uint) (*response.ProductResponse, err
 		Price:       prod.Price,
 		Image:       prod.Image,
 		CategoryID:  prod.CategoryID,
+		AdminID:     prod.AdminID,
 	}
 
 	return product, nil
@@ -150,6 +152,7 @@ func (p *productService) ProductGetAll() ([]response.ProductResponse, error) {
 			Price:       products.Price,
 			Image:       products.Image,
 			CategoryID:  products.CategoryID,
+			AdminID:     products.AdminID,
 		})
 	}
 
@@ -175,12 +178,16 @@ func (p *productService) ProductCreate(ctx *fiber.Ctx, input dto.RequestProductC
 
 	input.CategoryID = uint(CategoryId)
 
+	admin := ctx.Locals("admin").(entity.Admin)
+
 	product := entity.Product{
 		Name:        input.Name,
 		Description: input.Description,
 		Price:       input.Price,
 		Image:       filename,
 		CategoryID:  uint(CategoryId),
+		AdminID:     admin.Id,
+		Admin:       admin,
 	}
 
 	createProduct, err := p.productService.Create(product)
@@ -195,6 +202,7 @@ func (p *productService) ProductCreate(ctx *fiber.Ctx, input dto.RequestProductC
 		Price:       createProduct.Price,
 		Image:       createProduct.Image,
 		CategoryID:  createProduct.CategoryID,
+		AdminID:     createProduct.AdminID,
 	}
 
 	return respon, nil
