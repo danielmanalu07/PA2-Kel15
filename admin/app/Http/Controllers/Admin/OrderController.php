@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
-    private $orderService = 'http://172.27.1.162:8080';
-    private $admin = 'http://172.27.1.162:8080/admin';
+    private $orderService = 'http://192.168.66.215:8080';
+    private $admin = 'http://192.168.66.215:8080/admin';
 
     /**
      * Display a listing of the resource.
@@ -81,7 +81,6 @@ class OrderController extends Controller
         ]);
 
         if ($response->successful()) {
-            // Jika perlu, dapatkan kembali data pesanan setelah diperbarui
             $order = $response->json()['message'];
             return redirect('/admin/order')->with('success_message', $successMessage);
         } else {

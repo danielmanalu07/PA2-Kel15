@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    private $product = 'http://172.27.1.162:8080';
-    private $category = 'http://172.27.1.162:8080';
-    private $admin = 'http://172.27.1.162:8080/admin';
+    private $product = 'http://192.168.66.215:8080';
+    private $category = 'http://192.168.66.215:8080';
+    private $admin = 'http://192.168.66.215:8080/admin';
 
     public function index()
     {
@@ -57,6 +57,8 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+
+
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
@@ -72,8 +74,12 @@ class ProductController extends Controller
         }
 
         try {
-            $productResponse = Http::attach('image', $request->file('image')->get(), $request->file('image')->getClientOriginalName())
-                ->post("{$this->product}/product/create", [
+            $token = session('jwt');
+
+            $productResponse = Http::withHeaders([
+                'Cookie' => "jwt={$token}",
+            ])->attach('image', $request->file('image')->get(), $request->file('image')->getClientOriginalName())
+                ->post("{$this->product }/product/create", [
                     'name' => $request->name,
                     'description' => $request->description,
                     'price' => $request->price,
@@ -133,7 +139,9 @@ class ProductController extends Controller
 
             $data = $response->json();
 
-            $productData = Http::get("{$this->product}/product/" . $id);
+            $productData = Http::withHeaders([
+                'Cookie' =>"jwt={$token}",
+            ])->get("{$this->product}/product/" . $id);
             // dd($productData->status(), $productData->body());
 
             if ($productData->successful()) {
@@ -220,14 +228,17 @@ class ProductController extends Controller
         try {
             $token = session('jwt');
 
-            $response = Http::delete("{$this->product}/product/delete/" . $id);
+            $response = Http::withHeaders([
+                'Cookie' =>"jwt={$token}",
+            ])->delete("{$this->product}/product/delete/" . $id);
 
+            // dd($response);
             $data = $response->json();
 
             if ($response->successful()) {
                 return redirect()->back()->with('success_message', 'Deleted  Successfully!');
             } else {
-                return redirect()->back()->with('error_message', 'Failed to delete product. Please try again later.');
+                return redirect()->back()->with('error_message', 'Gagal menghapus, data sudah ada dikeranjang.');
             }
         } catch (\Throwable $th) {
             return redirect()->back()->with('error_message', 'Failed to delete product. Please try again later.');

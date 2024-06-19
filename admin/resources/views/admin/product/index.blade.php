@@ -80,7 +80,7 @@ List Product
                 <td>{{ $item['name'] }}</td>
                 <td>{{ $item['description'] }}</td>
                 <td>{{ $item['price'] }}</td>
-                <td><img src="http://172.27.80.117:8080/product/image/{{ $item['image'] }}" alt="Product Image"
+                <td><img src="http://192.168.66.215:8080/product/image/{{ $item['image'] }}" alt="Product Image"
                         style="width: 40%; height: auto;">
                 </td>
                 <td>

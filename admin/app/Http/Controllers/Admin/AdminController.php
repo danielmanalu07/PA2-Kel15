@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
-    private $apiUrl = 'http://172.27.1.162:8080/admin';
-    private $requestTable = 'http://172.27.1.162:8080/requestTable';
+    private $apiUrl = 'http://192.168.66.215:8080/admin';
+    private $requestTable = 'http://192.168.66.215:8080/requestTable';
 
     public function adminLogin(Request $request)
     {

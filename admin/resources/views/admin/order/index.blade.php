@@ -65,7 +65,7 @@ List Order
                         <td>{{ $order['pick_up_type'] }}</td>
                         <td>
                             @if($order['proof_of_payment'])
-                                <img src="http://172.27.1.162:8080/order/image/{{ $order['proof_of_payment'] }}"
+                                <img src="http://192.168.66.215:8080/order/image/{{ $order['proof_of_payment'] }}"
                                     alt="Proof of Payment" class="img-fluid rounded mb-3"
                                     style="max-width: 30%; height: auto;">
                             @else

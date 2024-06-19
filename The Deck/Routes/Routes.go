@@ -16,6 +16,7 @@ func RouteAdmin(App *fiber.App, adminController *controllers.AdminController) {
 	admin.Post("/logout", adminController.LogoutAdmin)
 	admin.Put("/order/:id", adminController.UpdateStatusOrder)
 	admin.Put("/table/:id", adminController.ApproveReqTable)
+	
 }
 
 func RouteCategory(App *fiber.App, categoryController *controllers.CategoryController) {

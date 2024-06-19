@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Validator;
 
 class TableController extends Controller
 {
-    private $tableService = 'http://172.27.1.162:8080';
-    private $admin = 'http://172.27.1.162:8080/admin';
+    private $tableService = 'http://192.168.66.215:8080';
+    private $admin = 'http://192.168.66.215:8080/admin';
 
     /**
      * Display a listing of the resource.

@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
-    private $apiUrl = 'http://172.27.1.162:8080';
-    private $admin = 'http://172.27.1.162:8080/admin';
+    private $apiUrl = 'http://192.168.66.215:8080';
+    private $admin = 'http://192.168.66.215:8080/admin';
 
     /**
      * Display a listing of the resource.
@@ -103,7 +103,9 @@ class CategoryController extends Controller
 
             $data = $response->json();
 
-            $categoryData = Http::get("{$this->apiUrl}/category/" . $id);
+            $categoryData = Http::withHeaders([
+                'Cookie' =>"jwt={$token}",
+            ])->get("{$this->apiUrl}/category/" . $id);
 
             if ($categoryData->successful()) {
                 $responseArray = $categoryData->json();
@@ -138,7 +140,9 @@ class CategoryController extends Controller
 
             $data = $response->json();
 
-            $categoryData = Http::get("{$this->apiUrl}/category/" . $id);
+            $categoryData = Http::withHeaders([
+                'Cookie' =>"jwt={$token}",
+            ])->get("{$this->apiUrl}/category/" . $id);
 
             if ($categoryData->successful()) {
                 $category = $categoryData->json()['message'];
