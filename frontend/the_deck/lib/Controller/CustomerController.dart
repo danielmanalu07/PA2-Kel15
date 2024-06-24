@@ -29,7 +29,7 @@ class RegisterController extends GetxController {
   var isLoading = true.obs;
 
   Future<void> registerUser(RegisterModel registerModel) async {
-    final url = Uri.parse('http://192.168.66.215:8080/customer/register');
+    final url = Uri.parse('http://192.168.188.215:8080/customer/register');
 
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({'Content-Type': 'multipart/form-data'});
@@ -73,7 +73,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> loginUser(String email, String password) async {
-    final url = Uri.parse('http://192.168.66.215:8080/customer/login');
+    final url = Uri.parse('http://192.168.188.215:8080/customer/login');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -108,7 +108,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> getUserProfile() async {
-    final url = Uri.parse('http://192.168.66.215:8080/customer/profile');
+    final url = Uri.parse('http://192.168.188.215:8080/customer/profile');
     final token = box.read('token');
     final response = await http.get(
       url,
@@ -131,7 +131,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> logout() async {
-    final url = Uri.parse('http://192.168.66.215:8080/customer/logout');
+    final url = Uri.parse('http://192.168.188.215:8080/customer/logout');
     final token = box.read('token');
     final response = await http.post(
       url,
@@ -162,7 +162,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> addToCart(int productId, int quantity) async {
-    final url = Uri.parse('http://192.168.66.215:8080/cart/add');
+    final url = Uri.parse('http://192.168.188.215:8080/cart/add');
     final token = box.read('token');
     final response = await http.post(
       url,
@@ -206,7 +206,7 @@ class RegisterController extends GetxController {
 
   Future<void> requestTable(int selectedTableId, String notes) async {
     final token = GetStorage().read('token');
-    final url = 'http://192.168.66.215:8080/requestTable/create';
+    final url = 'http://192.168.188.215:8080/requestTable/create';
     final headers = {
       'Cookie': 'jwt=$token',
       'Content-Type': 'application/json',
@@ -239,7 +239,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> getMyOrder() async {
-    final url = Uri.parse('http://192.168.66.215:8080/order/myorder');
+    final url = Uri.parse('http://192.168.188.215:8080/order/myorder');
     final token = box.read('token');
     final response = await http.get(
       url,
@@ -257,7 +257,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> getMyRequestTable() async {
-    final url = Uri.parse('http://192.168.66.215:8080/requestTable/myRequest');
+    final url = Uri.parse('http://192.168.188.215:8080/requestTable/myRequest');
     final token =
         box.read('token'); // Pastikan Anda telah menginisialisasi 'box'
     final response = await http.get(
@@ -281,7 +281,7 @@ class RegisterController extends GetxController {
   }
 
   Future<void> getMyCart() async {
-    final url = Uri.parse('http://192.168.66.215:8080/cart/myCart');
+    final url = Uri.parse('http://192.168.188.215:8080/cart/myCart');
     final token = box.read('token');
     final response = await http.get(
       url,
@@ -300,7 +300,8 @@ class RegisterController extends GetxController {
   }
 
   Future<void> deleteCartItem(int cartItemId) async {
-    final url = Uri.parse('http://192.168.66.215:8080/cart/delete/$cartItemId');
+    final url =
+        Uri.parse('http://192.168.188.215:8080/cart/delete/$cartItemId');
     final token = box.read('token');
     final response = await http.delete(
       url,
@@ -331,7 +332,7 @@ class RegisterController extends GetxController {
 
   Future<void> updateCartItemQuantity(int cartItemId, int quantity,
       {VoidCallback? onSuccess}) async {
-    final url = Uri.parse('http://192.168.66.215:8080/cart/edit/$cartItemId');
+    final url = Uri.parse('http://192.168.188.215:8080/cart/edit/$cartItemId');
     final token = box.read('token');
     final response = await http.put(
       url,
@@ -354,7 +355,7 @@ class RegisterController extends GetxController {
     final token = box.read('token');
     if (image != null) {
       File imageFile = File(image.path);
-      final uploadUrl = 'http://192.168.66.215:8080/order/payment/$orderId';
+      final uploadUrl = 'http://192.168.188.215:8080/order/payment/$orderId';
 
       var request = http.MultipartRequest('PUT', Uri.parse(uploadUrl));
       request.headers.addAll({'Cookie': 'jwt=${token}'});
@@ -382,7 +383,8 @@ class RegisterController extends GetxController {
 
   Future<void> updateOrderStatus(int orderId) async {
     try {
-      final url = Uri.parse('http://192.168.66.215:8080/order/status/$orderId');
+      final url =
+          Uri.parse('http://192.168.188.215:8080/order/status/$orderId');
       final token = box.read('token');
       final response = await http.put(
         url,
@@ -410,7 +412,7 @@ class RegisterController extends GetxController {
   Future<void> CancleRequestTable(int reqTableId) async {
     try {
       final url = Uri.parse(
-          'http://192.168.66.215:8080/requestTable/status/$reqTableId');
+          'http://192.168.188.215:8080/requestTable/status/$reqTableId');
       final token = box.read('token');
       final response = await http.put(
         url,
@@ -437,7 +439,8 @@ class RegisterController extends GetxController {
   }
 
   Future<void> updateUserProfile(Customer updatedCustomer) async {
-    final url = Uri.parse('http://192.168.66.215:8080/customer/update-profile');
+    final url =
+        Uri.parse('http://192.168.188.215:8080/customer/update-profile');
     final token = box.read('token');
     final response = await http.put(
       url,
@@ -469,7 +472,8 @@ class RegisterController extends GetxController {
   }
 
   Future<String?> uploadImages(File image) async {
-    final url = Uri.parse('http://192.168.66.215:8080/customer/upload-profile');
+    final url =
+        Uri.parse('http://192.168.188.215:8080/customer/upload-profile');
     final token = box.read('token');
     final request = http.MultipartRequest('POST', url);
     request.headers['Cookie'] = 'jwt=$token';

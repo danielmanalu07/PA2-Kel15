@@ -17,7 +17,7 @@ class TableController extends GetxController {
     try {
       isLoading(true);
       final response =
-          await http.get(Uri.parse('http://192.168.66.215:8080/table'));
+          await http.get(Uri.parse('http://192.168.188.215:8080/table'));
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body)['message'];
         tables.value = data.map((json) => Table.fromJson(json)).toList();

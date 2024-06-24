@@ -30,7 +30,7 @@ class _TablelistscreenState extends State<Tablelistscreen> {
         title: Text('All Tables'),
         actions: [
           IconButton(
-            icon: Icon(Icons.request_page),
+            icon: Icon(Icons.add),
             onPressed: () => Get.to(
                 () => RequestTableScreen()), // Navigate to RequestTableScreen
           ),
@@ -75,7 +75,7 @@ class _TablelistscreenState extends State<Tablelistscreen> {
                         fontSize: getFontSize(FontSizes.small)),
                   ),
                   Text(
-                    table.status == 1 ? 'Tidak Tersedia' : 'Tersedia',
+                    table.status == 1 ? 'Sedang Digunakan' : 'Tersedia',
                     style: TextStyles.bodySmallBold.copyWith(
                         color: table.status == 1 ? Colors.red : Colors.green,
                         fontSize: getFontSize(FontSizes.small)),

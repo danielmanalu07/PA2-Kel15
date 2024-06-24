@@ -131,7 +131,7 @@ class _EditPersonalDataViewState extends State<EditPersonalDataView> {
                       backgroundImage: _selectedImage != null
                           ? FileImage(_selectedImage!)
                           : NetworkImage(
-                                  'http://192.168.66.215:8080/customer/image/${customer.image}')
+                                  'http://192.168.188.215:8080/customer/image/${customer.image}')
                               as ImageProvider,
                       radius: 50,
                     ),

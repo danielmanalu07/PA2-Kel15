@@ -82,7 +82,7 @@ class _ProfilViewState extends State<ProfilView> {
                     CircleAvatar(
                       backgroundImage: isLoggedIn
                           ? NetworkImage(
-                              'http://192.168.66.215:8080/customer/image/${customer.image}')
+                              'http://192.168.188.215:8080/customer/image/${customer.image}')
                           : AssetImage('assets/images/user_icon.png')
                               as ImageProvider,
                       radius: getSize(50),

@@ -54,7 +54,7 @@ class ProductListItem extends StatelessWidget {
           shape: BoxShape.circle,
           image: DecorationImage(
             image: NetworkImage(
-                "http://192.168.66.215:8080/product/image/${product.image}"), // Gambar produk
+                "http://192.168.188.215:8080/product/image/${product.image}"), // Gambar produk
             fit: BoxFit.cover,
           ),
         ),

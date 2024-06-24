@@ -91,7 +91,7 @@ class _HomeViewState extends State<HomeView> {
                           ),
                         ],
                       ),
-                      const Gap(26),
+                      const Gap(20),
                       Text(
                         "The Deck Provide the best \nfood for you",
                         style: TextStyles.headingH4SemiBold.copyWith(
@@ -218,7 +218,7 @@ class _HomeViewState extends State<HomeView> {
                                 id: product.id,
                                 name: product.name,
                                 image:
-                                    "http://192.168.66.215:8080/product/image/${product.image}",
+                                    "http://192.168.188.215:8080/product/image/${product.image}",
                                 price: product.price,
                               );
                             },
@@ -285,7 +285,7 @@ class _HomeViewState extends State<HomeView> {
                                 ),
                                 Text(
                                   table.status == 1
-                                      ? 'Tidak Tersedia'
+                                      ? 'Sedang Digunakan'
                                       : 'Tersedia',
                                   style: TextStyles.bodySmallBold.copyWith(
                                       color: table.status == 1
