@@ -1,7 +1,7 @@
 @extends('admin.layout.welcome')
-@section('title')
-Update Data Tabel
-@endsection
+
+@section('title', 'Update Data Tabel')
+
 @section('content')
 <div class="container">
     <div class="row mb-3">
@@ -12,7 +12,7 @@ Update Data Tabel
 
     @if (Session::has('success_message'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <strong>Success: </strong> {{ Session::get('success_message') }}
+        <strong>Success:</strong> {{ Session::get('success_message') }}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -21,7 +21,7 @@ Update Data Tabel
 
     @if (Session::has('error_message'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Error: </strong> {{ Session::get('error_message') }}
+        <strong>Error:</strong> {{ Session::get('error_message') }}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -33,19 +33,19 @@ Update Data Tabel
         @method('PUT')
         <div class="form-group">
             <label for="number">Number</label>
-            <input type="text" name="number" class="form-control" id="number" value="{{ $table['number'] }}" required>
+            <input type="text" name="number" class="form-control" id="number" value="{{ old('number', $table['number']) }}" required>
         </div>
         <div class="form-group">
             <label for="capacity">Capacity</label>
-            <input type="number" name="capacity" class="form-control" id="capacity" value="{{ $table['capacity'] }}" required>
+            <input type="number" name="capacity" class="form-control" id="capacity" value="{{ old('capacity', $table['capacity']) }}" required>
         </div>
-        {{-- <div class="form-group">
+        <div class="form-group">
             <label for="status">Status</label>
             <select name="status" class="form-control" id="status" required>
-                <option value="kosong" {{ $table['status'] == 'kosong' ? 'selected' : '' }}>Kosong</option>
-                <option value="penuh" {{ $table['status'] == 'penuh' ? 'selected' : '' }}>Penuh</option>
+                <option value="kosong" {{ old('status', $table['status']) == 'kosong' ? 'selected' : '' }}>Tersedia</option>
+                <option value="penuh" {{ old('status', $table['status']) == 'penuh' ? 'selected' : '' }}>Sedang digunakan</option>
             </select>
-        </div> --}}
+        </div>
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 </div>

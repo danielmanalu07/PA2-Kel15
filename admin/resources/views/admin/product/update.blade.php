@@ -60,7 +60,7 @@
                     <div class="mb-3">
                         <label for="image" class="form-label">Product Image</label>
                         <input type="file" class="form-control" id="image" name="image">
-                        <img src="http://192.168.100.24:8080/product/image/{{ $product['image'] }}" alt="Product Image" class="img-fluid mt-3" style="width: 30%; height: auto;">
+                        <img src="http://192.168.66.215:8080/product/image/{{ $product['image'] }}" alt="Product Image" class="img-fluid mt-3" style="width: 30%; height: auto;">
                     </div>
                     @error('image')
                         <div class="alert alert-danger">{{ $message }}</div>

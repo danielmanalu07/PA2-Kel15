@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
-    private $apiUrl = 'http://192.168.187.215:8080';
-    private $admin = 'http://192.168.187.215:8080/admin';
+    private $apiUrl = 'http://192.168.66.215:8080';
+    private $admin = 'http://192.168.66.215:8080/admin';
 
     /**
      * Display a listing of the resource.
@@ -103,7 +103,9 @@ class CategoryController extends Controller
 
             $data = $response->json();
 
-            $categoryData = Http::get("{$this->apiUrl}/category/" . $id);
+            $categoryData = Http::withHeaders([
+                'Cookie' =>"jwt={$token}",
+            ])->get("{$this->apiUrl}/category/" . $id);
 
             if ($categoryData->successful()) {
                 $responseArray = $categoryData->json();
@@ -138,7 +140,9 @@ class CategoryController extends Controller
 
             $data = $response->json();
 
-            $categoryData = Http::get("{$this->apiUrl}/category/" . $id);
+            $categoryData = Http::withHeaders([
+                'Cookie' =>"jwt={$token}",
+            ])->get("{$this->apiUrl}/category/" . $id);
 
             if ($categoryData->successful()) {
                 $category = $categoryData->json()['message'];

@@ -12,7 +12,7 @@
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <img src="http://192.168.187.215:8080/product/image/{{ $product['image'] }}" alt="Product Image"
+                    <img src="http://192.168.66.215:8080/product/image/{{ $product['image'] }}" alt="Product Image"
                         class="img-fluid rounded mb-3" style="max-width: 30%; height: auto;">
                 </div>
                 <div class="mb-3">
